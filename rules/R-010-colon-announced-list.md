@@ -62,4 +62,4 @@ There are three shortcuts. Image: describe what you want. Edit: paste the origin
 
 ## 出處
 
-- `contentworks/content-generator/plan/spoken-register-0830.md` 病灶 2（冒號起清單：人講話不會先宣告要列幾條再列）
+- 0830 口語語域筆記的病灶 2（冒號起清單：人講話不會先宣告要列幾條再列）

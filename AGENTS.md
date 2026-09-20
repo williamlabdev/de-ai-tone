@@ -29,7 +29,7 @@ profile: articles
 - `profiles/articles.md`：行銷文章，嚴格集（預設）。
 - `profiles/narration.md`：影片旁白，口語例外（只放寬節奏，不放寬資訊密度）。
 - `tools/README.md`：哪些檢查可計數標記、哪些只能人審；`tools/review-ui.html` 審稿台與 `tools/sync-check.py` 漂移檢查。
-- 語料、稿件快照、課程規劃不在本 repo。writer 讀的語料檔由寫稿單或稿件檔頭指定路徑（William 的正本在 `learn/voice/william-voice.md`）。
+- 語料、稿件快照、課程規劃不在本 repo。writer 讀的語料檔由寫稿單或稿件檔頭指定路徑（作者自己的語料正本放在教學 repo，不在這裡）。
 
 ## 新增或改規則
 

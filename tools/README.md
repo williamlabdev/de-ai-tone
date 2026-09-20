@@ -3,7 +3,7 @@
 - `review-ui.html`：審稿台，純前端、無外部依賴。載入或貼上稿件，按 `rules/index.json` 的 check_order 做機械標記（只標不改），附 narration 帶做口氣對照與改寫匯出。中英文 pattern 都是從各規則 frontmatter `mechanical` 手抄內嵌，本頁不讀取 `rules/`。
 - `sync-check.py`：比對 review-ui.html 內嵌的順序與 pattern 是否與 `rules/index.json`、各規則 frontmatter 一致。改規則後跑 `python3 tools/sync-check.py`，印 `OK` 才算同步。
 
-機械 pattern 的唯一真相源是各規則 frontmatter `mechanical`（0920 裁決）。`script_gate` 是另一個消費者，不搬進本 repo，自己對齊 frontmatter。
+機械 pattern 的唯一真相源是各規則 frontmatter `mechanical`（0920 裁決）。外部的機械檢查工具是另一個消費者，不搬進本 repo，各自對齊 frontmatter。
 
 可機械化的（計數即標記，中英文分開算；機械寧可多標，人判負責放行；pattern 裡的 `(?i)` 是逐段標記，Python 實作時合併為開頭一個或 `re.I`，不可直接多段貼上）：
 

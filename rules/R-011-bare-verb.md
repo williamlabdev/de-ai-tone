@@ -70,4 +70,4 @@ Each of the 12 entries matches the source file.
 
 ## 出處
 
-- `learn:topics/claude-basics/script.zh.md` b4／b5（0914）：william 二糾——問題在動詞不在疊詞（一條一條／一條條皆可）；三糾——病灶是單字動詞無受詞，查核可放行。
+- 0914 一支 Claude 入門旁白稿的審稿，作者連續兩次糾正：第一次指出問題在動詞不在疊詞（一條一條／一條條皆可）；第二次指出病灶是單字動詞無受詞，「查核」可放行。
