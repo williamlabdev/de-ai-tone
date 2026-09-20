@@ -1,0 +1,84 @@
+{
+  "tone-version": "0.2.0",
+  "languages": ["zh", "en"],
+  "check_order": ["R-002", "R-001", "R-005", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011"],
+  "rules": [
+    {
+      "id": "R-001",
+      "slug": "fragment-parataxis",
+      "file": "R-001-fragment-parataxis.md",
+      "title": "碎片短句＋排比 / Fragment stacking",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-002",
+      "slug": "symmetric-contrast",
+      "file": "R-002-symmetric-contrast.md",
+      "title": "不是 A 是 B 對稱框 / Symmetric contrast frame",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-003",
+      "slug": "dash-stack",
+      "file": "R-003-dash-stack.md",
+      "title": "破折號解釋堆疊 / Dash stacking",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-004",
+      "slug": "rhetorical-question",
+      "file": "R-004-rhetorical-question.md",
+      "title": "反問句收尾 / Rhetorical closing",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-005",
+      "slug": "punchline-standalone",
+      "file": "R-005-punchline-standalone.md",
+      "title": "金句獨段 / Standalone punchline",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-006",
+      "slug": "reader-prophecy",
+      "file": "R-006-reader-prophecy.md",
+      "title": "第二人稱預言 / Reader prophecy",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-007",
+      "slug": "bare-multiplier",
+      "file": "R-007-bare-multiplier.md",
+      "title": "裸倍數 / Bare multiplier",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-008",
+      "slug": "vague-scope",
+      "file": "R-008-vague-scope.md",
+      "title": "模糊量詞與空倒數 / Vague scope and hollow urgency",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-009",
+      "slug": "enumeration-chant",
+      "file": "R-009-enumeration-chant.md",
+      "title": "並列三連喊口號 / Parallel chant",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-010",
+      "slug": "colon-announced-list",
+      "file": "R-010-colon-announced-list.md",
+      "title": "冒號起清單 / Colon-announced list",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-011",
+      "slug": "bare-verb",
+      "file": "R-011-bare-verb.md",
+      "title": "單字動詞無受詞 / Bare verb without object",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    }
+  ]
+}

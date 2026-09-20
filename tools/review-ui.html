@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>de-ai-tone 審稿台</title>
+<style>
+body{font-family:system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;max-width:960px;margin:0 auto;padding:16px;color:#222}
+h1{font-size:20px}h2{font-size:16px;margin-top:28px}
+.card{border:1px solid #ccc;border-radius:8px;padding:12px;margin:10px 0}
+.card h3{margin:0 0 6px;font-size:14px}
+.tag{display:inline-block;background:#eee;border-radius:4px;padding:1px 8px;margin:2px 4px 2px 0;font-size:12px}
+.tag.hit{background:#ffe1e1}.tag.pass{background:#e1f3e1}.tag.head{background:#e6e6fa}
+textarea{width:100%;min-height:64px;font-size:14px}
+pre.src{background:#f7f7f7;padding:8px;white-space:pre-wrap;font-size:13px}
+.row{display:flex;gap:12px;margin:6px 0;align-items:center;flex-wrap:wrap}
+button{padding:6px 14px;font-size:14px;cursor:pointer}
+.warn{color:#a00;font-size:13px}
+#out{white-space:pre-wrap;background:#f7f7f7;padding:8px;font-size:13px;max-height:300px;overflow:auto}
+</style>
+</head>
+<body>
+<h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。</p>
+
+<h2>1. 載入稿件</h2>
+<div class="row">
+<input type="file" id="file" accept=".md">
+<button id="pasteBtn">用下方貼上內容審查</button>
+</div>
+<textarea id="input" placeholder="貼上 script.zh.md 全文（含檔頭）"></textarea>
+
+<h2>2. 審查結果（逐段勾選）</h2>
+<div id="results"></div>
+
+<h2>3. 匯出</h2>
+<div class="row">
+<button id="exportMd">下載改稿 .md</button>
+<button id="exportLog">下載 change log .txt</button>
+</div>
+<div id="out"></div>
+
+<script>
+"use strict";
+// ---------- 機械 pattern（對齊 tools/README.md＋b5；中文） ----------
+const P = {
+  r002: /不是.*而是|不是.*是|不在.*而在|與其.*不如|跟.{0,30}是兩種不同/g,
+  r004: /[^。！？]*?(?:嗎|呢|不是嗎|還在等)[^。！？]*？/g,
+  r006: /你(?:遲早|不會想)|你(?:很快就會|會|將|將會|一定).{0,8}(?:懂|愛上|後悔|錯過|明白|知道|學會|掌握)|別錯過|不要錯過/g,
+  r007: /(?:提升|提高|增加|成長|下降|降低|最高|最低).{0,12}倍|翻[一二三四五六七八九\d]+(?:番|倍)|\d+x/g,
+  r008: /有限|少量|大量|大幅|顯著|很快|即時|儘早|從速|敬請期待|錯過不再|再等|售完為止|限時|一般/g,
+  r009dun: /(、[^，。！？；、]{1,12}){2,}/g,
+  r009comma: /([^，。！？；]{4,20}，){2}[^，。！？；]{4,20}[。！]/g,
+  r010: /(?:三[個項條]|幾個|以下|如下|分別).{0,12}：/g
+};
+// ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
+const PE = {
+  r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b/i,
+  r004: /\bwhat are you waiting for\b|\bare you still (?:waiting|hesitating)\b|\bwhy not (?:join|try|start|apply|register)\b|\bdon't you (?:want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b/i,
+  r006: /\byou will (?:see|understand|love|regret|thank)\b|\byou'll (?:see|understand|love|regret|thank)\b|\byou are going to (?:see|understand|love|regret|thank)\b|\bdon't miss\b|\byou don't want to miss\b/gi,
+  r007: /\b(?:tripled|doubled|quadrupled|tenfold|\d+\s?(?:x\b|×(?!\w))|up to \d+\s?(?:x\b|×(?!\w))|(?:ten|hundred|thousand) times\b)/gi,
+  r008: /\blimited\b|\bsignificant\b|\bdramatic\b|coming soon|stay tuned|act fast|act now|instantly|\bhurry\b|don't miss out|while supplies last|as soon as possible|before it'?s gone|right away/gi,
+  r009: /(?:\b[\w-]+\b[^,.!?;]{0,12},\s*){2,}/g,
+  r010: /(?:three|several|following|below|these).{0,20}:/i,
+  r011: /^(?:Verify|Confirm|Check|Done)\.$/
+};
+/* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
+   不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
+R-001 zh: 連續3+短段落，每段<10字且以句號結尾
+R-001 en: 3+ short paragraphs, each <8 words ending with period
+R-002 zh: 不是.*而是|不是.*是|不在.*而在|與其.*不如|跟.{0,30}是兩種不同，計數>=2
+R-002 en: (?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|(?i)\bnot just\b.{0,60}\bbut\b|(?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b，計數>=2（中英文合併）
+R-003 zh: 計數——子串（成對計1次），一段>=2
+R-003 en: 計數單個—（排除已組成——者），一段>=2
+R-004 zh: 以\？$結尾且同句含(嗎|呢|不是嗎|還在等)
+R-004 en: \?結尾且含(?i)\bwhat are you waiting for\b|(?i)\bare you still (waiting|hesitating)\b|(?i)\bwhy not (join|try|start|apply|register)\b|(?i)\bdon't you (want|wish|agree|think)\b|(?i)\bisn't it\b|(?i)\bisn't that\b
+R-005 zh: 獨佔一段且<10字
+R-005 en: single-paragraph sentence <8 words
+R-006 zh: 你(遲早|不會想)|你(很快就會|會|將|將會|一定).{0,8}(懂|愛上|後悔|錯過|明白|知道|學會|掌握)|別錯過|不要錯過
+R-006 en: (?i)\byou will (see|understand|love|regret|thank)\b|(?i)\byou'll (see|understand|love|regret|thank)\b|(?i)\byou are going to (see|understand|love|regret|thank)\b|(?i)\bdon't miss\b|(?i)\byou don't want to miss\b
+R-007 zh: (提升|提高|增加|成長|下降|降低|最高|最低).{0,12}倍|翻[一二三四五六七八九\d]+(番|倍)|\d+x
+R-007 en: (?i)\b(tripled|doubled|quadrupled|tenfold|\d+\s?(?:x\b|×(?!\w))|up to \d+\s?(?:x\b|×(?!\w))|(?:ten|hundred|thousand) times\b)
+R-008 zh: 有限|少量|大量|大幅|顯著|很快|即時|儘早|從速|敬請期待|錯過不再|再等|售完為止|限時|一般
+R-008 en: (?i)\blimited\b|\bsignificant\b|\bdramatic\b|coming soon|stay tuned|act fast|act now|instantly|\bhurry\b|don't miss out|while supplies last|as soon as possible|before it'?s gone|right away
+R-009 zh: (、[^，。！？；、]{1,12}){2,}|([^，。！？；]{4,20}，){2}[^，。！？；]{4,20}[。！]；人判是否清單/口號/流程鏈
+R-009 en: (\b[\w-]+\b[^,.!?;]{0,12},\s*){2,}，3+平行短語，人判清單或口號
+R-010 zh: (三[個項條]|幾個|以下|如下|分別).{0,12}：
+R-010 en: (?i)(three|several|following|below|these).{0,20}:
+R-011 zh: 句尾單字動詞無受詞——[核查對驗審校][。！？]$，排除雙字與補語（查核/檢核/檢查/審查/校對/對上/對完/對不上/對回去/核完）
+R-011 en: 單字句動詞無受詞——^(?:Verify|Confirm|Check|Done)\.$
+*/
+const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
+const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
+const splitSentEn = s => s.match(/[^.!?]+[.!?]/g) || [s];
+
+function scanParas(text){
+  // 一行一段（本家稿件一行一個意思），空行跳過，標題獨立成段
+  const blocks=[];
+  text.split(/\n/).forEach(ln=>{
+    const t=ln.trim();
+    if(!t) return;
+    blocks.push(t);
+  });
+  // 第一遍：標題／短段判定（zh:漢字<10且不含，、：；；en:無漢字時 words<8），算連續短段落 run（R-001，>=3），標題切斷 run
+  const isHeadArr = blocks.map(b=>/^#{1,3}\s/.test(b));
+  const shortArr = blocks.map((b,i)=>{
+    if(isHeadArr[i]) return false;
+    const zhLen = ZH_LEN(b);
+    if(zhLen>0) return zhLen<10 && !/[，、：；]/.test(b);
+    return b.split(/\s+/).filter(Boolean).length<8;
+  });
+  const inRunArr = new Array(blocks.length).fill(false);
+  let runStart=-1;
+  for(let i=0;i<=blocks.length;i++){
+    const isShort = i<blocks.length && shortArr[i];
+    if(isShort){
+      if(runStart<0) runStart=i;
+    } else if(runStart>=0){
+      if(i-runStart>=3) for(let j=runStart;j<i;j++) inRunArr[j]=true;
+      runStart=-1;
+    }
+  }
+  return blocks.map((body,i)=>{
+    const t = body;
+    const isHead = isHeadArr[i];
+    const hits = [];
+    if(isHead){ return {i, body, isHead, hits:[{id:"HEADING", why:"段標題：會上畫面（分鏡caption＋段欄比對鍵），改名需同步storyboard＋重跑走查"}]}; }
+    if(shortArr[i]){
+      hits.push(inRunArr[i]
+        ? {id:"R-001+R-005", why:"連續短段落（≥3）內的獨立短句（<10字／8字），人判：有無新資訊／是否裝飾金句"}
+        : {id:"R-005", why:"獨佔一段短句（<10字／8字），人判：有無新資訊／是否裝飾金句"});
+    }
+    // R-002 zh：同句內匹配（跨句不算），排除「是不是」誤殺
+    const P2 = /不是.*而是|不是.*是|不在.*而在|與其.*不如|跟.{0,30}是兩種不同/;
+    const sents0 = splitSentZh(t);
+    if(sents0.some(s=>{const m=s.match(P2); return m && m[0].indexOf("是不是")<0;}))
+      hits.push({id:"R-002?", why:"對稱框關鍵詞（同句內，narration允許1次），人判：是否真實誤解"});
+    if(PE.r002.test(t)) hits.push({id:"R-002[en]", why:"symmetric contrast frame，人判：是否真實誤解"});
+    // R-003：中文——子串每個計1次，英文單個—（排除已組成——者）各計，合計>=2
+    const dashZh=(t.match(/——/g)||[]).length;
+    const dashEn=(t.replace(/——/g,"").match(/—/g)||[]).length;
+    const dashes=dashZh+dashEn;
+    if(dashes>=2) hits.push({id:"R-003", why:"破折號 "+dashes+" 個（≥2），narration全片最多2處"});
+    const m4 = t.match(P.r004); if(m4) hits.push({id:"R-004", why:"反問收尾 "+m4.length+" 句（？＋嗎/呢），人判：前文有無行動資訊"});
+    const m4en = splitSentEn(t).filter(s=>/\?$/.test(s.trim()) && PE.r004.test(s));
+    if(m4en.length) hits.push({id:"R-004[en]", why:"rhetorical closing "+m4en.length+" 句，人判：前文有無行動資訊"});
+    const m6 = t.match(P.r006); if(m6) hits.push({id:"R-006", why:"第二人稱預言 "+m6.length+" 處，人判：指示／教學承諾／預言感受"});
+    const m6en = t.match(PE.r006); if(m6en) hits.push({id:"R-006[en]", why:"reader prophecy "+m6en.length+" 處，人判：指示／教學承諾／預言感受"});
+    const m7 = t.match(P.r007); if(m7) hits.push({id:"R-007", why:"裸倍數，人判：有無兩端基準，無則標[待補]"});
+    const m7en = t.match(PE.r007); if(m7en) hits.push({id:"R-007[en]", why:"bare multiplier，人判：有無兩端基準，無則標[待補]"});
+    const m8 = t.match(P.r008); if(m8) hits.push({id:"R-008", why:"模糊詞："+[...new Set(m8)].join("、")+"，人判：同句有無跟數字"});
+    const m8en = t.match(PE.r008); if(m8en) hits.push({id:"R-008[en]", why:"vague scope: "+[...new Set(m8en)].join("、")+"，人判：同句有無跟數字"});
+    const m9a = t.match(P.r009dun), m9b = t.match(P.r009comma);
+    if(m9a) hits.push({id:"R-009", why:"頓號並列"+m9a.length+"處，人判：清單展開放行，否則拆散"});
+    else if(m9b){
+      const segs = m9b[0].split("，");
+      const avg = segs.reduce((a,s)=>a+s.length,0)/segs.length;
+      hits.push({id:"R-009"+(avg>12?"[低信心]":""), why:"逗號三連（平均每節"+avg.toFixed(1)+"字），人判：問答／因果鏈／流程描述放行，口號才拆"});
+    }
+    const m9en = t.match(PE.r009); if(m9en) hits.push({id:"R-009[en]", why:"parallel chant "+m9en.length+" 處，人判：清單展開放行，否則拆散"});
+    const m10 = t.match(P.r010); if(m10) hits.push({id:"R-010", why:"計數宣告＋冒號，人判：清單／對話引述"});
+    if(PE.r010.test(t)) hits.push({id:"R-010[en]", why:"colon-announced list，人判：清單／對話引述"});
+    // b5：句尾單字動詞無受詞（排除查核/檢查/對上/對完/對不上/核完等）
+    const sents = splitSentZh(t);
+    const bare=[];
+    for(const s of sents){
+      const m = s.match(/(.)[。！？]$/);
+      if(!m) continue; const ch=m[1], prev=s.length>=3?s[s.length-3]:"";
+      if("核驗審校".includes(ch)){ if(!(ch==="核"&&"查檢".includes(prev))&&!(ch==="審"&&prev==="查")) bare.push(s.slice(-8)); }
+      else if(ch==="查" && !"核檢".includes(prev)) bare.push(s.slice(-8));
+      else if(ch==="對" && !"上完不去回校".includes(prev)) bare.push(s.slice(-8));
+    }
+    if(bare.length) hits.push({id:"R-011", why:"句尾單字動詞無受詞："+bare.join("｜")+"，改雙字（查核）或加補語（對完/對上）"});
+    const bareEn = splitSentEn(t).filter(s=>PE.r011.test(s.trim()));
+    if(bareEn.length) hits.push({id:"R-011[en]", why:"bare verb without object："+bareEn.join("｜")});
+    return {i, body, isHead, hits};
+  });
+}
+
+let paras=[];
+function render(){
+  const box=document.getElementById("results"); box.innerHTML="";
+  paras.forEach((p,idx)=>{
+    const d=document.createElement("div"); d.className="card";
+    const tags=p.hits.length
+      ? p.hits.map(h=>`<span class="tag hit">${h.id}：${h.why}</span>`).join("")
+      : `<span class="tag pass">PASS</span>`;
+    const headTag=p.isHead?`<span class="tag head">段標題</span>`:"";
+    d.innerHTML=`<h3>段 ${idx+1} ${headTag}</h3><pre class="src"></pre><div>${tags}</div>
+    ${p.isHead?`<p class="warn">改名會動分鏡「段」欄＋caption字數（短標題才安全），改完必跑 storyboard 走查。</p><label>新標題：<input data-r="${idx}" class="rename" size="40" placeholder="留空=不改"></label>`
+    :`<div class="row"><label><input type="radio" name="d${idx}" value="keep" checked>保留</label>
+    <label><input type="radio" name="d${idx}" value="fix">改寫</label>
+    <label><input type="radio" name="d${idx}" value="todo">[待補]（缺料不編）</label></div>
+    <textarea data-r="${idx}" class="rewrite"></textarea>`}`;
+    d.querySelector(".src").textContent=p.body;
+    const ta=d.querySelector(".rewrite"); if(ta) ta.value=p.body;
+    box.appendChild(d);
+  });
+}
+
+document.getElementById("pasteBtn").onclick=()=>{
+  paras=scanParas(document.getElementById("input").value);
+  render();
+};
+document.getElementById("file").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ document.getElementById("input").value=r.result; paras=scanParas(r.result); render(); };
+  r.readAsText(f,"utf-8");
+};
+function collect(){
+  const lines=[], log=[];
+  paras.forEach((p,idx)=>{
+    if(p.isHead){
+      const inp=document.querySelector(`.rename[data-r="${idx}"]`);
+      const nv=inp&&inp.value.trim();
+      if(nv){ lines.push("## "+nv); log.push(`段${idx+1} 標題改名 → ${nv}（需同步storyboard＋走查）`);}
+      else lines.push(p.body);
+      return;
+    }
+    const mode=document.querySelector(`input[name="d${idx}"]:checked`).value;
+    const ta=document.querySelector(`.rewrite[data-r="${idx}"]`);
+    if(mode==="keep") lines.push(p.body);
+    else if(mode==="todo"){ lines.push(p.body+"\n[待補]"); log.push(`段${idx+1} 標[待補]`); }
+    else { lines.push(ta.value); log.push(`段${idx+1} 改寫（命中：${p.hits.map(h=>h.id).join(",")||"無"}）`); }
+  });
+  return {md:lines.join("\n\n"), log};
+}
+document.getElementById("exportMd").onclick=()=>{
+  const {md}=collect();
+  document.getElementById("out").textContent=md.slice(0,4000);
+  dl("script.fixed.md",md);
+};
+document.getElementById("exportLog").onclick=()=>{
+  const {log}=collect();
+  const txt=log.length?log.join("\n"):"全部保留，無改動。";
+  document.getElementById("out").textContent=txt;
+  dl("changelog.txt",txt);
+};
+function dl(name,text){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([text],{type:"text/plain;charset=utf-8"}));
+  a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+}
+</script>
+</body>
+</html>
