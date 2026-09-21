@@ -9,11 +9,11 @@
 `rules/` 裡的 11 條全是負向禁式，只擋空轉的句型，不能替稿子生出內容；寫不出資訊就標 `[待補]`，不用氣勢補。
 
 本 repo 只放規則與流程。定調語料是個人的，不進這裡；writer 起草前讀的語料檔由寫稿單或稿件檔頭指定路徑。
-英文 pattern 已寫進每條規則的 frontmatter，但到 0.2.0 為止還沒有英文稿實測過，英文結果先當提示不當結論。
+英文 pattern 已寫進每條規則的 frontmatter，但到 0.2.1 為止還沒有英文稿實測過，英文結果先當提示不當結論。
 
 用法三行：
 
-1. 稿件檔頭註明 `tone-version`，值抄本 repo 的 `VERSION`（現為 `0.2.0`）。
+1. 稿件檔頭註明 `tone-version`，值抄本 repo 的 `VERSION`（現為 `0.2.1`）。
 2. 起草時載入 `prompts/style-constraints.md`，完稿後對 `rules/` 逐條自查。
 3. 新增禁式時先抄 `rules/_template.md`，一條一檔，編號遞增。
 

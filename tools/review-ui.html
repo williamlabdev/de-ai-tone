@@ -52,7 +52,8 @@ const P = {
   r009dun: /(、[^，。！？；、]{1,12}){2,}/g,
   r009comma: /([^，。！？；]{4,20}，){2}[^，。！？；]{4,20}[。！]/g,
   r010: /(?:三[個項條]|幾個|以下|如下|分別).{0,12}：/g
-};
+,
+  r011: /(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]/g,};
 // ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
 const PE = {
   r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b/i,
@@ -86,7 +87,7 @@ R-009 zh: (、[^，。！？；、]{1,12}){2,}|([^，。！？；]{4,20}，){2}[
 R-009 en: (\b[\w-]+\b[^,.!?;]{0,12},\s*){2,}，3+平行短語，人判清單或口號
 R-010 zh: (三[個項條]|幾個|以下|如下|分別).{0,12}：
 R-010 en: (?i)(three|several|following|below|these).{0,20}:
-R-011 zh: 句尾單字動詞無受詞——[核查對驗審校][。！？]$，排除雙字與補語（查核/檢核/檢查/審查/校對/對上/對完/對不上/對回去/核完）
+R-011 zh: 分句尾單字動詞無受詞——(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]，排除雙字與補語（查核/審核/檢查/審查/校對/說得對/經驗/學校 等）
 R-011 en: 單字句動詞無受詞——^(?:Verify|Confirm|Check|Done)\.$
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
@@ -160,17 +161,10 @@ function scanParas(text){
     const m9en = t.match(PE.r009); if(m9en) hits.push({id:"R-009[en]", why:"parallel chant "+m9en.length+" 處，人判：清單展開放行，否則拆散"});
     const m10 = t.match(P.r010); if(m10) hits.push({id:"R-010", why:"計數宣告＋冒號，人判：清單／對話引述"});
     if(PE.r010.test(t)) hits.push({id:"R-010[en]", why:"colon-announced list，人判：清單／對話引述"});
-    // b5：句尾單字動詞無受詞（排除查核/檢查/對上/對完/對不上/核完等）
-    const sents = splitSentZh(t);
+    // R-011：分句尾單字動詞無受詞。(a) 審核類六字排除雙字詞；(b) 助動詞＋單字動作動詞收尾。pattern 鏡像 frontmatter。
     const bare=[];
-    for(const s of sents){
-      const m = s.match(/(.)[。！？]$/);
-      if(!m) continue; const ch=m[1], prev=s.length>=3?s[s.length-3]:"";
-      if("核驗審校".includes(ch)){ if(!(ch==="核"&&"查檢".includes(prev))&&!(ch==="審"&&prev==="查")) bare.push(s.slice(-8)); }
-      else if(ch==="查" && !"核檢".includes(prev)) bare.push(s.slice(-8));
-      else if(ch==="對" && !"上完不去回校".includes(prev)) bare.push(s.slice(-8));
-    }
-    if(bare.length) hits.push({id:"R-011", why:"句尾單字動詞無受詞："+bare.join("｜")+"，改雙字（查核）或加補語（對完/對上）"});
+    for(const m of t.matchAll(P.r011)){ const st=Math.max(0,m.index-6); bare.push(t.slice(st,m.index+m[0].length)); }
+    if(bare.length) hits.push({id:"R-011", why:"分句尾單字動詞無受詞："+bare.join("｜")+"，補受詞、換雙字（查核）或加補語（對完/對上）；沒有助動詞的型態（放進沙箱跑）機械抓不到，人讀"});
     const bareEn = splitSentEn(t).filter(s=>PE.r011.test(s.trim()));
     if(bareEn.length) hits.push({id:"R-011[en]", why:"bare verb without object："+bareEn.join("｜")});
     return {i, body, isHead, hits};

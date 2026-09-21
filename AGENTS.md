@@ -13,11 +13,12 @@
 2. 起草：`agents/writer.md`，先讀寫稿單指定的語料檔定調，再載入 `prompts/style-constraints.md`。稿件檔頭註明 `tone-version`（對應 `VERSION`）與 `profile`。
 3. 檢查：`agents/reviewer.md`，按 `rules/index.json` 的 `check_order` 逐條檢查，只標不改。reviewer 跑完加掛 `drafts/REVIEW-CHECKLIST.md` 第一二節（誠實審查：數字版本價格有出處或標 `[待補]`／`[TODO]`；術語最後貼 name-it-last：新術語先 2 句白話鋪墊；0914 由試行升格）。第三節帶做口氣併入 `profiles/narration.md`，不重複掛。
 4. 改稿：`agents/modifier.md`，按違規清單最小重寫，缺資訊標 `[待補]`／`[TODO]`。
+5. 候選句也是稿件：任何要交給作者過目的改寫，包含對話裡提的建議句，交出前先過一次機械檢查（`tools/review-ui.html` 或同步過的 pattern）。0921 一句「不用理，裝完照樣能跑」就是沒過檢查直接交出去的。
 
 檔頭範例：
 
 ```yaml
-tone-version: 0.2.0
+tone-version: 0.2.1
 profile: articles
 ```
 
