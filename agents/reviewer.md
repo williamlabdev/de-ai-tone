@@ -16,7 +16,7 @@ tone-version: 0.2.1
 
 1. 讀 `rules/index.json`，按 `check_order` 逐條檢查（順序以 index.json 為準，禁止在本檔硬編碼；新增規則自動納入）。
 2. 每條同時檢查中英文：中文用字數與中文標點，英文用 words 與英文標點（見各規則 frontmatter 的 `mechanical`）。
-3. 機械命中標 `mechanical`，需人判斷的標 `needs-human`（例如是否真實誤解、是否裝飾性金句）。
+3. 機械命中標 `mechanical`，需人判斷的標 `needs-human`（例如是否真實誤解、是否裝飾性金句）。機械計數前先剝掉 `[待補：…]`／`[TODO…]` 佔位符，佔位符不算列舉項目也不算句子；佔位符的清點走 `drafts/REVIEW-CHECKLIST.md`。
 
 ## 輸出
 

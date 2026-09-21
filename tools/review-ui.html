@@ -122,7 +122,7 @@ function scanParas(text){
     }
   }
   return blocks.map((body,i)=>{
-    const t = body;
+    const t = body.replace(/\[(?:待補|TODO)[^\]]*\]/g,""); // 0922 裁決：機械層先剝掉佔位符再計數，佔位符本身由 REVIEW-CHECKLIST 清點
     const isHead = isHeadArr[i];
     const hits = [];
     if(isHead){ return {i, body, isHead, hits:[{id:"HEADING", why:"段標題：會上畫面（分鏡caption＋段欄比對鍵），改名需同步storyboard＋重跑走查"}]}; }
