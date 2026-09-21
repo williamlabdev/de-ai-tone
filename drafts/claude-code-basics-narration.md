@@ -11,7 +11,7 @@ Claude Code 是 Anthropic 做的寫程式助手，住在終端機裡面。登入
 
 走 npm 的話先看 Node.js 版本，符合官方要求再往下跑。[待補：查 Claude Code 官方文件的 Node.js 最低版本，版號不唸進旁白]
 
-Mac 的話用 Homebrew 更順，不用管 Node。你打開終端機，把 brew install 減減 cask claude-code 這一串貼上去跑。
+Mac 的話用 Homebrew 更順，不用管 Node。你打開終端機，把 brew install 減減 cask claude-code 這一串貼進去按 Enter，等它把 Claude Code 裝完。
 
 不是 Mac 就貼 npm 這一串：npm install -g @anthropic-ai/claude-code，裝到全域。
 
@@ -21,11 +21,11 @@ Mac 的話用 Homebrew 更順，不用管 Node。你打開終端機，把 brew i
 
 然後你進到你的專案，就是 cd 到你那個資料夾。我等你，你進去再回來。
 
-第一句你不用想太多，就叫它看。你就貼，幫我說這支程式在做什麼，哪一行最危險。
+第一句你不用想太多，先叫它讀這支程式。你把這句貼進去：幫我說這支程式在做什麼，哪一行最危險。
 
 等它回完，你先看它講的那幾個檔案，跟你的對不對得上。
 
-改的話一次改一支就好。叫它改完先不要存，你一條條對上再存。
+改的話一次改一支就好。叫它改完先別存檔。你把它改的每一行跟原本的對上，對上了再存檔。
 
 如果改完跑得起來，你這招就算會了。
 
