@@ -1,5 +1,5 @@
 ---
-tone-version: 0.2.0
+tone-version: 0.2.1
 profile: narration
 ---
 
@@ -7,9 +7,9 @@ profile: narration
 
 看完這支影片，我帶你把 Claude Code 裝起來，在自己的專案裡改第一支程式。
 
-Claude Code 是 Anthropic 做的寫程式助手，住在終端機裡面。登入跟網頁版同一組帳號，要 Pro 以上的方案，免費版進不來。模型你打 /model 就看得到了。
+Claude Code 是 Anthropic 做的寫程式助手，住在終端機裡面。登入跟網頁版同一組帳號。要 Pro 以上的方案，免費版進不來。模型你打 /model 就看得到了。
 
-走 npm 的話先看 Node.js 版本。太舊它會印一行警告，但裝好的 claude 是獨立執行檔，跑起來不靠你的 Node，這行警告略過就好。
+走 npm 的話先看 Node.js 版本。太舊它會印一行警告，但裝好的 claude 是獨立執行檔，跑起來不靠你的 Node。這行警告略過就好。
 
 Mac 的話用 Homebrew 更順，不用管 Node。你打開終端機，把 brew install 減減 cask claude-code 這一串貼進去按 Enter，等它把 Claude Code 裝完。
 
