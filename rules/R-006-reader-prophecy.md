@@ -1,14 +1,14 @@
 ---
 id: R-006
 slug: reader-prophecy
-tone-version: 0.2.0
+tone-version: 0.2.3
 languages: [zh, en]
 profiles:
   articles: strict
   narration: relaxed
 mechanical:
   zh: 你(遲早|不會想)|你(很快就會|會|將|將會|一定).{0,8}(懂|愛上|後悔|錯過|明白|知道|學會|掌握)|別錯過|不要錯過
-  en: (?i)\byou will (see|understand|love|regret|thank)\b|(?i)\byou'll (see|understand|love|regret|thank)\b|(?i)\byou are going to (see|understand|love|regret|thank)\b|(?i)\bdon't miss\b|(?i)\byou don't want to miss\b
+  en: (?i)\byou will (see|understand|love|regret|thank)\b|\byou'll (see|understand|love|regret|thank)\b|\byou are going to (see|understand|love|regret|thank)\b|\bdon't miss\b|\byou don't want to miss\b
 ---
 
 # R-006 第二人稱預言 / Reader prophecy

@@ -56,39 +56,39 @@ const P = {
   r011: /(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]/g,};
 // ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
 const PE = {
-  r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b/i,
+  r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b/i,
   r004: /\bwhat are you waiting for\b|\bare you still (?:waiting|hesitating)\b|\bwhy not (?:join|try|start|apply|register)\b|\bdon't you (?:want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b/i,
   r006: /\byou will (?:see|understand|love|regret|thank)\b|\byou'll (?:see|understand|love|regret|thank)\b|\byou are going to (?:see|understand|love|regret|thank)\b|\bdon't miss\b|\byou don't want to miss\b/gi,
   r007: /\b(?:tripled|doubled|quadrupled|tenfold|\d+\s?(?:x\b|×(?!\w))|up to \d+\s?(?:x\b|×(?!\w))|(?:ten|hundred|thousand) times\b)/gi,
   r008: /\blimited\b|\bsignificant\b|\bdramatic\b|coming soon|stay tuned|act fast|act now|instantly|\bhurry\b|don't miss out|while supplies last|as soon as possible|before it'?s gone|right away/gi,
-  r009: /(?:\b[\w-]+\b[^,.!?;]{0,12},\s*){2,}/g,
+  r009: /(?:^|[.!?;:]\s+)(?:[^,.!?;]{1,24},\s*){2,}[^,.!?;]{1,24}[.!?]/gm,
   r010: /(?:three|several|following|below|these).{0,20}:/i,
-  r011: /^(?:Verify|Confirm|Check|Done)\.$/
+  r011: /^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$/m
 };
 /* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
    不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
 R-001 zh: 連續3+短段落，每段<10字且以句號結尾
 R-001 en: 3+ short paragraphs, each <8 words ending with period
-R-002 zh: 不是.*而是|不是.*是|不在.*而在|與其.*不如|跟.{0,30}是兩種不同，計數>=2
-R-002 en: (?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|(?i)\bnot just\b.{0,60}\bbut\b|(?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b，計數>=2（中英文合併）
+R-002 zh: 不是.*而是|不是.*是|不在.*而在|不在.*而是|與其.*不如|跟.{0,30}是兩種不同，計數>=2
+R-002 en: (?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b，計數>=2（中英文合併）
 R-003 zh: 計數——子串（成對計1次），一段>=2
 R-003 en: 計數單個—（排除已組成——者），一段>=2
 R-004 zh: 以\？$結尾且同句含(嗎|呢|不是嗎|還在等)
-R-004 en: \?結尾且含(?i)\bwhat are you waiting for\b|(?i)\bare you still (waiting|hesitating)\b|(?i)\bwhy not (join|try|start|apply|register)\b|(?i)\bdon't you (want|wish|agree|think)\b|(?i)\bisn't it\b|(?i)\bisn't that\b
+R-004 en: \?結尾且含(?i)\bwhat are you waiting for\b|\bare you still (waiting|hesitating)\b|\bwhy not (join|try|start|apply|register)\b|\bdon't you (want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b
 R-005 zh: 獨佔一段且<10字
 R-005 en: single-paragraph sentence <8 words
 R-006 zh: 你(遲早|不會想)|你(很快就會|會|將|將會|一定).{0,8}(懂|愛上|後悔|錯過|明白|知道|學會|掌握)|別錯過|不要錯過
-R-006 en: (?i)\byou will (see|understand|love|regret|thank)\b|(?i)\byou'll (see|understand|love|regret|thank)\b|(?i)\byou are going to (see|understand|love|regret|thank)\b|(?i)\bdon't miss\b|(?i)\byou don't want to miss\b
+R-006 en: (?i)\byou will (see|understand|love|regret|thank)\b|\byou'll (see|understand|love|regret|thank)\b|\byou are going to (see|understand|love|regret|thank)\b|\bdon't miss\b|\byou don't want to miss\b
 R-007 zh: (提升|提高|增加|成長|下降|降低|最高|最低).{0,12}倍|翻[一二三四五六七八九\d]+(番|倍)|\d+x
 R-007 en: (?i)\b(tripled|doubled|quadrupled|tenfold|\d+\s?(?:x\b|×(?!\w))|up to \d+\s?(?:x\b|×(?!\w))|(?:ten|hundred|thousand) times\b)
 R-008 zh: 有限|少量|大量|大幅|顯著|很快|即時|儘早|從速|敬請期待|錯過不再|再等|售完為止|限時|一般
 R-008 en: (?i)\blimited\b|\bsignificant\b|\bdramatic\b|coming soon|stay tuned|act fast|act now|instantly|\bhurry\b|don't miss out|while supplies last|as soon as possible|before it'?s gone|right away
 R-009 zh: (、[^，。！？；、]{1,12}){2,}|([^，。！？；]{4,20}，){2}[^，。！？；]{4,20}[。！]；人判是否清單/口號/流程鏈
-R-009 en: (\b[\w-]+\b[^,.!?;]{0,12},\s*){2,}，3+平行短語，人判清單或口號
+R-009 en: (?:^|[.!?;:]\s+)(?:[^,.!?;]{1,24},\s*){2,}[^,.!?;]{1,24}[.!?]，3+平行短語，人判清單或口號
 R-010 zh: (三[個項條]|幾個|以下|如下|分別).{0,12}：
 R-010 en: (?i)(three|several|following|below|these).{0,20}:
 R-011 zh: 分句尾單字動詞無受詞——(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]，排除雙字與補語（查核/審核/檢查/審查/校對/說得對/經驗/學校 等）
-R-011 en: 單字句動詞無受詞——^(?:Verify|Confirm|Check|Done)\.$
+R-011 en: 單字句動詞無受詞——^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];

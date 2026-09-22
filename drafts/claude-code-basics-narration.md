@@ -1,5 +1,5 @@
 ---
-tone-version: 0.2.2
+tone-version: 0.2.3
 profile: narration
 human-cleared:
   - 0922 R-009 L12 因果說明鏈，非口號

@@ -1,14 +1,14 @@
 ---
 id: R-004
 slug: rhetorical-question
-tone-version: 0.2.0
+tone-version: 0.2.3
 languages: [zh, en]
 profiles:
   articles: strict
   narration: strict
 mechanical:
   zh: 以\？$結尾且同句含(嗎|呢|不是嗎|還在等)
-  en: \?結尾且含(?i)\bwhat are you waiting for\b|(?i)\bare you still (waiting|hesitating)\b|(?i)\bwhy not (join|try|start|apply|register)\b|(?i)\bdon't you (want|wish|agree|think)\b|(?i)\bisn't it\b|(?i)\bisn't that\b
+  en: \?結尾且含(?i)\bwhat are you waiting for\b|\bare you still (waiting|hesitating)\b|\bwhy not (join|try|start|apply|register)\b|\bdon't you (want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b
 ---
 
 # R-004 反問句收尾 / Rhetorical closing
