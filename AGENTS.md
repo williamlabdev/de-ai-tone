@@ -18,7 +18,7 @@
 檔頭範例：
 
 ```yaml
-tone-version: 0.2.1
+tone-version: 0.2.2
 profile: articles
 human-cleared:            # 選填：作者放行過的 needs-human 命中，日期＋規則＋行號＋一句理由；reviewer 再跑到同一處只列不追問
   - 0922 R-009 L20 負責人加期限的行動句，非口號
