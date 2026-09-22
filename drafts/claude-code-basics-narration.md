@@ -1,6 +1,8 @@
 ---
 tone-version: 0.2.1
 profile: narration
+human-cleared:
+  - 0922 R-009 L12 因果說明鏈，非口號
 ---
 
 # Claude Code 基礎教學（旁白草稿・基礎篇）

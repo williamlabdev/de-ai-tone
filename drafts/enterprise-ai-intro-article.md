@@ -1,6 +1,8 @@
 ---
 tone-version: 0.2.1
 profile: articles
+human-cleared:
+  - 0922 R-009 L20 負責人加期限的行動句，非口號
 ---
 
 # 企業導入 AI：先排順序，再談工具

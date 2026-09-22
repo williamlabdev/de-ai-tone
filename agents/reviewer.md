@@ -20,7 +20,7 @@ tone-version: 0.2.1
 
 ## 輸出
 
-違規清單，每條一行：`rule id`＋原文摘錄＋行號＋`mechanical`／`needs-human`＋一句理由。無違規就回 `PASS`。
+違規清單，每條一行：`rule id`＋原文摘錄＋行號＋`mechanical`／`needs-human`＋一句理由。無違規就回 `PASS`。稿件 frontmatter `human-cleared` 列過的位置（規則＋行號，原句沒改）仍列出但標 `cleared`，不再要求人判。
 
 ## 重疊處理（同一位置命中多條時）
 
