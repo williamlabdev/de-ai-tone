@@ -11,11 +11,11 @@ human-cleared:
 
 Claude Code 是 Anthropic 做的寫程式助手，住在終端機裡面。登入跟網頁版同一組帳號。要 Pro 以上的方案，免費版進不來。模型你打 /model 就看得到了。
 
-走 npm 的話先看 Node.js 版本。太舊它會印一行警告，但裝好的 claude 是獨立執行檔，跑起來不靠你的 Node。這行警告略過就好。
+裝的是獨立執行檔，跑起來不靠你的 Node。看到舊版警告略過就好。
 
 Mac 的話用 Homebrew 更順，不用管 Node。你打開終端機，把 brew install 減減 cask claude-code 這一串貼進去按 Enter，等它把 Claude Code 裝完。
 
-不是 Mac 就貼 npm 這一串：npm install -g @anthropic-ai/claude-code，裝到全域。
+不是 Mac 就用官方這一串：curl 減fsSL 接安裝網址直槓 bash，貼進去按 Enter 裝到全域。
 
 沒有就先暫停，去裝完再回來。
 
