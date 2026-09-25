@@ -8,7 +8,7 @@ profiles:
   narration: strict
 mechanical:
   zh: 以\？$結尾且同句含(嗎|呢|不是嗎|還在等)
-  en: \?結尾且含(?i)\bwhat are you waiting for\b|\bare you still (waiting|hesitating)\b|\bwhy not (join|try|start|apply|register)\b|\bdon't you (want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b
+  en: (?i)\?結尾且含\bwhat are you waiting for\b|\bare you still (waiting|hesitating)\b|\bwhy not (join|try|start|apply|register)\b|\bdon't you (want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b
 ---
 
 # R-004 反問句收尾 / Rhetorical closing
