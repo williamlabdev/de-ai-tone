@@ -132,7 +132,7 @@ function scanParas(text){
         : {id:"R-005", why:"獨佔一段短句（<10字／8字），人判：有無新資訊／是否裝飾金句"});
     }
     // R-002 zh：同句內匹配（跨句不算），排除「是不是」誤殺
-    const P2 = /不是.*而是|不是.*是|不在.*而在|與其.*不如|跟.{0,30}是兩種不同/;
+    const P2 = /不是.*而是|不是.*是|不在.*而在|不在.*而是|不只.*而是|與其.*不如|跟.{0,30}是兩種不同/;
     const sents0 = splitSentZh(t);
     if(sents0.some(s=>{const m=s.match(P2); return m && m[0].indexOf("是不是")<0;}))
       hits.push({id:"R-002?", why:"對稱框關鍵詞（同句內，narration允許1次），人判：是否真實誤解"});
