@@ -1,7 +1,7 @@
 ---
 id: de-ai-reviewer
 role: reviewer
-tone-version: 0.2.4
+tone-version: 0.2.5
 ---
 
 # Reviewer — 只標不改
