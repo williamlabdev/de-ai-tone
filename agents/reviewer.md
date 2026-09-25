@@ -20,7 +20,7 @@ tone-version: 0.2.3
 
 ## 輸出
 
-違規清單，每條一行：`rule id`＋原文摘錄＋行號＋`mechanical`／`needs-human`＋一句理由。無違規就回 `PASS`。稿件 frontmatter `human-cleared` 列過的位置（規則＋行號，原句沒改）仍列出但標 `cleared`，不再要求人判。
+違規清單，每條一行：`rule id`＋原文摘錄＋行號＋`mechanical`／`needs-human`＋一句理由。無違規就回 `PASS`。稿件 frontmatter `human-cleared` 列過的位置（規則＋行號，原句沒改）仍列出但標 `cleared`，不再要求人判。人判放行理由位階：checklist 禁令（不數數等）＞風格理由（收尾呼應等）；0922 install-claude-app L76「數得出來」判例：收尾呼應不能保數數。
 
 ## 重疊處理（同一位置命中多條時）
 
