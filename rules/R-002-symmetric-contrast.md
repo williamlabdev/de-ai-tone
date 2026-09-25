@@ -1,13 +1,13 @@
 ---
 id: R-002
 slug: symmetric-contrast
-tone-version: 0.2.3
+tone-version: 0.2.4
 languages: [zh, en]
 profiles:
   articles: strict
   narration: relaxed
 mechanical:
-  zh: 不是.*而是|不是.*是|不在.*而在|不在.*而是|與其.*不如|跟.{0,30}是兩種不同，計數>=2
+  zh: 不是.*而是|不是.*是|不在.*而在|不在.*而是|不只.*而是|與其.*不如|跟.{0,30}是兩種不同，計數>=2
   en: (?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b，計數>=2（中英文合併）
 ---
 
@@ -25,6 +25,12 @@ mechanical:
 這不是工具升級，而是工作方式的改變。
 ```
 
+不只型：
+
+```text
+AI 不只是回答問題，而是能進工作流程。
+```
+
 英文：
 
 ```text
@@ -39,6 +45,12 @@ This is not a tool upgrade, but a change in how we work.
 
 改法：刪掉對稱框，直接寫改變內容＋數字。
 
+不只型改法：把"不只"換成"除了"，後半給具體動作：
+
+```text
+AI 除了回答問題，還能照你定的步驟跑完表單。
+```
+
 英文：
 
 ```text
@@ -52,10 +64,11 @@ Approvals drop from three layers to one starting Monday.
 
 ## 機械檢查可行性
 
-- 可機械化：中文匹配 `不是.*而是`、`不是.*是`、`不在.*而在`、`不在.*而是`、`與其.*不如`、`跟.{0,30}是兩種不同`（變體）；英文主語限 `this/that/these/those/it`＋`not`（`This is not...but`、`It's not X, it's Y`、`not just...but` 三型，逗號型無 `but` 也要抓，第二主語同樣限 `it/this/that/these/those`），中英文合併計數 >= 2 標記。完整式見 frontmatter `mechanical.en`。
+- 可機械化：中文匹配 `不是.*而是`、`不是.*是`、`不在.*而在`、`不在.*而是`、`不只.*而是`、`與其.*不如`、`跟.{0,30}是兩種不同`（變體）；英文主語限 `this/that/these/those/it`＋`not`（`This is not...but`、`It's not X, it's Y`、`not just...but` 三型，逗號型無 `but` 也要抓，第二主語同樣限 `it/this/that/these/those`），中英文合併計數 >= 2 標記。完整式見 frontmatter `mechanical.en`。
 - 只能人審的部分：A 是否為真實誤解，需人判斷。
 - 0922 補 `不在.*而是` 混搭型：一支旁白稿的「問題通常不在它強不強，而是你那句交代裡沒有講出什麼叫做完」被 0.2.1 的 pattern 漏掉，人讀才發現。
 - 0922 英文首次實測補 `no (single|one) X, only Y` 型（一支英文旁白稿 "There is no single strongest tool in this field, only tools that are good at different things." 被漏掉）；三個分支各自帶 `(?i)` 的寫法 Python `re` 不能直接編譯，改成開頭一個。
+- 0925 外部稿誤殺評估補 `不只.*而是` 型（一支中文產品頁 "AI 不只是回答問題，而是能進一步參與固定流程" 連中三處，人讀發現；舊 pattern 只認"不是"不認"不只"）。
 
 ## 適用 profile
 

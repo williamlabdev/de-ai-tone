@@ -1,5 +1,5 @@
 ---
-tone-version: 0.2.3
+tone-version: 0.2.4
 profile: narration
 ---
 
