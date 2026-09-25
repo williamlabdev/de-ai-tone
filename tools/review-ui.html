@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。</p>
 
 <h2>1. 載入稿件</h2>
 <div class="row">
@@ -89,6 +89,8 @@ R-010 zh: (三[個項條]|幾個|以下|如下|分別).{0,12}：
 R-010 en: (?i)(three|several|following|below|these).{0,20}:
 R-011 zh: 分句尾單字動詞無受詞——(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]，排除雙字與補語（查核/審核/檢查/審查/校對/說得對/經驗/學校 等）
 R-011 en: 單字句動詞無受詞——^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$
+R-012 zh: 跨行比對，非單行regex，沿用R-001/R-003/R-005既有作法（frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP）：每個小標題(#到####)的區段，指標題到下一標題或檔尾之間的內容；取區段第一段的首句、最後一段的末句，各自去標點空白後跟標題(去#與空白、去標點)比較最長連續共同字元數，達標題字元數60%以上算命中；標題去標點後不足5字元的跳過，短標題雜訊過高。0925用learn 131支正式稿實測校準：60%門檻加5字門檻共命中21處(17支稿)，含install-claude-app兩處指定案例(L59對L57、L67對L63)；另外試過標題字元依序出現比例70%當替代判準，結果從21處暴增到45處，新增的24處多數是字元分散、語意不相關的誤抓(例：agent-guardrails L148比例0.36仍達標，兩句主題其實不同)，故正式只採最長連續共同字元一種判準，不採依序比例。實作見tools/review-ui.html自訂函式，不是P／PE的regex項。
+R-012 en: same logic at word level：heading section's first paragraph first sentence, last paragraph last sentence, strip punctuation, longest common contiguous word run against heading word count, hit at 60% or higher, skip headings under 4 words. 本repo無英文script語料可測，此pattern僅供參考、未經實測校準，比照README慣例先當提示不當結論。
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -103,7 +105,7 @@ function scanParas(text){
     blocks.push(t);
   });
   // 第一遍：標題／短段判定（zh:漢字<10且不含，、：；；en:無漢字時 words<8），算連續短段落 run（R-001，>=3），標題切斷 run
-  const isHeadArr = blocks.map(b=>/^#{1,3}\s/.test(b));
+  const isHeadArr = blocks.map(b=>/^#{1,4}\s/.test(b));
   const shortArr = blocks.map((b,i)=>{
     if(isHeadArr[i]) return false;
     const zhLen = ZH_LEN(b);
@@ -119,6 +121,59 @@ function scanParas(text){
     } else if(runStart>=0){
       if(i-runStart>=3) for(let j=runStart;j<i;j++) inRunArr[j]=true;
       runStart=-1;
+    }
+  }
+  // R-012 標題回聲：跨行比對，非單行 regex，見 rules/R-012-title-echo.md frontmatter mechanical 說明。
+  // 對每個標題，取其區段（到下一標題或檔尾，略過清單行）第一段首句、末段末句，
+  // 跟標題（去 # 與標點空白）比最長連續共同字元數，達標題字元數 60% 命中；標題不足 5 字跳過。
+  const PUNCT_RE_012 = /[\s，。！？：；、,.!?:;\-—「」『』()（）\[\]{}"'\/*`~·…]/g;
+  const stripPunct012 = s => s.replace(PUNCT_RE_012, "");
+  const splitSentZhArr = s => (s.match(/[^。！？]+[。！？]?/g) || []).filter(x=>x.trim());
+  function lcsSubstringLen012(a, b){
+    if(!a || !b) return 0;
+    let prev = new Array(b.length+1).fill(0);
+    let best = 0;
+    for(let ii=1; ii<=a.length; ii++){
+      const cur = new Array(b.length+1).fill(0);
+      for(let jj=1; jj<=b.length; jj++){
+        if(a[ii-1]===b[jj-1]){
+          cur[jj] = prev[jj-1] + 1;
+          if(cur[jj] > best) best = cur[jj];
+        }
+      }
+      prev = cur;
+    }
+    return best;
+  }
+  const titleEchoHits = {}; // blockIndex -> [{headingText, ratio, tag}]
+  for(let hi=0; hi<blocks.length; hi++){
+    if(!isHeadArr[hi]) continue;
+    const headingText = blocks[hi].replace(/^#{1,4}\s+/, "").trim();
+    const hStripped = stripPunct012(headingText);
+    if(hStripped.length < 5) continue;
+    const section = [];
+    let jj = hi+1;
+    while(jj < blocks.length && !isHeadArr[jj]){
+      if(!/^[-*]\s/.test(blocks[jj])) section.push(jj);
+      jj++;
+    }
+    if(!section.length) continue;
+    const firstIdx = section[0], lastIdx = section[section.length-1];
+    const firstSents = splitSentZhArr(blocks[firstIdx]);
+    const lastSents = splitSentZhArr(blocks[lastIdx]);
+    if(!firstSents.length || !lastSents.length) continue;
+    const candidates = [
+      {idx: firstIdx, sent: firstSents[0], tag: "首句"},
+      {idx: lastIdx, sent: lastSents[lastSents.length-1], tag: "末句"},
+    ];
+    for(const c of candidates){
+      const sStripped = stripPunct012(c.sent);
+      if(!sStripped) continue;
+      const ratio = lcsSubstringLen012(hStripped, sStripped) / hStripped.length;
+      if(ratio >= 0.6){
+        if(!titleEchoHits[c.idx]) titleEchoHits[c.idx] = [];
+        titleEchoHits[c.idx].push({headingText, ratio, tag: c.tag});
+      }
     }
   }
   return blocks.map((body,i)=>{
@@ -167,6 +222,9 @@ function scanParas(text){
     if(bare.length) hits.push({id:"R-011", why:"分句尾單字動詞無受詞："+bare.join("｜")+"，補受詞、換雙字（查核）或加補語（對完/對上）；沒有助動詞的型態（放進沙箱跑）機械抓不到，人讀"});
     const bareEn = splitSentEn(t).filter(s=>PE.r011.test(s.trim()));
     if(bareEn.length) hits.push({id:"R-011[en]", why:"bare verb without object："+bareEn.join("｜")});
+    if(titleEchoHits[i]) titleEchoHits[i].forEach(h=>{
+      hits.push({id:"R-012", why:"標題回聲（"+h.tag+"跟「"+h.headingText+"」重疊"+Math.round(h.ratio*100)+"%），人判：是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）"});
+    });
     return {i, body, isHead, hits};
   });
 }

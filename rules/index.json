@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.4",
+  "tone-version": "0.2.5",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011"],
   "rules": [
     {
       "id": "R-001",
@@ -78,6 +78,13 @@
       "slug": "bare-verb",
       "file": "R-011-bare-verb.md",
       "title": "單字動詞無受詞 / Bare verb without object",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-012",
+      "slug": "title-echo",
+      "file": "R-012-title-echo.md",
+      "title": "標題回聲 / Title echo",
       "profiles": { "articles": "strict", "narration": "strict" }
     }
   ]
