@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.5",
+  "tone-version": "0.2.6",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -86,6 +86,13 @@
       "file": "R-012-title-echo.md",
       "title": "標題回聲 / Title echo",
       "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-013",
+      "slug": "keep-sentence-add-detail",
+      "file": "R-013-keep-sentence-add-detail.md",
+      "title": "保留原句、補具體細節 / Keep the sentence, add detail",
+      "profiles": { "articles": "not_applicable", "narration": "strict" }
     }
   ]
 }

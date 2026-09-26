@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
 
 <h2>1. 載入稿件</h2>
 <div class="row">
@@ -91,6 +91,8 @@ R-011 zh: 分句尾單字動詞無受詞——(?<![查檢審復稽])核[。！�
 R-011 en: 單字句動詞無受詞——^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$
 R-012 zh: 跨行比對，非單行regex，沿用R-001/R-003/R-005既有作法（frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP）：每個小標題(#到####)的區段，指標題到下一標題或檔尾之間的內容；取區段第一段的首句、最後一段的末句，各自去標點空白後跟標題(去#與空白、去標點)比較最長連續共同字元數，達標題字元數60%以上算命中；標題去標點後不足5字元的跳過，短標題雜訊過高。0925用learn 131支正式稿實測校準：60%門檻加5字門檻共命中21處(17支稿)，含install-claude-app兩處指定案例(L59對L57、L67對L63)；另外試過標題字元依序出現比例70%當替代判準，結果從21處暴增到45處，新增的24處多數是字元分散、語意不相關的誤抓(例：agent-guardrails L148比例0.36仍達標，兩句主題其實不同)，故正式只採最長連續共同字元一種判準，不採依序比例。實作見tools/review-ui.html自訂函式，不是P／PE的regex項。
 R-012 en: same logic at word level：heading section's first paragraph first sentence, last paragraph last sentence, strip punctuation, longest common contiguous word run against heading word count, hit at 60% or higher, skip headings under 4 words. 本repo無英文script語料可測，此pattern僅供參考、未經實測校準，比照README慣例先當提示不當結論。
+R-013 zh: 無可計數的字面判準，需比對改寫前後兩個版本，並逐句核對插入的細節是否能從這集素材（截圖、錄影、分鏡稿註記）查證、有沒有代筆作者本人經驗，三者都要人工比對兩份稿件與外部素材，不是單一稿件內字數或標點可以抓的型態；沿用R-001、R-003、R-005、R-012既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP，未在tools/review-ui.html實作P／PE或跨行函式，因為review-ui一次只讀一份稿件，沒有原稿比對版本與外部素材可查。
+R-013 en: no countable literal pattern, requires diffing the rewritten draft against its pre-edit version, checking every inserted sentence against this episode's screenshots, recordings and storyboard notes, and confirming no sentence ghost-writes the author's own experience; not implemented in review-ui.html since review-ui only ever loads one draft at a time with no access to the prior version or the episode's source material. 本repo沒有英文口播稿語料可測，此原則的英文版本僅供參考、未經實測校準。
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
