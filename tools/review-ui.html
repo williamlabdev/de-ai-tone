@@ -56,7 +56,7 @@ const P = {
   r011: /(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]/g,};
 // ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
 const PE = {
-  r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b/i,
+  r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b|\b\w+,\s+not\s+\w+[.;]|\bthe \w+ is not the \w+\b/i,
   r004: /\bwhat are you waiting for\b|\bare you still (?:waiting|hesitating)\b|\bwhy not (?:join|try|start|apply|register)\b|\bdon't you (?:want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b/i,
   r006: /\byou will (?:see|understand|love|regret|thank)\b|\byou'll (?:see|understand|love|regret|thank)\b|\byou are going to (?:see|understand|love|regret|thank)\b|\bdon't miss\b|\byou don't want to miss\b/gi,
   r007: /\b(?:tripled|doubled|quadrupled|tenfold|\d+\s?(?:x\b|×(?!\w))|up to \d+\s?(?:x\b|×(?!\w))|(?:ten|hundred|thousand) times\b)/gi,
@@ -70,9 +70,9 @@ const PE = {
 R-001 zh: 連續3+短段落，每段<10字且以句號結尾
 R-001 en: 3+ short paragraphs, each <8 words ending with period
 R-002 zh: 不是.*而是|不是.*是|不在.*而在|不在.*而是|不只.*而是|與其.*不如|跟.{0,30}是兩種不同，計數>=2
-R-002 en: (?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b，計數>=2（中英文合併）
+R-002 en: (?i)\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b|\b\w+,\s+not\s+\w+[.;]|\bthe \w+ is not the \w+\b，計數>=2（中英文合併）
 R-003 zh: 計數——子串（成對計1次），一段>=2
-R-003 en: 計數單個—（排除已組成——者），一段>=2
+R-003 en: 計數單個—（排除已組成——者），一段>=2;另計全文密度，全文英文字>=200 時每千英文字>=4 標記文件級
 R-004 zh: 以\？$結尾且同句含(嗎|呢|不是嗎|還在等)
 R-004 en: (?i)\?結尾且含\bwhat are you waiting for\b|\bare you still (waiting|hesitating)\b|\bwhy not (join|try|start|apply|register)\b|\bdon't you (want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b
 R-005 zh: 獨佔一段且<10字
@@ -178,6 +178,14 @@ function scanParas(text){
       }
     }
   }
+  // R-003[en-doc]：文件級 em dash 密度。段落級門檻只抓「一段兩個」，抓不到「每段一個、全篇二十六個」。
+  // 對齊 rules/R-003-dash-stack.md frontmatter mechanical.en：全文英文字>=200 才計，每千英文字>=4 標記。
+  const docJoined = blocks.join("\n");
+  const docEnWords = (docJoined.match(/[A-Za-z']+/g)||[]).length;
+  const docDashEn = ((docJoined.replace(/——/g,"")).match(/—/g)||[]).length;
+  const docDashPer1k = docEnWords ? docDashEn/docEnWords*1000 : 0;
+  const docDashHit = docEnWords>=200 && docDashPer1k>=4;
+  const docDashIdx = blocks.findIndex((b,i)=>!isHeadArr[i]);
   return blocks.map((body,i)=>{
     const t = body.replace(/\[(?:待補|TODO)[^\]]*\]/g,""); // 0922 裁決：機械層先剝掉佔位符再計數，佔位符本身由 REVIEW-CHECKLIST 清點
     const isHead = isHeadArr[i];
@@ -199,6 +207,7 @@ function scanParas(text){
     const dashEn=(t.replace(/——/g,"").match(/—/g)||[]).length;
     const dashes=dashZh+dashEn;
     if(dashes>=2) hits.push({id:"R-003", why:"破折號 "+dashes+" 個（≥2），narration全片最多2處"});
+    if(docDashHit && i===docDashIdx) hits.push({id:"R-003[en-doc]", why:"全文 em dash 密度 "+docDashPer1k.toFixed(1)+"／千英文字（≥4，共 "+docDashEn+" 個／"+docEnWords+" 字），人判：是否整篇拿同一句型當節奏工具；narration 不套此門檻"});
     const m4 = t.match(P.r004); if(m4) hits.push({id:"R-004", why:"反問收尾 "+m4.length+" 句（？＋嗎/呢），人判：前文有無行動資訊"});
     const m4en = splitSentEn(t).filter(s=>/\?$/.test(s.trim()) && PE.r004.test(s));
     if(m4en.length) hits.push({id:"R-004[en]", why:"rhetorical closing "+m4en.length+" 句，人判：前文有無行動資訊"});
