@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.7",
+  "tone-version": "0.2.8",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-013"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -93,6 +93,62 @@
       "file": "R-013-keep-sentence-add-detail.md",
       "title": "保留原句、補具體細節 / Keep the sentence, add detail",
       "profiles": { "articles": "not_applicable", "narration": "strict" }
+    },
+    {
+      "id": "R-014",
+      "slug": "llm-lexical-fingerprint",
+      "file": "R-014-llm-lexical-fingerprint.md",
+      "title": "LLM 詞彙指紋 / LLM lexical fingerprint",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-015",
+      "slug": "discourse-scaffolding",
+      "file": "R-015-discourse-scaffolding.md",
+      "title": "話術支架 / Discourse scaffolding",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-016",
+      "slug": "trailing-participial",
+      "file": "R-016-trailing-participial.md",
+      "title": "分詞尾巴 / Trailing participial",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-017",
+      "slug": "adverbial-opener",
+      "file": "R-017-adverbial-opener.md",
+      "title": "副詞式總結開頭 / Adverbial opener",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-018",
+      "slug": "hedge-stacking",
+      "file": "R-018-hedge-stacking.md",
+      "title": "疊加式模糊 / Hedge stacking",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-019",
+      "slug": "era-opener",
+      "file": "R-019-era-opener.md",
+      "title": "空泛時代開場 / Era opener",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-020",
+      "slug": "colon-drama",
+      "file": "R-020-colon-drama.md",
+      "title": "冒號戲劇化單詞收尾 / Colon drama",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-021",
+      "slug": "imperative-pivot",
+      "file": "R-021-imperative-pivot.md",
+      "title": "命令式對比 / Imperative pivot",
+      "profiles": { "articles": "strict", "narration": "relaxed" }
     }
   ]
 }
