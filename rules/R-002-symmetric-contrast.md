@@ -83,7 +83,7 @@ The catalog records which services exist. The gateway records individual tool ca
 - 0922 補 `不在.*而是` 混搭型：一支旁白稿的「問題通常不在它強不強，而是你那句交代裡沒有講出什麼叫做完」被 0.2.1 的 pattern 漏掉，人讀才發現。
 - 0922 英文首次實測補 `no (single|one) X, only Y` 型（一支英文旁白稿 "There is no single strongest tool in this field, only tools that are good at different things." 被漏掉）；三個分支各自帶 `(?i)` 的寫法 Python `re` 不能直接編譯，改成開頭一個。
 - 0925 外部稿誤殺評估補 `不只.*而是` 型（一支中文產品頁 "AI 不只是回答問題，而是能進一步參與固定流程" 連中三處，人讀發現；舊 pattern 只認"不是"不認"不只"）。
-- 0926 英文第二次實測補**後位否定**兩型 `\b\w+,\s+not\s+\w+[.;]` 與 `\bthe \w+ is not the \w+\b`。語料：18 篇英文正本（18,460 英文字）＋34 份英文草稿（32,426 英文字）。舊 pattern 在這兩批**零命中**，新增兩型後正本命中 5 處、草稿 5 處，其中 `change-intent-governance.mdx` 單篇 3 處（`inventory, not change.`／`actions, not intent.`／`derived, not asserted.`）達 >=2 門檻、實際觸發一次標記；另兩篇各 1 處落在門檻下不觸發。門檻不動，噪音增量為 0 篇。
+- 0926 英文第二次實測補**後位否定**兩型 `\b\w+,\s+not\s+\w+[.;]` 與 `\bthe \w+ is not the \w+\b`。語料：18 篇英文正本（正文 18,808 英文字）＋16 份英文草稿（正文 21,989 英文字），語料定義為剝掉 frontmatter、fenced code、inline code 與 HTML 註解後的正文，草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。舊 pattern 在這兩批**零命中**，新增兩型後正本命中 5 處、草稿 2 處，其中 `change-intent-governance.mdx` 單篇 3 處（`inventory, not change.`／`actions, not intent.`／`derived, not asserted.`）達 >=2 門檻、實際觸發一次標記；另兩篇各 1 處落在門檻下不觸發。門檻不動，噪音增量為 0 篇。
 - 後位否定型的已知誤殺形狀：日期與選項對舉（`Tuesday, not Wednesday.`）。沿用本 repo「機械寧可多標、人判負責放行」的分工，不為此縮 pattern。
 
 ## 適用 profile
