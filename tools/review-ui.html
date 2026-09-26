@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-014～R-021 是 0926 新增的英文 AI 腔候選，<strong>languages 只含 en，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-014～R-021 是 0926 新增的英文 AI 腔候選，<strong>languages 只含 en，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-022（逗號＋而黏句）是 0926 新增的<strong>中文</strong>翻譯腔規則，languages 只含 zh，以 decision-provenance 同一篇的改前／改後兩版校準（18 處 → 0 處），全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
 
 <h2>1. 載入稿件</h2>
 <div class="row">
@@ -53,7 +53,8 @@ const P = {
   r009comma: /([^，。！？；]{4,20}，){2}[^，。！？；]{4,20}[。！]/g,
   r010: /(?:三[個項條]|幾個|以下|如下|分別).{0,12}：/g
 ,
-  r011: /(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]/g,};
+  r011: /(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]/g,
+  r022: /[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)/g,};
 // ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
 const PE = {
   r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b|\b\w+,\s+not\s+\w+[.;]|\bthe \w+ is not the \w+\b/i,
@@ -119,6 +120,8 @@ R-020 zh: 不適用，本條是英文特有現象，中文對應形態尚未調�
 R-020 en: :\s*[A-Za-z]+\.\s*$，一段>=2
 R-021 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
 R-021 en: (?i)^(?:Stop|Start|Don'?t|Never|Always)\s+\w+，全篇>=2
+R-022 zh: [,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)，全篇>=2
+R-022 en: 不適用，英文原生寫作沒有翻譯腔這個缺陷類別，英文側的對應問題見 R-014 到 R-021
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -218,6 +221,10 @@ function scanParas(text){
   const docSentsEn = blocks.filter((b,i)=>!isHeadArr[i]).flatMap(b=>splitSentEn(b).map(x=>x.trim()));
   const r017Doc = docSentsEn.filter(x=>PE.r017.test(x));
   const r021Doc = docSentsEn.filter(x=>PE.r021.test(x));
+  // R-022[zh-doc]：全篇門檻。「逗號＋而」單次是正常書面語連接詞，反覆焊句子才是翻譯腔。
+  // 對齊 frontmatter 的「，全篇>=2」。用 .match() 不用 .test()，帶 g 的 regex 做 .test() 會因 lastIndex 殘留而漏判。
+  const docZh = blocks.filter((b,i)=>!isHeadArr[i]).join("\n");
+  const r022Doc = docZh.match(P.r022) || [];
   return blocks.map((body,i)=>{
     const t = body.replace(/\[(?:待補|TODO)[^\]]*\]/g,""); // 0922 裁決：機械層先剝掉佔位符再計數，佔位符本身由 REVIEW-CHECKLIST 清點
     const isHead = isHeadArr[i];
@@ -274,6 +281,7 @@ function scanParas(text){
     const m19 = t.match(PE.r019); if(m19) hits.push({id:"R-019[en]", why:"空泛時代開場: "+[...new Set(m19)].join("、")+"，人判：換成具體時間與事件"});
     const m20 = t.match(PE.r020); if(m20 && m20.length>=2) hits.push({id:"R-020[en]", why:"冒號後單詞收尾 "+m20.length+" 處（≥2），人判：是否拿冒號當戲劇效果"});
     if(r021Doc.length>=2 && i===docDashIdx) hits.push({id:"R-021[en-doc]", why:"祈使句開場 "+r021Doc.length+" 句（全篇≥2）："+r021Doc.map(x=>x.split(/\s+/)[0]).join("、")+"，人判：是否祈使句對舉當結論"});
+    if(r022Doc.length>=2 && i===docDashIdx) hits.push({id:"R-022[zh-doc]", why:"逗號＋而黏句 "+r022Doc.length+" 處（全篇≥2），人判：是否把兩個完整子句用逗號焊住再用「而」續下去，改斷句或分號；「而且」「而是」「而非」「而不是」「而不只」「而不光」「而後」「而已」已由 pattern 排除，其餘沒排除到的合法連接詞用法放行"});
     if(titleEchoHits[i]) titleEchoHits[i].forEach(h=>{
       hits.push({id:"R-012", why:"標題回聲（"+h.tag+"跟「"+h.headingText+"」重疊"+Math.round(h.ratio*100)+"%），人判：是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）"});
     });
