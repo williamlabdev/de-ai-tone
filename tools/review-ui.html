@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-014～R-021 是 0926 新增的英文 AI 腔候選，<strong>languages 只含 en，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
 
 <h2>1. 載入稿件</h2>
 <div class="row">
@@ -63,7 +63,17 @@ const PE = {
   r008: /\blimited\b|\bsignificant\b|\bdramatic\b|coming soon|stay tuned|act fast|act now|instantly|\bhurry\b|don't miss out|while supplies last|as soon as possible|before it'?s gone|right away/gi,
   r009: /(?:^|[.!?;:]\s+)(?:[^,.!?;]{1,24},\s*){2,}[^,.!?;]{1,24}[.!?]/gm,
   r010: /(?:three|several|following|below|these).{0,20}:/i,
-  r011: /^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$/m
+  r011: /^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$/m,
+  // R-014～R-021（0926 新增，英文特有，未經實測校準）。r017／r021 逐句 .test()，
+  // 故刻意不帶 g flag（帶 g 的 regex .test() 會因 lastIndex 殘留而漏判）。
+  r014: /\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b/gi,
+  r015: /\b(?:here'?s the thing|the (?:reality|truth) is|let'?s be clear|make no mistake|it'?s worth noting|worth noting that|that said|in other words|at its core|at the end of the day|simply put|put simply|the (?:key insight|bottom line) is|what this means in practice)\b/gi,
+  r016: /,\s+(?:making|allowing|enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b/gi,
+  r017: /^(?:Ultimately|Fundamentally|Crucially|Importantly|Notably|Essentially|Arguably|Moreover|Furthermore|Additionally|In conclusion|In summary)\b/i,
+  r018: /\b(?:may potentially|might potentially|can often|could possibly|tends? to generally|generally speaking|it is important to note)\b/gi,
+  r019: /\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b/gi,
+  r020: /:\s*[A-Za-z]+\.\s*$/gm,
+  r021: /^(?:Stop|Start|Don'?t|Never|Always)\s+\w+/i
 };
 /* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
    不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
@@ -93,6 +103,22 @@ R-012 zh: 跨行比對，非單行regex，沿用R-001/R-003/R-005既有作法（
 R-012 en: same logic at word level：heading section's first paragraph first sentence, last paragraph last sentence, strip punctuation, longest common contiguous word run against heading word count, hit at 60% or higher, skip headings under 4 words. 本repo無英文script語料可測，此pattern僅供參考、未經實測校準，比照README慣例先當提示不當結論。
 R-013 zh: 無可計數的字面判準，需比對改寫前後兩個版本，並逐句核對插入的細節是否能從這集素材（截圖、錄影、分鏡稿註記）查證、有沒有代筆作者本人經驗，三者都要人工比對兩份稿件與外部素材，不是單一稿件內字數或標點可以抓的型態；沿用R-001、R-003、R-005、R-012既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP，未在tools/review-ui.html實作P／PE或跨行函式，因為review-ui一次只讀一份稿件，沒有原稿比對版本與外部素材可查。
 R-013 en: no countable literal pattern, requires diffing the rewritten draft against its pre-edit version, checking every inserted sentence against this episode's screenshots, recordings and storyboard notes, and confirming no sentence ghost-writes the author's own experience; not implemented in review-ui.html since review-ui only ever loads one draft at a time with no access to the prior version or the episode's source material. 本repo沒有英文口播稿語料可測，此原則的英文版本僅供參考、未經實測校準。
+R-014 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-014 en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b
+R-015 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-015 en: (?i)\b(?:here'?s the thing|the (?:reality|truth) is|let'?s be clear|make no mistake|it'?s worth noting|worth noting that|that said|in other words|at its core|at the end of the day|simply put|put simply|the (?:key insight|bottom line) is|what this means in practice)\b
+R-016 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-016 en: ,\s+(?:making|allowing|enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b，一段>=2
+R-017 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-017 en: (?i)^(?:Ultimately|Fundamentally|Crucially|Importantly|Notably|Essentially|Arguably|Moreover|Furthermore|Additionally|In conclusion|In summary)\b，全篇>=2
+R-018 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-018 en: (?i)\b(?:may potentially|might potentially|can often|could possibly|tends? to generally|generally speaking|it is important to note)\b
+R-019 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-019 en: (?i)\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b
+R-020 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-020 en: :\s*[A-Za-z]+\.\s*$，一段>=2
+R-021 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
+R-021 en: (?i)^(?:Stop|Start|Don'?t|Never|Always)\s+\w+，全篇>=2
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -186,6 +212,12 @@ function scanParas(text){
   const docDashPer1k = docEnWords ? docDashEn/docEnWords*1000 : 0;
   const docDashHit = docEnWords>=200 && docDashPer1k>=4;
   const docDashIdx = blocks.findIndex((b,i)=>!isHeadArr[i]);
+  // R-017／R-021[en-doc]：全篇門檻。句首副詞總結與祈使句對舉，單次是正常英文，
+  // >=2 次才是拿它當全篇的結構工具。對齊 frontmatter 的「，全篇>=2」；逐句比對，
+  // 沿用 R-011 en 的作法（frontmatter 不寫 m flag，這裡先切句再對 trim 後的字串）。
+  const docSentsEn = blocks.filter((b,i)=>!isHeadArr[i]).flatMap(b=>splitSentEn(b).map(x=>x.trim()));
+  const r017Doc = docSentsEn.filter(x=>PE.r017.test(x));
+  const r021Doc = docSentsEn.filter(x=>PE.r021.test(x));
   return blocks.map((body,i)=>{
     const t = body.replace(/\[(?:待補|TODO)[^\]]*\]/g,""); // 0922 裁決：機械層先剝掉佔位符再計數，佔位符本身由 REVIEW-CHECKLIST 清點
     const isHead = isHeadArr[i];
@@ -233,6 +265,15 @@ function scanParas(text){
     if(bare.length) hits.push({id:"R-011", why:"分句尾單字動詞無受詞："+bare.join("｜")+"，補受詞、換雙字（查核）或加補語（對完/對上）；沒有助動詞的型態（放進沙箱跑）機械抓不到，人讀"});
     const bareEn = splitSentEn(t).filter(s=>PE.r011.test(s.trim()));
     if(bareEn.length) hits.push({id:"R-011[en]", why:"bare verb without object："+bareEn.join("｜")});
+    // R-014～R-021（英文，未經實測校準）
+    const m14 = t.match(PE.r014); if(m14) hits.push({id:"R-014[en]", why:"LLM 詞彙指紋: "+[...new Set(m14)].join("、")+"，人判：technical landscape／test harness 這類正當技術名詞放行"});
+    const m15 = t.match(PE.r015); if(m15) hits.push({id:"R-015[en]", why:"discourse scaffolding: "+[...new Set(m15)].join("、")+"，人判：刪掉後語意有無損失，無則刪"});
+    const m16 = t.match(PE.r016); if(m16 && m16.length>=2) hits.push({id:"R-016[en]", why:"分詞尾巴 "+m16.length+" 處（≥2），人判：因果是否被塞進分詞，拆成獨立句"});
+    if(r017Doc.length>=2 && i===docDashIdx) hits.push({id:"R-017[en-doc]", why:"句首副詞總結 "+r017Doc.length+" 句（全篇≥2）："+r017Doc.map(x=>x.split(/\s+/)[0]).join("、")+"，人判：是否每節都靠同一個詞開場"});
+    const m18 = t.match(PE.r018); if(m18) hits.push({id:"R-018[en]", why:"疊加式模糊: "+[...new Set(m18)].join("、")+"，人判：兩個模糊詞是否在講同一件事，留一個"});
+    const m19 = t.match(PE.r019); if(m19) hits.push({id:"R-019[en]", why:"空泛時代開場: "+[...new Set(m19)].join("、")+"，人判：換成具體時間與事件"});
+    const m20 = t.match(PE.r020); if(m20 && m20.length>=2) hits.push({id:"R-020[en]", why:"冒號後單詞收尾 "+m20.length+" 處（≥2），人判：是否拿冒號當戲劇效果"});
+    if(r021Doc.length>=2 && i===docDashIdx) hits.push({id:"R-021[en-doc]", why:"祈使句開場 "+r021Doc.length+" 句（全篇≥2）："+r021Doc.map(x=>x.split(/\s+/)[0]).join("、")+"，人判：是否祈使句對舉當結論"});
     if(titleEchoHits[i]) titleEchoHits[i].forEach(h=>{
       hits.push({id:"R-012", why:"標題回聲（"+h.tag+"跟「"+h.headingText+"」重疊"+Math.round(h.ratio*100)+"%），人判：是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）"});
     });
