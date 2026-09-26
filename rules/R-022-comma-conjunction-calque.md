@@ -7,7 +7,7 @@ profiles:
   articles: strict
   narration: strict
 mechanical:
-  zh: [,，]而(?!且)(?!是)(?!非)，全篇>=2
+  zh: [,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)，全篇>=2
   en: 不適用，英文原生寫作沒有翻譯腔這個缺陷類別，英文側的對應問題見 R-014 到 R-021
 ---
 
@@ -47,7 +47,7 @@ All the details that could tell the two runs apart lie outside the log. Three of
 
 ## 例外
 
-- 「而且」「而是」「而非」不算：這三個是正常中文的遞進或對比連接詞，本身不是逗號焊接兩個獨立子句，pattern 已排除，不需人判。
+- 「而且」「而是」「而非」「而不是」「而不只」「而不光」「而後」「而已」都不算，pattern 已排除，不需人判。前三個是正常中文的遞進或對比連接詞；「而不是」「而不只」「而不光」是同一個對比結構的否定形（「A，而不是 B」是道地中文，`B` 不是完整子句，沒有焊接發生），0926 首版漏排除，實測佔 18 篇正本全部命中的 22%（21／97，全語料 97 → 76）後補上；「而後」「而已」是時序連接詞與語氣詞，同樣不是焊接。
 - 引用人物原話時保留原樣，加引號。
 - 全篇僅出現一次不算違規，本條只抓全篇累積兩次以上的情況（比照 R-017 的「全篇 >= 2」寫法：偶爾一次是正常書面語的連接詞用法，反覆焊句子才是翻譯腔）。
 - 成語或文言引語中的「而」（如「學而時習之」）不受影響：本條 pattern 要求逗號緊接在「而」之前，這類引語通常沒有逗號，不會誤觸。
@@ -55,12 +55,12 @@ All the details that could tell the two runs apart lie outside the log. Three of
 
 ## 機械檢查可行性
 
-- 可機械化：中文匹配 `[,，]而(?!且)(?!是)(?!非)`（逗號或全形逗號緊接「而」，且「而」後一字不是「且」「是」「非」），全篇累積命中 >= 2 次才標記。
+- 可機械化：中文匹配 `[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)`（逗號或全形逗號緊接「而」，且「而」後不接「且」「是」「非」「不是」「不只」「不光」「後」「已」），全篇累積命中 >= 2 次才標記。
 - **半形逗號的發現**：校準時發現本 repo 語料（decision-provenance 改前改後兩版＋ williamlab-site 18 篇正本）全數使用半形逗號 `,` 標句讀，一次全形「，」都沒有（`grep -c '，'` 全部為 0）；句號則相反，全部用全形「。」。pattern 的逗號字元類同時納入 `,` 與 `，`，避免只認全形逗號而在這批真實語料上失靈。這個發現也影響其他既有規則的 zh pattern（例如 R-009 的 `，` 假設），但不在本次任務範圍內，留給主 session 判斷是否要回頭補。
-- 0926 首次實測校準：Before（decision-provenance 改前版）漢字 2824、命中 22 處、密度 7.79／千漢字；After（改後版）漢字 2769、命中 **0** 處、密度 0.00／千漢字——同一篇文章改前改後從 22 降到 0，是本條最乾淨的單篇對照。
-- 18 篇 williamlab-site 中文正本（decision-provenance.zh.mdx 目前站上內容經比對與 Before 逐字相同，見「疑點」，故此檔在下面的分布裡等同於 Before 本身，不是獨立的第三份樣本）：漢字 >= 500 的 15 篇裡，13 篇命中 >= 2（密度 1.37～7.79／千漢字，含 decision-provenance 本身 7.79），只有 2 篇命中 1 次不達門檻（`enterprise-ai-adoption-identity-gateway.zh.mdx` 密度 0.53、`enterprise-ai-adoption-reference-architecture.zh.mdx` 密度 0.60）；漢字 < 500 的 3 篇（`context-engineering-as-architecture.zh.mdx` 306 字、`designing-agent-runtime.zh.mdx` 411 字、`governance-driven-engineering.zh.mdx` 263 字）密度雜訊過大不列入判準，見下一條。
+- 0926 首次實測校準：Before（decision-provenance 改前版）漢字 2824、命中 **18** 處、密度 6.37／千漢字；After（改後版）漢字 2769、命中 **0** 處、密度 0.00／千漢字——同一篇文章改前改後從 18 降到 0，是本條最乾淨的單篇對照。（首版 pattern 漏排除「而不是」時這裡是 22 → 0；扣掉那 4 處假陽性後仍是 18 → 0，對照不受影響。）
+- 18 篇 williamlab-site 中文正本（decision-provenance.zh.mdx 目前站上內容經比對與 Before 逐字相同，見「疑點」，故此檔在下面的分布裡等同於 Before 本身，不是獨立的第三份樣本）：漢字 >= 500 的 15 篇裡，10 篇命中 >= 2（密度 1.37～6.37／千漢字，含 decision-provenance 本身 6.37），4 篇命中 1 次、1 篇 0 次不達門檻（`enterprise-ai-adoption-identity-gateway` 0.53、`enterprise-ai-adoption-reference-architecture` 0.60、`validating-organizational-legitimacy` 1.17、`change-intent-governance` 0.46、`why-code-gets-cheap` 0.00）；漢字 < 500 的 3 篇（`context-engineering-as-architecture.zh.mdx` 306 字、`designing-agent-runtime.zh.mdx` 411 字、`governance-driven-engineering.zh.mdx` 263 字）密度雜訊過大不列入判準，見下一條。
 - 語料定義與長度下限：剝掉 frontmatter、fenced code block、inline code、Markdown 連結方括號後的正文；**全文漢字 >= 500 才計密度**，低於這個數字時單次命中就能把密度推到 7／千字以上（如 `governance-driven-engineering.zh.mdx` 263 字、2 次命中密度 7.60），也可能單純沒撞上而變成 0（`context-engineering-as-architecture.zh.mdx` 306 字、0 次命中），兩種雜訊在短文裡都無法跟真訊號分開，500 字是本次校準能穩定分出雙群的下限。
-- 門檻落在雙峰之間的空隙：漢字 >= 500 的樣本裡，命中密度排序為 `0.00`（After）／`0.53`／`0.60`／`1.37`／`2.15`／`2.34`……一路到 `7.79`（Before／decision-provenance）。真正乾淨的分界不是密度數字本身，而是**次數**：After 是唯一一篇 0 次的長文，其餘所有 >= 500 字的樣本至少命中 1 次；門檻定在「全篇 >= 2 次」，把「1 次、可能是正常書面語」與「2 次以上、反覆焊句子」分開，同時放行 After（0 次）與兩篇僅 1 次的正本（讓機械保守一點，寧可漏標，不把單次的正常用法當翻譯腔）。
+- 門檻落在雙峰之間的空隙：分界不是密度數字本身，而是**次數**。漢字 >= 500 的 15 篇裡，命中 0 或 1 次的有 5 篇（0.00～1.17／千漢字），2 次以上的有 10 篇（1.37～6.37／千漢字）；門檻定在「全篇 >= 2 次」，把「1 次、可能是正常書面語的連接詞用法」與「2 次以上、反覆焊句子」分開。**密度本身分不開這兩群**——兩群的邊界只差 1.17 對 1.37（`validating-organizational-legitimacy` 1 次 vs `accountable-generation` 3 次），密度幾乎連續；次數才是乾淨的分界，而且不受篇幅影響。這也是本條不寫密度門檻的理由。讓機械保守一點，寧可漏標，不把單次的正常用法當翻譯腔。
 - 只能人審的部分：命中的兩句是否真的是把英文式對等子句焊在一起，還是恰好是「而」的合法遞進用法但沒被例外詞排除到（例如更少見的「而後」「而已」），需人判斷；全篇累積數達標後仍要看是否集中在同一種句型，還是分散在不同、各自成立的用法。
 - **試過但放棄的候選**（附 0926 實測數字，理由同本節精神）：
   - `而且`：改前 n=4、改後 n=4，完全沒有差異，不是翻譯腔訊號。
