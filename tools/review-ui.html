@@ -21,8 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-014～R-021 是 0926 新增的英文 AI 腔候選，<strong>languages 只含 en，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-022（逗號＋而黏句）是 0926 新增的<strong>中文</strong>翻譯腔規則，languages 只含 zh，以 decision-provenance 同一篇的改前／改後兩版校準（18 處 → 0 處），全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
-
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-014～R-021 是 0926 新增的英文 AI 腔候選，<strong>languages 只含 en，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-022（逗號＋而黏句）是 0926 新增的<strong>中文</strong>翻譯腔規則，languages 只含 zh，以 decision-provenance 同一篇的改前／改後兩版校準（18 處 → 0 處），全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字寫成一句人會講的話）要掃的卡片／圖說文字寫在 storyboard 檔案的表格欄位，本頁只讀 script.zh.md 旁白全文，完全未實作，只列在 check_order 供人工核對。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-013（保留原句、補具體細節）需比對改寫前後版本與外部素材，本頁完全未實作，只列在 check_order 供 reviewer 人工核對。</p>
 <h2>1. 載入稿件</h2>
 <div class="row">
 <input type="file" id="file" accept=".md">
@@ -54,7 +53,8 @@ const P = {
   r010: /(?:三[個項條]|幾個|以下|如下|分別).{0,12}：/g
 ,
   r011: /(?<![查檢審復稽])核[。！？，；]|(?<![調檢審盤抽排])查[。！？，；]|(?<![不得絕面相反派應答核比校])對[。！？，；]|(?<![評初複送])審[。！？，；]|(?<![經實測考體檢查化試])驗[。！？，；]|(?<![學母])校[。！？，；]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；]/g,
-  r022: /[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)/g,};
+  r022: /[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)/g,
+  r024: /比較[^\s，。]{1,4}/g,};
 // ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
 const PE = {
   r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b|\b\w+,\s+not\s+\w+[.;]|\bthe \w+ is not the \w+\b/i,
@@ -74,7 +74,8 @@ const PE = {
   r018: /\b(?:may potentially|might potentially|can often|could possibly|tends? to generally|generally speaking|it is important to note)\b/gi,
   r019: /\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b/gi,
   r020: /:\s*[A-Za-z]+\.\s*$/gm,
-  r021: /^(?:Stop|Start|Don'?t|Never|Always)\s+\w+/i
+  r021: /^(?:Stop|Start|Don'?t|Never|Always)\s+\w+/i,
+  r024: /\b(?:kind of|sort of|somewhat|a bit|relatively|rather)\b/i
 };
 /* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
    不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
@@ -122,6 +123,10 @@ R-021 zh: 不適用，本條是英文特有現象，中文對應形態尚未調�
 R-021 en: (?i)^(?:Stop|Start|Don'?t|Never|Always)\s+\w+，全篇>=2
 R-022 zh: [,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)，全篇>=2
 R-022 en: 不適用，英文原生寫作沒有翻譯腔這個缺陷類別，英文側的對應問題見 R-014 到 R-021
+R-023 zh: 可寫成規則式判準（全形冒號前是一到四個字的短標籤如工作流／Mac／付費版／例，或卡片文字內出現全形分號把兩件事並列成對句），但review-ui.html只讀取貼上的script.zh.md旁白文字，卡片與圖說文字是寫在storyboard檔案的表格欄位裡（textcard/statement語法標記引號內的文字），這個工具從來不載入storyboard檔案，沒有欄位可以套用這條判準去掃；沿用R-001、R-003、R-005、R-012、R-013既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP。
+R-023 en: expressible as a rule (a one to four character label before a full width colon, such as workflow, Mac, paid plan, example; or a full width semicolon inside the card pairing two things into a matched couplet), but review-ui.html only ever loads the pasted script.zh.md narration text; card and caption text lives in the storyboard file's table column, quoted inside a textcard markup tag, a file this tool never loads, so there is no field to run this check against. 本repo沒有可掃描的卡片欄位可測，此原則的英文版本僅供參考、未經實測校準。
+R-024 zh: 比較[^\s，。]{1,4}
+R-024 en: (?i)\b(?:kind of|sort of|somewhat|a bit|relatively|rather)\b
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -282,6 +287,8 @@ function scanParas(text){
     const m20 = t.match(PE.r020); if(m20 && m20.length>=2) hits.push({id:"R-020[en]", why:"冒號後單詞收尾 "+m20.length+" 處（≥2），人判：是否拿冒號當戲劇效果"});
     if(r021Doc.length>=2 && i===docDashIdx) hits.push({id:"R-021[en-doc]", why:"祈使句開場 "+r021Doc.length+" 句（全篇≥2）："+r021Doc.map(x=>x.split(/\s+/)[0]).join("、")+"，人判：是否祈使句對舉當結論"});
     if(r022Doc.length>=2 && i===docDashIdx) hits.push({id:"R-022[zh-doc]", why:"逗號＋而黏句 "+r022Doc.length+" 處（全篇≥2），人判：是否把兩個完整子句用逗號焊住再用「而」續下去，改斷句或分號；「而且」「而是」「而非」「而不是」「而不只」「而不光」「而後」「而已」已由 pattern 排除，其餘沒排除到的合法連接詞用法放行"});
+    const m24 = t.match(P.r024); if(m24) hits.push({id:"R-024", why:"模糊比較："+[...new Set(m24)].join("、")+"，人判：同句有無跟／和／比等比較對象，有則放行，無則改寫成具體程度或結果"});
+    const m24en = t.match(PE.r024); if(m24en) hits.push({id:"R-024[en]", why:"vague comparative: "+[...new Set(m24en)].join("、")+"，人判：同句有無比較對象"});
     if(titleEchoHits[i]) titleEchoHits[i].forEach(h=>{
       hits.push({id:"R-012", why:"標題回聲（"+h.tag+"跟「"+h.headingText+"」重疊"+Math.round(h.ratio*100)+"%），人判：是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）"});
     });

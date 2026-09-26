@@ -1,7 +1,7 @@
 ---
 id: de-ai-interviewer
 role: interviewer
-tone-version: 0.2.9
+tone-version: 0.2.10
 ---
 
 # Interviewer — 開工前訪談，產出寫稿單
