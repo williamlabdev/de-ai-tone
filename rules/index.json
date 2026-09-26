@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.9",
+  "tone-version": "0.2.10",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-013"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -156,6 +156,20 @@
       "file": "R-021-imperative-pivot.md",
       "title": "命令式對比 / Imperative pivot",
       "profiles": { "articles": "strict", "narration": "relaxed" }
+    },
+    {
+      "id": "R-023",
+      "slug": "card-natural-sentence",
+      "file": "R-023-card-natural-sentence.md",
+      "title": "畫面字寫成一句人會講的話 / Cards as one spoken sentence",
+      "profiles": { "articles": "not_applicable", "narration": "strict" }
+    },
+    {
+      "id": "R-024",
+      "slug": "vague-comparative",
+      "file": "R-024-vague-comparative.md",
+      "title": "旁白避免空泛的「比較 X」 / Vague comparative without a target",
+      "profiles": { "articles": "strict", "narration": "strict" }
     }
   ]
 }
