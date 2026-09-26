@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.8",
+  "tone-version": "0.2.9",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-013"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -85,6 +85,13 @@
       "slug": "title-echo",
       "file": "R-012-title-echo.md",
       "title": "標題回聲 / Title echo",
+      "profiles": { "articles": "strict", "narration": "strict" }
+    },
+    {
+      "id": "R-022",
+      "slug": "comma-conjunction-calque",
+      "file": "R-022-comma-conjunction-calque.md",
+      "title": "逗號＋而黏句 / Comma-conjunction calque",
       "profiles": { "articles": "strict", "narration": "strict" }
     },
     {
