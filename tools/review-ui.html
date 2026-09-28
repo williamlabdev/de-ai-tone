@@ -149,7 +149,9 @@ function scanParas(text){
   // 0.2.11 前一行一段，包起來的長段會被拆成多段、誤觸 R-001/R-005；改空行分段後行級另算。
   // 檔頭 YAML frontmatter（tone-version／profile／human-cleared）剝掉不掃：舊版把它當內文，
   // 短行（tone-version: 0.1.0）誤觸 R-005，文件級標籤還錨定在它上面。
-  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, "");
+  // 0929：HTML 註解（<!-- -->）一併剝掉——learn 腳本把撰稿規格、錨點、修稿紀錄寫在註解裡，
+  // 舊版當旁白掃，R-009／R-014[en] 等大量命中落在備註上。
+  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, "").replace(/<!--[\s\S]*?-->/g, "");
   const raw=[];
   noFm.split(/\n\s*\n/).forEach(chunk=>{
     const lines=chunk.split(/\n/).map(s=>s.trim()).filter(s=>s.length);
@@ -427,23 +429,40 @@ document.getElementById("file").onchange=e=>{
 // 或卡片文字內出現全形分號並列。英文卡片同理掃 ASCII 冒號／分號（規則 en 判準只寫全形，
 // 實務英文卡片用半形；本 repo 無英文 storyboard 語料可測，未經實測校準，先當提示）。
 // 網址與引號內介面字串是例外，直接跳過。
+// 0929：兩種輸入。貼卡片字（一行一張卡）照舊逐行掃；貼整份真實分鏡（有「| … | [視覺:…] |」表格列）
+// 時只掃表格列 [視覺:…] 指示裡「」／“”／"" 框住的畫面字——舊版逐行掃整份檔，製作備註與指示本身
+// 的半形分號大量誤觸（learn 118 份分鏡回掃 2795 處，幾乎全是噪音）。白板條列等未加引號的畫面字不掃。
+function storyboardCards(noFm){
+  const cards=[];
+  noFm.split(/\n/).forEach(raw=>{
+    const ln=raw.trim();
+    if(!/^\|/.test(ln)) return;
+    (ln.match(/\[視覺:[^\]]*\]/g)||[]).forEach(d=>{
+      (d.match(/「[^」]+」|“[^”]+”|"[^"]+"/g)||[]).forEach(q=>cards.push(q.slice(1,-1).trim()));
+    });
+  });
+  return cards;
+}
 function scanStoryboard(text){
   const out=[];
-  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, ""); // 檔頭不掃，同 scanParas
-  noFm.split(/\n\s*\n/).forEach(chunk=>{
-    chunk.split(/\n/).forEach(raw=>{
-      const ln=raw.trim();
-      if(!ln||/^#{1,4}\s/.test(ln)) return;
-      if(/https?:\/\//.test(ln)) return;
-      const hits=[];
-      const m=ln.match(/^(.{1,4})：/);
-      if(m && !/^[「『"']/.test(ln)) hits.push({id:"R-023", why:"短標籤冒號「"+m[1]+"：」，人判：是否已是一句完整話，改寫成帶連接詞的句子"});
-      if(/；/.test(ln)) hits.push({id:"R-023", why:"全形分號並列，人判：是否把兩件事並成對句，拆成一句完整話"});
+  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, "").replace(/<!--[\s\S]*?-->/g, ""); // 檔頭與 HTML 註解不掃，同 scanParas
+  const table = /^\s*\|.*\[視覺:/m.test(noFm);
+  const lines = table ? storyboardCards(noFm) : noFm.split(/\n/).map(s=>s.trim());
+  lines.forEach(ln=>{
+    if(!ln||/^#{1,4}\s/.test(ln)) return;
+    if(/https?:\/\//.test(ln)) return;
+    const hits=[];
+    const cjk=/[一-鿿]/.test(ln);
+    const m=ln.match(/^(.{1,4})：/);
+    if(m && !/^[「『"']/.test(ln)) hits.push({id:"R-023", why:"短標籤冒號「"+m[1]+"：」，人判：是否已是一句完整話，改寫成帶連接詞的句子"});
+    if(/；/.test(ln)) hits.push({id:"R-023", why:"全形分號並列，人判：是否把兩件事並成對句，拆成一句完整話"});
+    // 表格模式下英文判準只看不含漢字的卡片，中文卡片裡夾的半形標點不算
+    if(!table || !cjk){
       const me=ln.match(/^(.{1,20}):( |$)/);
       if(me && !/^[「『"']/.test(ln)) hits.push({id:"R-023[en]", why:"short-label colon \""+me[1]+"\", 人判：是否已是一句完整話，未校準、先當提示"});
       if(/;/.test(ln)) hits.push({id:"R-023[en]", why:"semicolon pairing, 人判：是否把兩件事並成對句，未校準、先當提示"});
-      out.push({body:ln, hits});
-    });
+    }
+    out.push({body:ln, hits});
   });
   return out;
 }

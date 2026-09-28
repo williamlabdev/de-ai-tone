@@ -437,5 +437,51 @@
         "R-023[en]"
       ]
     }
+  ],
+  "examples/test-05-table-storyboard.md": [
+    {
+      "block": 0,
+      "head": false,
+      "hits": [
+        "R-023"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-023"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-023[en]"
+      ]
+    },
+    {
+      "block": 4,
+      "head": false,
+      "hits": [
+        "R-023[en]"
+      ]
+    }
+  ],
+  "examples/test-06-comment-narration.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-004"
+      ]
+    }
   ]
 }
