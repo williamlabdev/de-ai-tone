@@ -88,6 +88,7 @@ That box in the middle — type into it and ask.
 
 - 判準本身是可規則化的：全形冒號前只有一到四個字的短標籤（工作流／Mac／付費版／例這類詞，不是完整句子），或卡片文字裡出現全形分號把兩件事並列。但 `tools/review-ui.html` 只讀取貼進去的 `script.zh.md` 旁白全文（見頁面「貼上內容」區塊的說明），卡片與圖說文字是寫在 storyboard 檔案表格「視覺」欄位裡、用 textcard/statement 標記引號框住的文字，這個工具完全不載入 storyboard 檔案，沒有欄位可以套用這條判準去掃；沿用 R-001、R-003、R-005、R-012、R-013 既有作法，frontmatter `mechanical` 直接寫文字說明，`tools/sync-check.py` 對非 regex 字串只印 `SKIP`，未在 `tools/review-ui.html` 實作。
 - 只能人審的部分：卡片是否已經是一句完整的話、是否落入例外（網址／介面字串），全部人判。
+- 工具備註（0.2.11，不升版）：`tools/review-ui.html` 的 `scanStoryboard` 另掃英文卡片的 ASCII 冒號短標籤與分號並列（規則 en 判準只寫全形，實務英文卡片用半形）；本 repo 無英文 storyboard 語料可測，未經實測校準，先當提示。`examples/test-04-storyboard.md` 留一組中英 fixture。
 
 ## 適用 profile
 

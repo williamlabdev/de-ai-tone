@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡。R-014～R-021 是英文 AI 腔候選，<strong>index.json 標 maturity: experimental，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），命中標 [experimental]，先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文，不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔候選，<strong>index.json 標 maturity: experimental，未經實測校準</strong>（在本 repo 18 篇英文正本＋16 份英文草稿的正文上幾乎零命中），命中標 [experimental]，先當提示不當結論；其中 R-017、R-021 是全篇門檻（>=2 才標，標在第一個正文段），R-016、R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
 <h2>1. 載入稿件</h2>
 <div class="row">
 <input type="file" id="file" accept=".md">
@@ -87,7 +87,7 @@ const PE = {
   r019: /\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b/gi,
   r020: /:\s*[A-Za-z]+\.\s*$/gm,
   r021: /^(?:Stop|Start|Don'?t|Never|Always)\s+\w+/i,
-  r024: /\b(?:kind of|sort of|somewhat|a bit|relatively|rather)\b/i
+  r024: /(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)\b(?:kind of|sort of|somewhat|a bit|relatively|rather(?!\s+than))\b/i
 };
 /* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
    不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
@@ -138,7 +138,7 @@ R-021 en: (?i)^(?:Stop|Start|Don'?t|Never|Always)\s+\w+，全篇>=2
 R-023 zh: 可寫成規則式判準（全形冒號前是一到四個字的短標籤如工作流／Mac／付費版／例，或卡片文字內出現全形分號把兩件事並列成對句），但review-ui.html只讀取貼上的script.zh.md旁白文字，卡片與圖說文字是寫在storyboard檔案的表格欄位裡（textcard/statement語法標記引號內的文字），這個工具從來不載入storyboard檔案，沒有欄位可以套用這條判準去掃；沿用R-001、R-003、R-005、R-012、R-013既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP。
 R-023 en: expressible as a rule (a one to four character label before a full width colon, such as workflow, Mac, paid plan, example; or a full width semicolon inside the card pairing two things into a matched couplet), but review-ui.html only ever loads the pasted script.zh.md narration text; card and caption text lives in the storyboard file's table column, quoted inside a textcard markup tag, a file this tool never loads, so there is no field to run this check against. 本repo沒有可掃描的卡片欄位可測，此原則的英文版本僅供參考、未經實測校準。
 R-024 zh: 比較[^\s，。]{1,4}
-R-024 en: (?i)\b(?:kind of|sort of|somewhat|a bit|relatively|rather)\b
+R-024 en: (?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)\b(?:kind of|sort of|somewhat|a bit|relatively|rather(?!\s+than))\b
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -207,6 +207,41 @@ function scanParas(text){
     return best;
   }
   const titleEchoHits = {}; // blockIndex -> [{headingText, ratio, tag}]
+  // R-012 en：word-level（frontmatter 有判準、本 repo 無英文 script 語料可測，未經實測校準，
+  // 先當提示不當結論）。同區段首段首句／末段末句與標題比最長連續共同詞數（小寫），
+  // 達標題詞數 60% 命中；標題不足 4 詞跳過。lcsSubstringLen012 同為連續子串比對，詞陣列可直接套用。
+  const wordsEn012 = s => (s.match(/[A-Za-z']+/g)||[]).map(w=>w.toLowerCase());
+  for(let hi=0; hi<blocks.length; hi++){
+    if(!isHeadArr[hi]) continue;
+    const headingText = blocks[hi].replace(/^#{1,4}\s+/, "").trim();
+    const hWords = wordsEn012(headingText);
+    if(hWords.length < 4) continue;
+    const section = [];
+    let jj = hi+1;
+    while(jj < blocks.length && !isHeadArr[jj]){
+      if(!isListArr[jj]) section.push(jj);
+      jj++;
+    }
+    if(!section.length) continue;
+    const firstIdx = section[0], lastIdx = section[section.length-1];
+    const firstSents = splitSentEn(blocks[firstIdx]);
+    const lastSents = splitSentEn(blocks[lastIdx]);
+    if(!firstSents.length || !lastSents.length) continue;
+    const candidates = [
+      {idx: firstIdx, sent: firstSents[0], tag: "首句"},
+      {idx: lastIdx, sent: lastSents[lastSents.length-1], tag: "末句"},
+    ];
+    for(const c of candidates){
+      const sWords = wordsEn012(c.sent);
+      if(!sWords.length) continue;
+      const ratio = lcsSubstringLen012(hWords, sWords) / hWords.length;
+      if(ratio >= 0.6){
+        if(!titleEchoHits[c.idx]) titleEchoHits[c.idx] = [];
+        titleEchoHits[c.idx].push({headingText, ratio, tag: c.tag+"[en]"});
+      }
+    }
+  }
+  // R-012 zh：跨行比對（見 rules/R-012-title-echo.md frontmatter mechanical 說明）。
   for(let hi=0; hi<blocks.length; hi++){
     if(!isHeadArr[hi]) continue;
     const headingText = blocks[hi].replace(/^#{1,4}\s+/, "").trim();
@@ -268,7 +303,11 @@ function scanParas(text){
     }
     return n;
   });
-  const r002en = stripped.map((t,i)=>(!isHeadArr[i] && PE.r002.test(t))?1:0);
+  const r002en = stripped.map((t,i)=>{
+    if(isHeadArr[i]) return 0;
+    // 出現次數（非段數）：一段內連用三處後位否定即達標；用 g-match 計數，無 lastIndex 問題
+    return (t.match(new RegExp(PE.r002.source,"gi"))||[]).length;
+  });
   const docR002 = r002zh.reduce((a,b)=>a+b,0)+r002en.reduce((a,b)=>a+b,0);
   return blocks.map((body,i)=>{
     const t = stripped[i];
@@ -385,10 +424,13 @@ document.getElementById("file").onchange=e=>{
   r.readAsText(f,"utf-8");
 };
 // R-023：掃 storyboard 卡片／圖說文字。判準（見 rules/R-023）：全形冒號前是一到四字短標籤，
-// 或卡片文字內出現全形分號並列。網址與引號內介面字串是例外，直接跳過。
+// 或卡片文字內出現全形分號並列。英文卡片同理掃 ASCII 冒號／分號（規則 en 判準只寫全形，
+// 實務英文卡片用半形；本 repo 無英文 storyboard 語料可測，未經實測校準，先當提示）。
+// 網址與引號內介面字串是例外，直接跳過。
 function scanStoryboard(text){
   const out=[];
-  text.split(/\n\s*\n/).forEach(chunk=>{
+  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, ""); // 檔頭不掃，同 scanParas
+  noFm.split(/\n\s*\n/).forEach(chunk=>{
     chunk.split(/\n/).forEach(raw=>{
       const ln=raw.trim();
       if(!ln||/^#{1,4}\s/.test(ln)) return;
@@ -397,6 +439,9 @@ function scanStoryboard(text){
       const m=ln.match(/^(.{1,4})：/);
       if(m && !/^[「『"']/.test(ln)) hits.push({id:"R-023", why:"短標籤冒號「"+m[1]+"：」，人判：是否已是一句完整話，改寫成帶連接詞的句子"});
       if(/；/.test(ln)) hits.push({id:"R-023", why:"全形分號並列，人判：是否把兩件事並成對句，拆成一句完整話"});
+      const me=ln.match(/^(.{1,20}):( |$)/);
+      if(me && !/^[「『"']/.test(ln)) hits.push({id:"R-023[en]", why:"short-label colon \""+me[1]+"\", 人判：是否已是一句完整話，未校準、先當提示"});
+      if(/;/.test(ln)) hits.push({id:"R-023[en]", why:"semicolon pairing, 人判：是否把兩件事並成對句，未校準、先當提示"});
       out.push({body:ln, hits});
     });
   });

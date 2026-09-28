@@ -18,17 +18,25 @@ TARGETS = sorted(
     [str(p.relative_to(ROOT)) for p in sorted((ROOT / "examples").glob("test-*.md"))]
     + [str(p.relative_to(ROOT)) for p in sorted((ROOT / "drafts").glob("*.md")) if p.name != "REVIEW-CHECKLIST.md"]
 )
+# *-storyboard.md 走 scanStoryboard（卡片欄位），其餘走 scanParas（旁白／文章）。
+STORYBOARD = [f for f in TARGETS if f.endswith("-storyboard.md")]
+PARAS = [f for f in TARGETS if f not in STORYBOARD]
 
 
-def scan(files):
-    r = subprocess.run(
-        ["node", "tools/run-scan.js", *files],
-        capture_output=True, text=True, cwd=ROOT,
-    )
-    if r.returncode != 0:
-        print(r.stderr, file=sys.stderr)
-        sys.exit(1)
-    return json.loads(r.stdout)
+def scan():
+    data = {}
+    for batch, flag in ((PARAS, []), (STORYBOARD, ["--storyboard"])):
+        if not batch:
+            continue
+        r = subprocess.run(
+            ["node", "tools/run-scan.js", *batch, *flag],
+            capture_output=True, text=True, cwd=ROOT,
+        )
+        if r.returncode != 0:
+            print(r.stderr, file=sys.stderr)
+            sys.exit(1)
+        data.update(json.loads(r.stdout))
+    return data
 
 
 def summarize(paras):
@@ -42,7 +50,7 @@ def summarize(paras):
 
 
 def current():
-    data = scan(TARGETS)
+    data = scan()
     return {f: summarize(data[f]) for f in TARGETS}
 
 

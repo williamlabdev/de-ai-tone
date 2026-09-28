@@ -255,5 +255,187 @@
         "R-007[en]"
       ]
     }
+  ],
+  "examples/test-04-articles-en.fixed.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    }
+  ],
+  "examples/test-04-articles-en.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-001+R-005",
+        "R-002[doc]",
+        "R-006[en]",
+        "R-017[en-doc][experimental]",
+        "R-021[en-doc][experimental]"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-002[en]"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-005",
+        "R-009[en][低信心]"
+      ]
+    },
+    {
+      "block": 4,
+      "head": false,
+      "hits": [
+        "R-009[en]"
+      ]
+    },
+    {
+      "block": 5,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 6,
+      "head": false,
+      "hits": [
+        "R-003",
+        "R-012"
+      ]
+    },
+    {
+      "block": 7,
+      "head": false,
+      "hits": [
+        "R-024[en]"
+      ]
+    },
+    {
+      "block": 8,
+      "head": false,
+      "hits": [
+        "R-004[en]",
+        "R-005",
+        "R-007[en]"
+      ]
+    },
+    {
+      "block": 9,
+      "head": false,
+      "hits": [
+        "R-008[en]",
+        "R-009[en][低信心]",
+        "R-010[en]"
+      ]
+    },
+    {
+      "block": 10,
+      "head": false,
+      "hits": [
+        "R-005",
+        "R-011[en]"
+      ]
+    },
+    {
+      "block": 11,
+      "head": false,
+      "hits": [
+        "R-005"
+      ]
+    },
+    {
+      "block": 12,
+      "head": false,
+      "hits": [
+        "R-014[en][experimental]",
+        "R-015[en][experimental]"
+      ]
+    },
+    {
+      "block": 13,
+      "head": false,
+      "hits": [
+        "R-009[en]",
+        "R-016[en][experimental]"
+      ]
+    },
+    {
+      "block": 15,
+      "head": false,
+      "hits": [
+        "R-018[en][experimental]"
+      ]
+    },
+    {
+      "block": 16,
+      "head": false,
+      "hits": [
+        "R-014[en][experimental]",
+        "R-019[en][experimental]"
+      ]
+    },
+    {
+      "block": 17,
+      "head": false,
+      "hits": [
+        "R-001+R-005",
+        "R-020[en][experimental]"
+      ]
+    },
+    {
+      "block": 18,
+      "head": false,
+      "hits": [
+        "R-001+R-005"
+      ]
+    }
+  ],
+  "examples/test-04-storyboard.md": [
+    {
+      "block": 0,
+      "head": false,
+      "hits": [
+        "R-023"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-023"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-023[en]"
+      ]
+    },
+    {
+      "block": 5,
+      "head": false,
+      "hits": [
+        "R-023[en]"
+      ]
+    }
   ]
 }

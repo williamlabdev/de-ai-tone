@@ -37,7 +37,7 @@ const out = {};
 for (const f of files) {
   const text = fs.readFileSync(f, "utf8");
   const paras = storyboard
-    ? sandbox.scanStoryboard(text).map((r, i) => ({ i, body: r.body, hits: r.hits.map((h) => h.id) }))
+    ? sandbox.scanStoryboard(text).map((r, i) => ({ i, body: r.body, isHead: false, isList: false, hits: r.hits.map((h) => h.id) }))
     : sandbox.scanParas(text).map((p) => ({
         i: p.i,
         body: p.body,
