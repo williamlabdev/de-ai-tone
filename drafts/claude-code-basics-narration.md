@@ -1,8 +1,10 @@
 ---
-tone-version: 0.2.5
+tone-version: 0.2.11
 profile: narration
 human-cleared:
   - 0922 R-009 L12 因果說明鏈，非口號
+  - 0928 R-009 L10 開場承諾＋低信心，非口號
+  - 0928 R-009 L28 帶做動作句，非口號
 ---
 
 # Claude Code 基礎教學（旁白草稿・基礎篇）

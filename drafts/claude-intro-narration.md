@@ -1,6 +1,9 @@
 ---
-tone-version: 0.2.5
+tone-version: 0.2.11
 profile: narration
+human-cleared:
+  - 0928 R-009 L10 痛點第一層，非口號
+  - 0928 R-009 L36 收尾呼應開場，非口號
 ---
 
 # 跟著我十分鐘，第一次跟 Claude 對話（旁白草稿・基礎篇）
