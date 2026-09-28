@@ -2,68 +2,36 @@
 """比對 rules/R-*.md frontmatter 的 mechanical.zh/en（唯一真相源）與
 tools/review-ui.html 是否同步：check_order 順序字串逐字比對，
 mechanical pattern 逐條正規化後檢查是否仍逐字出現在 review-ui.html
-（含新增的『mechanical 對照』鏡像註解）。唯讀，不改任何檔案。
+（含『mechanical 對照』鏡像註解）。唯讀，不改任何檔案。
+
+--fix-mirror：把鏡像註解段按 frontmatter 重新生成（真相源→html 單向）。
+可執行 pattern（P／PE 物件）仍需人手同步，本工具只驗證包含關係。
+共用解析邏輯見 tools/patterns.py。
 """
-import json
 import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from patterns import (  # noqa: E402
+    INDEX_PATH,
+    iter_rules,
+    load_index,
+    normalize,
+    strip_suffix,
+)
+
 ROOT = Path(__file__).resolve().parent.parent
 HTML_PATH = ROOT / "tools" / "review-ui.html"
-INDEX_PATH = ROOT / "rules" / "index.json"
+
+MIRROR_START = "/* mechanical 對照"
+MIRROR_END = "*/"
 
 
-def normalize(v: str) -> str:
-    """去掉 JS 不支援的 (?i)，並把 (?: 收斂成 ( ，讓 frontmatter 的正規表達式
-    寫法（可能用 capturing group）跟 review-ui.html 裡任何寫法（含 non-capturing）
-    在字面比對時視為等價。"""
-    v = v.replace("(?i)", "")
-    v = v.replace("(?:", "(")
-    return v
-
-
-def looks_like_regex(v: str) -> bool:
-    return ("|" in v) or ("\\b" in v) or ("[" in v) or ("(?" in v)
-
-
-def strip_prose(v: str) -> str:
-    """砍掉常見的說明文字尾巴（如「，計數>=2」「，人判…」「，排除…」），
-    只留下前面的 regex 本體字面。找不到就整串保留。"""
-    markers = [
-        "，計數>=2（中英文合併）",
-        "，計數>=2",
-        "；人判是否清單/口號/流程鏈",
-        "，3+平行短語，人判清單或口號",
-        "，排除雙字與補語",
-        "，一段>=2",
-        "，全篇>=2",
-        "，人判",
-    ]
-    for mk in markers:
-        mk_n = normalize(mk)
-        idx = v.find(mk_n)
-        if idx != -1:
-            v = v[:idx]
-    return v.strip()
-
-
-def load_frontmatter_mechanical(path: Path):
-    text = path.read_text(encoding="utf-8")
-    m = re.search(r"^---\n(.*?)\n---", text, re.S)
-    if not m:
-        return None, None
-    fm = m.group(1)
-    m2 = re.search(r"\n  zh:\s*(.+)\n  en:\s*(.+)\n", "\n" + fm + "\n")
-    if not m2:
-        return None, None
-    return m2.group(1), m2.group(2)
-
-
-def main() -> int:
+def check() -> int:
     ok = True
     html = HTML_PATH.read_text(encoding="utf-8")
-    index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
+    index = load_index()
     check_order = index["check_order"]
 
     # 1. check_order 對照 <p>判準…</p>
@@ -81,24 +49,22 @@ def main() -> int:
 
     # 2. 逐條 mechanical.zh / mechanical.en
     html_norm = normalize(html)
-    for rule in index["rules"]:
-        rid = rule["id"]
-        fpath = ROOT / "rules" / rule["file"]
-        zh, en = load_frontmatter_mechanical(fpath)
-        for lang, val in (("zh", zh), ("en", en)):
-            if val is None:
-                print(f"DRIFT {rid} {lang}: frontmatter 讀不到 mechanical.{lang}")
-                ok = False
-                continue
-            if not looks_like_regex(val):
-                print(f"SKIP {rid} {lang}")
-                continue
-            needle = strip_prose(normalize(val))
-            if needle and needle in html_norm:
-                print(f"OK {rid} {lang}")
-            else:
-                print(f"DRIFT {rid} {lang}: {val[:60]}")
-                ok = False
+    seen = set()
+    for rid, lang, val, kind in iter_rules():
+        seen.add((rid, lang))
+        if kind == "missing":
+            print(f"DRIFT {rid} {lang}: frontmatter 讀不到 mechanical.{lang}")
+            ok = False
+            continue
+        if kind == "prose":
+            print(f"SKIP {rid} {lang}")
+            continue
+        needle = strip_suffix(normalize(val))
+        if needle and needle in html_norm:
+            print(f"OK {rid} {lang}")
+        else:
+            print(f"DRIFT {rid} {lang}: {val[:60]}")
+            ok = False
 
     if ok:
         print("OK")
@@ -106,5 +72,28 @@ def main() -> int:
     return 1
 
 
+def fix_mirror() -> int:
+    """按 frontmatter 重寫 review-ui.html 內的 mechanical 對照鏡像段。"""
+    lines = HTML_PATH.read_text(encoding="utf-8").split("\n")
+    start = next(i for i, ln in enumerate(lines) if ln.startswith(MIRROR_START))
+    end = next(i for i, ln in enumerate(lines) if i > start and ln.strip() == MIRROR_END)
+    header = lines[start : start + 2]  # 保留既有說明頭兩行
+    index = load_index()
+    order = [r["id"] for r in index["rules"]]
+    vals = {}
+    for rid, lang, val, kind in iter_rules():
+        vals[(rid, lang)] = val
+    body = []
+    for rid in order:
+        for lang in ("zh", "en"):
+            body.append(f"{rid} {lang}: {vals[(rid, lang)]}")
+    lines[start:end] = header + body
+    HTML_PATH.write_text("\n".join(lines), encoding="utf-8")
+    print(f"mirror rewritten: {len(body)} lines")
+    return 0
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    if "--fix-mirror" in sys.argv:
+        sys.exit(fix_mirror())
+    sys.exit(check())

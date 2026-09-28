@@ -18,7 +18,7 @@
 檔頭範例：
 
 ```yaml
-tone-version: 0.2.10
+tone-version: 0.2.11
 profile: articles
 human-cleared:            # 選填：作者放行過的 needs-human 命中，日期＋規則＋行號＋一句理由；reviewer 再跑到同一處只列不追問
   - 0922 R-009 L20 負責人加期限的行動句，非口號
@@ -31,7 +31,7 @@ human-cleared:            # 選填：作者放行過的 needs-human 命中，日
 - `rules/_template.md`：新增規則的唯一模板。
 - `profiles/articles.md`：行銷文章，嚴格集（預設）。
 - `profiles/narration.md`：影片旁白，口語例外（只放寬節奏，不放寬資訊密度）。
-- `tools/README.md`：哪些檢查可計數標記、哪些只能人審；`tools/review-ui.html` 審稿台與 `tools/sync-check.py` 漂移檢查。
+- `tools/README.md`：哪些檢查可計數標記、哪些只能人審；`tools/review-ui.html` 審稿台與 `tools/sync-check.py` 漂移檢查、`tools/patterns.py` 共用解析、`tools/run-scan.js` 真實邏輯掃描、`tools/snapshot.py` 快照回歸（`examples/expected.json`）、`tools/check-after.py` After 自命中檢查；`make check` 一次全跑。
 - 語料、稿件快照、課程規劃不在本 repo。writer 讀的語料檔由寫稿單或稿件檔頭指定路徑（作者自己的語料正本放在教學 repo，不在這裡）。
 
 ## 新增或改規則
@@ -40,8 +40,9 @@ human-cleared:            # 選填：作者放行過的 needs-human 命中，日
 - 新增規則的 `tone-version` 用當下 `VERSION`；舊規則不追升（實質改 pattern 才升版，加註解不升）。
 - Before/After 必須 public-safe，可虛構；不可貼客戶原文，不可出現內部代號。
 - 每條必須寫明例外（無則寫「無」）與機械檢查可行性。
-- 各規則 frontmatter `mechanical` 是機械 pattern 的唯一真相源；`tools/review-ui.html` 內嵌的 pattern 是手抄副本，改 frontmatter 後跑 `python3 tools/sync-check.py` 確認無漂移。
-- 規則的 After 例句不得命中本條或其他任何一條的機械 pattern；新增或改 After 時逐條過一次。
+- 各規則 frontmatter `mechanical` 是機械 pattern 的唯一真相源；`tools/review-ui.html` 內嵌的 pattern 是手抄副本，改 frontmatter 後跑 `python3 tools/sync-check.py` 確認無漂移（鏡像註解可用 `--fix-mirror` 重寫，可執行 P／PE 仍人手同步）。人判後綴措辭沿用 `計數`／`人判`／`排除`／`全篇`／`一段`／`3+` 關鍵字（見 `rules/_template.md`）。
+- 規則的 After 例句不得命中本條或其他任何一條的機械 pattern；新增或改 After 時跑 `make after` 驗證（結構性規則在摘錄上不計），改 `tools/review-ui.html` 行為時跑 `make snapshot` 看 diff。
+- `index.json` 的 `maturity: experimental` 給未校準候選規則（現為 R-014～R-021），工具命中標 `[experimental]`，先當提示不當結論。
 
 ## tone-version 的意思
 

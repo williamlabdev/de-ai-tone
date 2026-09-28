@@ -29,6 +29,9 @@
 ## 機械檢查可行性
 
 - 可機械化：寫出判定條件（例如正則、句長、標點計數）。中英文分開寫：中文用字數（`< 10 字`），英文用 words（`< 8 words`）；標點與關鍵詞各自列出。frontmatter `mechanical` 是機械讀取的唯一 pattern 來源，正文機械段可展開說明但判定條件必須與之一致，不得多列或少列觸發詞；anchor 配 alternation（如結尾 `？`＋`嗎|呢`）一律加括號分組。
+- 人判後綴約定：人判說明以後綴接在 pattern 之後，起頭為 `，`／`；`＋關鍵字（`計數`／`人判`／`排除`／`全篇`／`一段`／`3+` 其一），`tools/patterns.py` 與 sync-check 共用剝離；新措辭須沿用關鍵字，否則比對會把後綴當本體而報 DRIFT。
+- 若 frontmatter 寫的是判定描述（錨點＋觸發詞分組，如 R-004）或說明＋pattern 混合體（R-011 en），整串不可直接編譯，加 `mechanical_type` 顯式標 `prose`（可執行版放 `tools/review-ui.html`，沿 R-003／R-012 既有作法 sync-check 只印 SKIP）。
+- After 例句（中英文）不得命中本條或其他任何一條的機械 pattern；新增或改 After 時跑 `make after` 驗證（結構性規則 R-001／R-003／R-005／R-012 在摘錄上不計，見 `tools/check-after.py`）。
 - 只能人審：寫出原因（一句話）。
 
 ## 適用 profile

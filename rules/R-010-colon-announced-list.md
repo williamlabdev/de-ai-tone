@@ -40,7 +40,7 @@ There are three shortcuts below: image, edit, search.
 英文：
 
 ```text
-There are three shortcuts. Image: describe what you want. Edit: paste the original.
+There are three shortcuts under the input box. Image stands for describe what you want. Edit stands for paste the original.
 ```
 
 ## 例外

@@ -12,3 +12,5 @@
 - `test-03-narration-mixed.md` / `.fixed.md`：narration profile 測試稿，中英混排，虛構。
 
 測試稿檔頭 `note` 欄註明是否虛構與刻意埋的違規範圍。
+
+`expected.json` 是 `tools/snapshot.py` 的快照基線（每檔每段的機械命中 id，由 `tools/run-scan.js` 驅動真實 `scanParas` 產出）。改 pattern 或工具行為後跑 `make snapshot` 看 diff，確認是意圖變更再 `--update`。

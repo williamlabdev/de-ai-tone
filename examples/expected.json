@@ -1,0 +1,259 @@
+{
+  "drafts/claude-code-basics-narration.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-009[低信心]"
+      ]
+    },
+    {
+      "block": 10,
+      "head": false,
+      "hits": [
+        "R-009"
+      ]
+    }
+  ],
+  "drafts/claude-intro-narration.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-009"
+      ]
+    },
+    {
+      "block": 15,
+      "head": false,
+      "hits": [
+        "R-009"
+      ]
+    }
+  ],
+  "drafts/enterprise-ai-intro-article.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-009"
+      ]
+    },
+    {
+      "block": 7,
+      "head": false,
+      "hits": [
+        "R-009"
+      ]
+    }
+  ],
+  "examples/test-01-articles-zh.fixed.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-008",
+        "R-009"
+      ]
+    }
+  ],
+  "examples/test-01-articles-zh.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-001+R-005",
+        "R-002[doc]",
+        "R-006"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-002?"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-003",
+        "R-008"
+      ]
+    },
+    {
+      "block": 4,
+      "head": false,
+      "hits": [
+        "R-005"
+      ]
+    },
+    {
+      "block": 5,
+      "head": false,
+      "hits": [
+        "R-004",
+        "R-007"
+      ]
+    }
+  ],
+  "examples/test-02-articles-zh.fixed.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-008",
+        "R-009"
+      ]
+    }
+  ],
+  "examples/test-02-articles-zh.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-001+R-005",
+        "R-002[doc]",
+        "R-006"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-002?"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-003",
+        "R-007",
+        "R-008"
+      ]
+    },
+    {
+      "block": 4,
+      "head": false,
+      "hits": [
+        "R-005"
+      ]
+    },
+    {
+      "block": 5,
+      "head": false,
+      "hits": [
+        "R-004",
+        "R-008"
+      ]
+    }
+  ],
+  "examples/test-03-narration-mixed.fixed.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    }
+  ],
+  "examples/test-03-narration-mixed.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-001+R-005",
+        "R-002[doc]",
+        "R-006[en]"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-002?"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-003"
+      ]
+    },
+    {
+      "block": 4,
+      "head": false,
+      "hits": [
+        "R-005"
+      ]
+    },
+    {
+      "block": 5,
+      "head": false,
+      "hits": [
+        "R-004[en]",
+        "R-005",
+        "R-007[en]"
+      ]
+    }
+  ]
+}
