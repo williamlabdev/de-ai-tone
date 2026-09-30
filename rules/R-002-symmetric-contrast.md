@@ -68,7 +68,7 @@ Approvals drop from three layers to one starting Monday.
 後位否定型改法：一段只留一次，其餘各自寫成完整句子，把被逗號吞掉的動詞補回來。
 
 ```text
-The catalog records which services exist. The gateway records individual tool calls as they happen. Impact is computed from the snapshot's dependency edges rather than typed in by hand.
+The catalog records which services exist. The gateway records individual tool calls as they happen. Impact is computed from the snapshot's dependency edges instead of typed in by hand.
 ```
 
 ## 例外

@@ -9,6 +9,12 @@ profiles:
 mechanical:
   zh: 以\？$結尾且同句含(嗎|呢|不是嗎|還在等)
   en: (?i)\?結尾且含\bwhat are you waiting for\b|\bare you still (waiting|hesitating)\b|\bwhy not (join|try|start|apply|register)\b|\bdon't you (want|wish|agree|think)\b|\bisn't it\b|\bisn't that\b
+mechanical_type:
+  # 本條 frontmatter 是「錨點＋觸發詞分組」的判定描述（見正文機械段），不是可直接編譯的
+  # 完整 pattern；可執行版在 tools/review-ui.html 的 P.r004／PE.r004（逐句比對），故標 prose，
+  # sync-check 對此類只印 SKIP（沿用 R-003／R-012 既有作法）。
+  zh: prose
+  en: prose
 ---
 
 # R-004 反問句收尾 / Rhetorical closing
