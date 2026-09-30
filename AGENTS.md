@@ -31,7 +31,7 @@ human-cleared:            # 選填：作者放行過的 needs-human 命中，日
 - `rules/_template.md`：新增規則的唯一模板。
 - `profiles/articles.md`：行銷文章，嚴格集（預設）。
 - `profiles/narration.md`：影片旁白，口語例外（只放寬節奏，不放寬資訊密度）。
-- `tools/README.md`：哪些檢查可計數標記、哪些只能人審；`tools/review-ui.html` 審稿台與 `tools/sync-check.py` 漂移檢查、`tools/patterns.py` 共用解析、`tools/run-scan.js` 真實邏輯掃描、`tools/snapshot.py` 快照回歸（`examples/expected.json`）、`tools/check-after.py` After 自命中檢查；`make check` 一次全跑。
+- `tools/README.md`：哪些檢查可計數標記、哪些只能人審；`tools/review-ui.html` 審稿台與 `tools/sync-check.py` 漂移檢查、`tools/patterns.py` 共用解析、`tools/run-scan.js` 真實邏輯掃描、`tools/snapshot.py` 快照回歸（`examples/expected.json`）、`tools/check-after.py` After 自命中檢查；`make check` 一次全跑。`tools/calib/` 是英文實驗規則的校準腳本（語料寫到 repo 外，不入 repo）。
 - 語料、稿件快照、課程規劃不在本 repo。writer 讀的語料檔由寫稿單或稿件檔頭指定路徑（作者自己的語料正本放在教學 repo，不在這裡）。
 
 ## 新增或改規則
