@@ -49,7 +49,7 @@ The team cut the verification steps from three stages down to one, and shipped t
 
 ## 例外
 
-- 全篇只出現一個詞（不論次數）不標：0930 校準時人寫對照組 10 篇有 4 篇單詞命中（`leverage` 在一篇經濟學文章裡出現 19 次），門檻改為全篇 >=2 個不同詞。
+- 全篇只出現一個詞（不論次數）不標：0930 校準時人寫對照組 10 篇有 4 篇單詞命中（`leverage` 在一篇談財富的散文裡出現 19 次），門檻改為全篇 >=2 個不同詞。
 - `landscape` 與 `harness` 作技術名詞時放行（例如 `tooling landscape` 平台工具版圖、`test harness` 測試載具），命中一律先標 `needs-human`，沿用本 repo「機械寧可多標、人判負責放行」的分工，不因此縮小詞表。
 - 引用人物原話時保留原樣。
 - 其餘無例外。
@@ -60,7 +60,7 @@ The team cut the verification steps from three stages down to one, and shipped t
 - 只能人審：命中的是正當技術名詞（`tooling landscape`、`test harness`）還是 LLM 慣用詞，需人判斷。
 - 語料定義：剝掉 frontmatter、fenced code block、inline code、HTML 註解後的正文；草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。
 - 本 repo 的英文語料（18 篇英文正本正文 18,808 英文字＋16 份英文草稿正文 21,989 英文字）上此 pattern 命中 3 處（正本 1 處 `tooling landscape`、草稿 2 處 `test harness`），全部是正當技術用語，不足以校準門檻，比照 README 慣例先當提示不當結論。
-- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者自寫英文網站文）、人類對照 10 篇（Paul Graham 散文）。改規則前觸發篇數 正例 8／48（全是 haiku，opus／sonnet 0）、反例 1／19（`landscape`）、人類 4／10（單篇 `leverage` 19 次）；改為全篇不同詞>=2 後 正例 3／48、反例 0／19、人類 1／10。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
+- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者網站已發佈英文文：AI 協作起草、作者裁決定稿，部分發佈前經本 repo 規則掃過）、人類對照 10 篇（Paul Graham 散文）。改規則前觸發篇數 正例 8／48（全是 haiku，opus／sonnet 0）、反例 1／19（`landscape`）、人類 4／10（單篇 `leverage` 19 次）；改為全篇不同詞>=2 後 正例 3／48、反例 0／19、人類 1／10。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
 
 ## 適用 profile
 

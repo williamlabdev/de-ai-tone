@@ -3,7 +3,9 @@
 # 用法：tools/calib/gen-pos.sh <out-dir> [--punchy]
 #   --punchy：指令多一句 "Make it punchy and engaging."（0930 第二輪，模擬行銷場景）
 # out-dir 必須在 repo 外：語料不入 repo。已存在且非空的檔案會跳過，可中斷續跑。
-# 走訂閱額度的 claude -p；--setting-sources "" 讓 CLAUDE.md 與 settings 不滲入產出。
+# 走訂閱額度的 claude -p；--setting-sources "" 讓 CLAUDE.md 與 settings 不滲入產出
+# （0930 實測：不帶時模型能逐字引出 ~/.claude/CLAUDE.md，帶了答 NO；MCP server 說明與 email
+# 仍會帶入，與文風無關）。--bare 也能關，但只收 API key，訂閱制不能用。
 set -u
 OUT="${1:?用法：gen-pos.sh <out-dir> [--punchy]}"
 EXTRA=""

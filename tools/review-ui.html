@@ -292,7 +292,7 @@ function scanParas(text){
   // R-014／R-016[en-doc]：0930 校準改為文件級門檻。R-014 單詞命中在人寫文章也常見（leverage 當經濟學術語），
   // 全篇出現 >=2 個不同詞才標；R-016 原始密度 AI 稿是人寫的 8 倍，但「一段>=2」三組語料都湊不滿，改「全篇>=2」。
   const bodyEn = blocks.filter((b,i)=>!isHeadArr[i]);
-  const r014Stems = new Set(bodyEn.flatMap(b=>(b.match(PE.r014)||[]).map(w=>w.toLowerCase().replace(/(?:ing|es|ed|ly|s|e)$/,""))));
+  const r014Stems = new Set(bodyEn.flatMap(b=>(b.match(PE.r014)||[]).map(w=>w.toLowerCase().replace(/(?:ing|ed|es|ly|e|(?<!s)s)$/,""))));
   const r016Doc = bodyEn.reduce((a,b)=>a+(b.match(PE.r016)||[]).length,0);
   // R-022[zh-doc]：全篇門檻。「逗號＋而」單次是正常書面語連接詞，反覆焊句子才是翻譯腔。
   // 對齊 frontmatter 的「，全篇>=2」。用 .match() 不用 .test()，帶 g 的 regex 做 .test() 會因 lastIndex 殘留而漏判。
