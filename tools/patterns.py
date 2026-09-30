@@ -11,8 +11,10 @@ rules/*/frontmatter 的 mechanical.zh/en 是唯一真相源。本模組負責：
 
 機械層通用約定（與 tools/review-ui.html 的 scanParas 對齊）：
 - 計數前先剝掉 [待補：…]/[TODO…] 佔位符（0922 裁決）
-- 文件級門檻（全篇>=2）：R-002（中英文合併計數）、R-022、R-017、R-021
-- 段落級門檻（一段>=2）：R-016、R-020、R-003
+- 文件級門檻（全篇>=2）：R-002（中英文合併計數）、R-022、R-017、R-016（0930 由一段改全篇）
+- 文件級門檻（全篇不同詞>=2）：R-014（詞幹去 -s/-ed/-ing 等後算同一詞，0930）
+- 文件級門檻（全篇>=1，含標題）：R-021（0930）
+- 段落級門檻（一段>=2）：R-020、R-003
 """
 import json
 import re
@@ -28,8 +30,10 @@ PLACEHOLDER_RE = re.compile(r"\[(?:待補|TODO)[^\]]*\]")
 # 關鍵字須沿用這六個之一，否則 sync-check 會把後綴當 pattern 本體比對而報 DRIFT。
 SUFFIX_RE = re.compile(r"(，|；)(計數.*|人判.*|排除.*|全篇.*|一段.*|3\+.*)$")
 
-DOC_GTE2 = {"R-002", "R-022", "R-017", "R-021"}
-PARA_GTE2 = {"R-016", "R-020", "R-003"}
+DOC_GTE2 = {"R-002", "R-022", "R-017", "R-016"}
+DOC_DISTINCT_GTE2 = {"R-014"}
+DOC_GTE1_WITH_HEADINGS = {"R-021"}
+PARA_GTE2 = {"R-020", "R-003"}
 
 
 def normalize(v: str) -> str:

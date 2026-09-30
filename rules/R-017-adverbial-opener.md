@@ -60,6 +60,7 @@ This approach saves the team real time each sprint. It also reduces the number o
 - 只能人審：副詞開頭是否真的沒有新增判斷依據，還是段落轉折確實需要，需人判斷。
 - 語料定義：剝掉 frontmatter、fenced code block、inline code、HTML 註解後的正文；草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。
 - 本 repo 的英文語料（18 篇英文正本正文 18,808 英文字＋16 份英文草稿正文 21,989 英文字）上此 pattern 命中 0 處，不足以校準門檻，比照 README 慣例先當提示不當結論。
+- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者自寫英文網站文）、人類對照 10 篇（Paul Graham 散文）。正例 0／48、反例 0／19、人類 1／10（`Fundamentally` 2 句）。pattern 不改；2026 年 Claude 產出上零真陽性，保留為預防性。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
 
 ## 適用 profile
 

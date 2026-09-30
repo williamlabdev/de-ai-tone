@@ -1,14 +1,14 @@
 ---
 id: R-018
 slug: hedge-stacking
-tone-version: 0.2.8
+tone-version: 0.2.12
 languages: [en]
 profiles:
   articles: strict
   narration: strict
 mechanical:
   zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-  en: (?i)\b(?:may potentially|might potentially|can often|could possibly|tends? to generally|generally speaking|it is important to note)\b
+  en: (?i)\b(?:may potentially|might potentially|tends? to generally|generally speaking|it is important to note)\b
 ---
 
 # R-018 疊加式模糊 / Hedge stacking
@@ -55,10 +55,11 @@ The new setting reduces battery drain on three of the five test devices we tried
 
 ## 機械檢查可行性
 
-- 可機械化：英文匹配 `(?i)\b(?:may potentially|might potentially|can often|could possibly|tends? to generally|generally speaking|it is important to note)\b`，命中即標記待審，不設門檻。
+- 可機械化：英文匹配 `(?i)\b(?:may potentially|might potentially|tends? to generally|generally speaking|it is important to note)\b`，命中即標記待審，不設門檻。
 - 只能人審：疊加的模糊詞是否真的可以拆成一個更精確的判斷，還是原本就沒有更多資訊可補，需人判斷。
 - 語料定義：剝掉 frontmatter、fenced code block、inline code、HTML 註解後的正文；草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。
 - 本 repo 的英文語料（18 篇英文正本正文 18,808 英文字＋16 份英文草稿正文 21,989 英文字）上此 pattern 命中 0 處，不足以校準門檻，比照 README 慣例先當提示不當結論。
+- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者自寫英文網站文）、人類對照 10 篇（Paul Graham 散文）。原 pattern 正例 0／48、反例 0／19、人類 2／10（`can often`、`could possibly work`，皆正常語氣）；拿掉 `can often|could possibly` 後人類 0／10。正例仍 0，保留為預防性。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
 
 ## 適用 profile
 
