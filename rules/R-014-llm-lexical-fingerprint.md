@@ -1,14 +1,14 @@
 ---
 id: R-014
 slug: llm-lexical-fingerprint
-tone-version: 0.2.8
+tone-version: 0.2.12
 languages: [en]
 profiles:
   articles: strict
   narration: strict
 mechanical:
   zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-  en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b
+  en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
 ---
 
 # R-014 LLM 詞彙指紋 / LLM lexical fingerprint
@@ -49,16 +49,18 @@ The team cut the verification steps from three stages down to one, and shipped t
 
 ## 例外
 
+- 全篇只出現一個詞（不論次數）不標：0930 校準時人寫對照組 10 篇有 4 篇單詞命中（`leverage` 在一篇經濟學文章裡出現 19 次），門檻改為全篇 >=2 個不同詞。
 - `landscape` 與 `harness` 作技術名詞時放行（例如 `tooling landscape` 平台工具版圖、`test harness` 測試載具），命中一律先標 `needs-human`，沿用本 repo「機械寧可多標、人判負責放行」的分工，不因此縮小詞表。
 - 引用人物原話時保留原樣。
 - 其餘無例外。
 
 ## 機械檢查可行性
 
-- 可機械化：英文匹配 `(?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b`，命中即標記待審，不設門檻（單次即可疑）。
+- 可機械化：英文匹配 `(?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b`，全篇（不含標題）出現 >=2 個不同詞才標記（詞形合併：`leverage`／`leveraging` 算同一詞），標在含命中詞的段落。0930 前是單次即標，校準後改。
 - 只能人審：命中的是正當技術名詞（`tooling landscape`、`test harness`）還是 LLM 慣用詞，需人判斷。
 - 語料定義：剝掉 frontmatter、fenced code block、inline code、HTML 註解後的正文；草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。
 - 本 repo 的英文語料（18 篇英文正本正文 18,808 英文字＋16 份英文草稿正文 21,989 英文字）上此 pattern 命中 3 處（正本 1 處 `tooling landscape`、草稿 2 處 `test harness`），全部是正當技術用語，不足以校準門檻，比照 README 慣例先當提示不當結論。
+- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者自寫英文網站文）、人類對照 10 篇（Paul Graham 散文）。改規則前觸發篇數 正例 8／48（全是 haiku，opus／sonnet 0）、反例 1／19（`landscape`）、人類 4／10（單篇 `leverage` 19 次）；改為全篇不同詞>=2 後 正例 3／48、反例 0／19、人類 1／10。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
 
 ## 適用 profile
 

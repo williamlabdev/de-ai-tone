@@ -24,22 +24,33 @@
 - R-010：冒號起清單匹配（中文計數宣告＋`：`，英文 three/several/following＋`:`；是清單還是引述靠人判）。
 - R-011：句尾單字動詞無受詞（中文按句切分匹配 `[核查對驗審校][。！？，；,.!?;]`（0.2.11 補半形句讀），排除查核/檢查/審查/對上/對完/對不上/對回去/核完；英文整句單字 `Verify/Confirm/Check/Done.`；是否真無受詞靠人判）。en 的 frontmatter 是說明＋pattern 混合體，`mechanical_type: prose`，sync-check 只印 SKIP；可執行版是 `PE.r011`。
 - R-012（partial，跨行）：標題回聲，不是單行 regex，實作在 `review-ui.html` 的 `scanParas` 自訂函式（不在 `P`／`PE` 物件裡），frontmatter `mechanical` 也照 R-001/R-003/R-005 的既有作法寫文字說明、非 regex，`sync-check.py` 對此類值只印 `SKIP`。判準：每個小標題（`#`～`####`）的區段（到下一標題或檔尾，略過清單行）取第一段首句、末段末句，各自去標點空白後跟標題比對最長連續共同字元數，達標題字元數 60% 以上命中；標題不足 5 字元跳過。0925 用 learn `topics/*/script.zh.md` 131 支正式稿實測：60% 門檻＋5 字門檻命中 21 處（17 支稿）；另試過標題字元依序出現（可跳字）70% 當替代判準，命中暴增到 45 處且多為語意不相關的誤抓，故捨棄依序比例，只留最長連續共同字元一種判準。是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）靠人判。
-- R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/robust/seamless/underscore/showcase/harness/landscape/paradigm/testament/ever-evolving/game-changer` 等 26 組詞幹；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
-- R-015（en only, experimental）：話術支架匹配（`here's the thing/the reality is/that said/at its core/at the end of the day/simply put` 等；刪掉後語意有無損失靠人判）。命中標 `[experimental]`。
-- R-016（en only, experimental）：分詞尾巴匹配（`, making/allowing/enabling/ensuring/leading to` 等，一段 >=2 才標；單次是正常英文，連用才是把因果塞進分詞）。命中標 `[experimental]`。
+- R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/robust/seamless/underscore/showcase/harness/landscape/paradigm/testament/ever-evolving/game-changer` 等 26 組詞幹；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
+- R-015（en only, experimental）：話術支架匹配（`here's the thing`、句首 `Here's the/what/why/how`、`the reality is/that said/at its core/at the end of the day/simply put` 等；刪掉後語意有無損失靠人判）。命中標 `[experimental]`。
+- R-016（en only, experimental）：分詞尾巴匹配（`, making/allowing/enabling/ensuring/leading to` 等，全篇 >=2 才標，標在命中段；單次是正常英文，連用才是把因果塞進分詞；0930 由一段改全篇）。命中標 `[experimental]`。
 - R-017（en only, experimental，文件級）：句首副詞總結匹配（`Ultimately/Fundamentally/Crucially/Moreover/In conclusion` 等，全篇 >=2 才標，標在第一個正文段；逐句比對，`m` flag 由 `review-ui.html` 加，frontmatter 不寫 flag，沿用 R-011 en 慣例）。命中標 `[experimental]`。
-- R-018（en only, experimental）：疊加式模糊匹配（`may potentially/can often/could possibly/generally speaking/it is important to note`；與 R-008 的分野是 R-008 抓單一模糊詞，本條抓兩個模糊詞講同一件事）。命中標 `[experimental]`。
+- R-018（en only, experimental）：疊加式模糊匹配（`may potentially/might potentially/tends to generally/generally speaking/it is important to note`；0930 拿掉 `can often/could possibly`；與 R-008 的分野是 R-008 抓單一模糊詞，本條抓兩個模糊詞講同一件事）。命中標 `[experimental]`。
 - R-019（en only, experimental）：空泛時代開場匹配（`in today's … world/landscape/era` 等）。命中標 `[experimental]`。
 - R-020（en only, experimental）：冒號後單詞收尾匹配（`: nothing.` 形狀，一段 >=2 才標；與 R-010 的分野是 R-010 抓冒號後接清單，本條抓冒號後只有一個詞）。命中標 `[experimental]`。
-- R-021（en only, experimental，文件級）：祈使句開場匹配（`Stop/Start/Don't/Never/Always` 起句，全篇 >=2 才標，標在第一個正文段）。命中標 `[experimental]`。
+- R-021（en only, experimental，文件級）：Stop/Start 口號短句匹配（`Stop`／`Start` 起頭、2～4 字的短句，含標題，全篇 >=1 即標，標在第一個正文段；0930 拿掉 `Don't/Never/Always`）。命中標 `[experimental]`。
 
 - R-022（zh only，文件級）：`[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)`——逗號緊接「而」，排除「而且」「而是」「而非」「而不是」「而不只」「而不光」「而後」「而已」，全篇累積 >=2 才標，標在第一個正文段。
 
-R-022 與 R-014～R-021 相反，是**有實測校準**的一條：以 `decision-provenance.zh.mdx` 同一篇的改前／改後兩版當對照組，改前漢字 2,824、命中 18 處（6.37／千漢字），改後漢字 2,769、命中 **0 處**；williamlab-site 18 篇中文正本裡漢字 >=500 的 15 篇，10 篇命中 >=2（1.37～6.37／千漢字），4 篇僅 1 次、1 篇 0 次未達門檻（0.00～1.17／千漢字）。門檻取「次數 >=2」而非密度，因為乾淨的分界在次數上（改後版是唯一 0 次的長文）；漢字 <500 的短文密度雜訊無法與真訊號分開，不列入判準。
+R-022 是**有改前／改後對照組校準**的一條：以 `decision-provenance.zh.mdx` 同一篇的改前／改後兩版當對照組，改前漢字 2,824、命中 18 處（6.37／千漢字），改後漢字 2,769、命中 **0 處**；williamlab-site 18 篇中文正本裡漢字 >=500 的 15 篇，10 篇命中 >=2（1.37～6.37／千漢字），4 篇僅 1 次、1 篇 0 次未達門檻（0.00～1.17／千漢字）。門檻取「次數 >=2」而非密度，因為乾淨的分界在次數上（改後版是唯一 0 次的長文）；漢字 <500 的短文密度雜訊無法與真訊號分開，不列入判準。
 
 - R-024：模糊比較匹配（中文 `比較[^\s，。]{1,4}`，英文 `kind of/sort of/somewhat/a bit/relatively/rather`；0928 站上 18 篇英文現抓首輪校準：`rather than＋對象`／`the kind of＋名詞`／`would rather＋動詞`三類永非真 hedge，已機械排除，殘留 0 處；同句有無跟／和／比等比較對象靠人判）。
 
 R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturity: experimental`、未經實測校準**：在本 repo 的 18 篇英文正本（正文 18,808 英文字）與 16 份英文草稿（正文 21,989 英文字）上（語料定義：剝掉 frontmatter、fenced code、inline code 與 HTML 註解後的正文；草稿取正文 >=200 英文字且漢字數 <= 英文字數 5% 者），R-014 共命中 3 處且全部是正當技術用語（正本 1 處 `tooling landscape`、草稿 2 處 `test harness`），R-016 命中 3 處但每篇皆只 1 次、未達一段 >=2 的門檻，其餘六條零命中。比照 R-012 en 與 R-013 en 的既有慣例，**先當提示不當結論**；門檻與例外要等真的踩到才回頭校準，不要拿零命中當「規則有效」的證據。中文對應形態尚未調查。
+
+**0930 首輪校準**（語料與產生腳本不入 repo）。本 repo 的英文語料沒有真陽性可校，改用外部三組：
+- 正例 48 篇：`claude -p` 以中性寫稿指令產出（部落格、產品公告、LinkedIn、電子報、指南、案例、評論、登陸頁 8 類 × opus／sonnet／haiku × 2 輪；第二輪指令多一句 `Make it punchy and engaging.`，模擬行銷場景），system prompt 只寫 `You are a helpful assistant.`、不提任何風格規則，避免循環論證。
+- 反例 19 篇：作者自寫的英文網站文。
+- 人類對照 10 篇：Paul Graham 散文。
+
+各規則觸發篇數（正例／反例／人類，改後）：R-014 3/0/1、R-015 14/1/1、R-016 2/0/0、R-017 0/0/1、R-018 0/0/0、R-019 1/0/0、R-020 0/0/0、R-021 9/0/0。改前後明細寫在各規則「機械檢查可行性」段。
+
+主要發現：GPT 時代的招牌詞（`delve`、`tapestry`、`in today's fast-paced world`）在 2026 年 opus／sonnet 產出上幾乎不出現，R-014 改前的命中全來自 haiku；真正穩定出現的是句首 `Here's the/what/why/how` 與 Stop/Start 口號標題。R-017／R-018／R-019／R-020 在 Claude 產出上零或近零真陽性，pattern 不動，保留為預防性（其他模型或舊模型的稿件仍可能踩到）。`isn't X. It's Y` 對舉在反例也有 8/19，不具鑑別力，留給 R-002，不另加。
+
+限制：n 小、正例只有 Claude、R-015／R-021 新 pattern 是看過命中後設計的（有過擬合風險，下一輪要用沒看過的語料驗）。八條**仍為 experimental**。
 
 只能人審的（機器標記後人判）：
 
