@@ -13,7 +13,7 @@ const { scanParas, PE, splitSentEn } = loadReviewUi();
 const IMP = /^(?:Stop|Start|Don'?t|Never|Always)\s+\w+/i;
 const R014 = new RegExp(PE.r014.source, "gi");
 const R016 = new RegExp(PE.r016.source, "g");
-const stems = (paras) => new Set(paras.flatMap((p) => (p.match(R014) || []).map((w) => w.toLowerCase().replace(/(?:e|es|ed|ing|s|ly)$/, ""))));
+const stems = (paras) => new Set(paras.flatMap((p) => (p.match(R014) || []).map((w) => w.toLowerCase().replace(/(?:ing|ed|es|ly|e|(?<!s)s)$/, ""))));
 const cands = {
   "R-014 distinct>=2": (paras) => stems(paras).size >= 2,
   "R-016 doc>=2": (paras) => paras.reduce((a, p) => a + (p.match(R016) || []).length, 0) >= 2,

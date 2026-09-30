@@ -42,7 +42,7 @@ human-cleared:            # 選填：作者放行過的 needs-human 命中，日
 - 每條必須寫明例外（無則寫「無」）與機械檢查可行性。
 - 各規則 frontmatter `mechanical` 是機械 pattern 的唯一真相源；`tools/review-ui.html` 內嵌的 pattern 是手抄副本，改 frontmatter 後跑 `python3 tools/sync-check.py` 確認無漂移（鏡像註解可用 `--fix-mirror` 重寫，可執行 P／PE 仍人手同步）。人判後綴措辭沿用 `計數`／`人判`／`排除`／`全篇`／`一段`／`3+` 關鍵字（見 `rules/_template.md`）。
 - 規則的 After 例句不得命中本條或其他任何一條的機械 pattern；新增或改 After 時跑 `make after` 驗證（結構性規則在摘錄上不計），改 `tools/review-ui.html` 行為時跑 `make snapshot` 看 diff。
-- `index.json` 的 `maturity: experimental` 給未校準候選規則（現為 R-014～R-021），工具命中標 `[experimental]`，先當提示不當結論。
+- `index.json` 的 `maturity: experimental` 給未畢業的候選規則（現為 R-014～R-021，0930 只做過首輪小樣本校準，見 `tools/README.md`），工具命中標 `[experimental]`，先當提示不當結論。
 
 ## tone-version 的意思
 

@@ -62,7 +62,7 @@ Untested config changes shipped on Friday caused three outages last quarter, so 
 - 只能人審：祈使句對舉是否真的沒有交代原因，還是後文其實已經補了條件，需人判斷。
 - 語料定義：剝掉 frontmatter、fenced code block、inline code、HTML 註解後的正文；草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。
 - 本 repo 的英文語料（18 篇英文正本正文 18,808 英文字＋16 份英文草稿正文 21,989 英文字）上此 pattern 命中 0 處，不足以校準門檻，比照 README 慣例先當提示不當結論。
-- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者自寫英文網站文）、人類對照 10 篇（Paul Graham 散文）。原 pattern（含 `Don't`，不含標題）正例 2／48、反例 0／19、人類 4／10（全是 `Don't` 建議句）；改為 Stop/Start 短句含標題、全篇>=1 後 正例 9／48、反例 0／19、人類 0／10。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
+- 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者網站已發佈英文文：AI 協作起草、作者裁決定稿，部分發佈前經本 repo 規則掃過）、人類對照 10 篇（Paul Graham 散文）。原 pattern（含 `Don't`，不含標題）正例 2／48、反例 0／19、人類 4／10（全是 `Don't` 建議句）；改為 Stop/Start 短句含標題、全篇>=1 後 正例 9／48、反例 0／19、人類 0／10。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
 
 ## 適用 profile
 
