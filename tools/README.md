@@ -25,7 +25,7 @@
 - R-011：句尾單字動詞無受詞（中文按句切分匹配 `[核查對驗審校][。！？，；,.!?;]`（0.2.11 補半形句讀），排除查核/檢查/審查/對上/對完/對不上/對回去/核完；英文整句單字 `Verify/Confirm/Check/Done.`；是否真無受詞靠人判）。en 的 frontmatter 是說明＋pattern 混合體，`mechanical_type: prose`，sync-check 只印 SKIP；可執行版是 `PE.r011`。
 - R-012（partial，跨行）：標題回聲，不是單行 regex，實作在 `review-ui.html` 的 `scanParas` 自訂函式（不在 `P`／`PE` 物件裡），frontmatter `mechanical` 也照 R-001/R-003/R-005 的既有作法寫文字說明、非 regex，`sync-check.py` 對此類值只印 `SKIP`。判準：每個小標題（`#`～`####`）的區段（到下一標題或檔尾，略過清單行）取第一段首句、末段末句，各自去標點空白後跟標題比對最長連續共同字元數，達標題字元數 60% 以上命中；標題不足 5 字元跳過。0925 用 learn `topics/*/script.zh.md` 131 支正式稿實測：60% 門檻＋5 字門檻命中 21 處（17 支稿）；另試過標題字元依序出現（可跳字）70% 當替代判準，命中暴增到 45 處且多為語意不相關的誤抓，故捨棄依序比例，只留最長連續共同字元一種判準。是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）靠人判。
 - R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/robust/seamless/underscore/showcase/harness/landscape/paradigm/testament/ever-evolving/game-changer` 等 26 組詞幹；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
-- R-015（en only, experimental）：話術支架匹配（`here's the thing`、句首 `Here's the/what/why/how`、`the reality is/that said/at its core/at the end of the day/simply put` 等；刪掉後語意有無損失靠人判）。命中標 `[experimental]`。
+- R-015（en only，1002 畢業）：話術支架匹配（`here's the thing`、句首 `Here's the/what/why/how`、`the reality is/that said/at its core/at the end of the day/simply put` 等；`simply put` 後須接逗號或冒號；刪掉後語意有無損失靠人判）。
 - R-016（en only, experimental）：分詞尾巴匹配（`, making/allowing/enabling/ensuring/leading to` 等，全篇 >=2 才標，標在命中段；單次是正常英文，連用才是把因果塞進分詞；0930 由一段改全篇）。命中標 `[experimental]`。
 - R-017（en only, experimental，文件級）：句首副詞總結匹配（`Ultimately/Fundamentally/Crucially/Moreover/In conclusion` 等，全篇 >=2 才標，標在第一個正文段；逐句比對，`m` flag 由 `review-ui.html` 加，frontmatter 不寫 flag，沿用 R-011 en 慣例）。命中標 `[experimental]`。
 - R-018（en only, experimental）：疊加式模糊匹配（`may potentially/might potentially/tends to generally/generally speaking/it is important to note`；0930 拿掉 `can often/could possibly`；與 R-008 的分野是 R-008 抓單一模糊詞，本條抓兩個模糊詞講同一件事）。命中標 `[experimental]`。
@@ -62,7 +62,12 @@ R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturi
 - 觸發篇數（正例 0930／正例 1001／反例）：R-015 14/11/1、R-021 9/3/0。
 - 已知限制：兩次問法不同；1002 的 14/14 是「命中處讀起來像 AI」，正例全是 Claude 產出，不等於人寫文字上的誤報率。LinkedIn 標題 `X. Here's the Filter I Actually Use.` 這類句首 `Here's` 依 1002 裁定視為該改。
 
-八條**仍為 experimental**。
+**1002 第三輪**（再換 8 個沒看過的題目：release notes、FAQ、商品描述、停機道歉信、cold email、YouTube 說明欄、募款信、會後回顧；另加 2022-11 前的人寫行銷稿 20 篇當誤報對照，取自 Wayback 快照，清單與語料在 repo 外）。題目與 pattern 都在人判前定好，本輪不看命中調 pattern：
+- 正例 96 篇：R-015 12 處、R-021 1 處，作者逐處獨立判（Claude 不先給判讀），全判 AI 腔。
+- 人寫 20 篇：R-015 觸發 4 篇、R-021 0 篇。R-015 的 4 處作者也判該標（`Here's what you can expect next:`、`So in other words`、`Make no mistake:`），其中 Warby Parker FAQ 的 `simply put all five frames back` 是 `simply` 修飾動詞 `put`、非銜接語，判為字面誤撞，0.2.15 收窄為 `simply put` 後接逗號或冒號。
+- 作者裁定 R-015 的「準」以「命中句刪掉後語意不損」為準，人寫也一樣標（家規品質檢查，不是躲檢測），據此 R-015 脫離 experimental。R-021 兩批正例僅 1 處命中、人寫 0 處，樣本不足，維持 experimental。
+
+其餘七條（R-014、R-016～R-021）**仍為 experimental**。
 
 只能人審的（機器標記後人判）：
 

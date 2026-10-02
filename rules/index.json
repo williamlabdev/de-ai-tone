@@ -114,8 +114,7 @@
       "slug": "discourse-scaffolding",
       "file": "R-015-discourse-scaffolding.md",
       "title": "話術支架 / Discourse scaffolding",
-      "profiles": { "articles": "strict", "narration": "relaxed" },
-      "maturity": "experimental"
+      "profiles": { "articles": "strict", "narration": "relaxed" }
     },
     {
       "id": "R-016",
