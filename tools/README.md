@@ -25,13 +25,13 @@
 - R-011：句尾單字動詞無受詞（中文按句切分匹配 `[核查對驗審校][。！？，；,.!?;]`（0.2.11 補半形句讀），排除查核/檢查/審查/對上/對完/對不上/對回去/核完；英文整句單字 `Verify/Confirm/Check/Done.`；是否真無受詞靠人判）。en 的 frontmatter 是說明＋pattern 混合體，`mechanical_type: prose`，sync-check 只印 SKIP；可執行版是 `PE.r011`。
 - R-012（partial，跨行）：標題回聲，不是單行 regex，實作在 `review-ui.html` 的 `scanParas` 自訂函式（不在 `P`／`PE` 物件裡），frontmatter `mechanical` 也照 R-001/R-003/R-005 的既有作法寫文字說明、非 regex，`sync-check.py` 對此類值只印 `SKIP`。判準：每個小標題（`#`～`####`）的區段（到下一標題或檔尾，略過清單行）取第一段首句、末段末句，各自去標點空白後跟標題比對最長連續共同字元數，達標題字元數 60% 以上命中；標題不足 5 字元跳過。0925 用 learn `topics/*/script.zh.md` 131 支正式稿實測：60% 門檻＋5 字門檻命中 21 處（17 支稿）；另試過標題字元依序出現（可跳字）70% 當替代判準，命中暴增到 45 處且多為語意不相關的誤抓，故捨棄依序比例，只留最長連續共同字元一種判準。是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）靠人判。
 - R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/robust/seamless/underscore/showcase/harness/landscape/paradigm/testament/ever-evolving/game-changer` 等 26 組詞幹；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
-- R-015（en only, experimental）：話術支架匹配（`here's the thing`、`the reality is/that said/at its core/at the end of the day/simply put` 等；刪掉後語意有無損失靠人判）。命中標 `[experimental]`。
+- R-015（en only, experimental）：話術支架匹配（`here's the thing`、句首 `Here's the/what/why/how`、`the reality is/that said/at its core/at the end of the day/simply put` 等；刪掉後語意有無損失靠人判）。命中標 `[experimental]`。
 - R-016（en only, experimental）：分詞尾巴匹配（`, making/allowing/enabling/ensuring/leading to` 等，全篇 >=2 才標，標在命中段；單次是正常英文，連用才是把因果塞進分詞；0930 由一段改全篇）。命中標 `[experimental]`。
 - R-017（en only, experimental，文件級）：句首副詞總結匹配（`Ultimately/Fundamentally/Crucially/Moreover/In conclusion` 等，全篇 >=2 才標，標在第一個正文段；逐句比對，`m` flag 由 `review-ui.html` 加，frontmatter 不寫 flag，沿用 R-011 en 慣例）。命中標 `[experimental]`。
 - R-018（en only, experimental）：疊加式模糊匹配（`may potentially/might potentially/tends to generally/generally speaking/it is important to note`；0930 拿掉 `can often/could possibly`；與 R-008 的分野是 R-008 抓單一模糊詞，本條抓兩個模糊詞講同一件事）。命中標 `[experimental]`。
 - R-019（en only, experimental）：空泛時代開場匹配（`in today's … world/landscape/era` 等）。命中標 `[experimental]`。
 - R-020（en only, experimental）：冒號後單詞收尾匹配（`: nothing.` 形狀，一段 >=2 才標；與 R-010 的分野是 R-010 抓冒號後接清單，本條抓冒號後只有一個詞）。命中標 `[experimental]`。
-- R-021（en only, experimental，文件級）：Stop/Start 口號短句匹配（`Stop`／`Start` 起頭、2～4 字的短句，須是標題整句、段尾或下一句也是短句，全篇 >=1 即標，標在第一個正文段；0930 拿掉 `Don't/Never/Always`，1001 排除後接說明句的步驟小標）。命中標 `[experimental]`。
+- R-021（en only, experimental，文件級）：Stop/Start 口號短句匹配（`Stop`／`Start` 起頭、2～4 字的短句，含標題，全篇 >=1 即標，標在第一個正文段；0930 拿掉 `Don't/Never/Always`）。命中標 `[experimental]`。
 
 - R-022（zh only，文件級）：`[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)`——逗號緊接「而」，排除「而且」「而是」「而非」「而不是」「而不只」「而不光」「而後」「而已」，全篇累積 >=2 才標，標在第一個正文段。
 
@@ -56,11 +56,11 @@ R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturi
 - 文體不對等：正例是行銷文，人類對照是散文，兩者差距有一部分來自文體而非 AI。人類對照 10 篇完全沒有 Markdown 標題；R-021 正例 9 篇裡有 4 篇只靠標題命中，這部分只有反例（有標題、0 命中）當對照。
 - 已知穩定性：0930 另在 marketing repo 32 篇英文 >=300 字的稿件上跑新規則，正文 0 命中；唯一命中是 `ledger.md` 表格裡的上述三則標題。這批稿件起草時已套本 repo 約束，只能證明不亂報，不能證明抓得到。
 
-**1001 第二輪**（換 8 個沒看過的題目：新聞稿、關於我們、研討會邀請信、X 串文、職缺、podcast 節目筆記、歡迎信、比較頁；題目檔與語料都在 repo 外，`gen-pos.sh --tasks`）。這輪第一次有**準確率**：R-015／R-021 的 14 處命中，作者逐處連前後段人判。
-- R-015：11 處裡 4 處判 AI 腔（三處 `here's the thing`、一處 `Here's the big news.`）。其餘 7 處都是句首 `Here's why/how`：X 串文第一則的 `Here's why we built it 🧵` 是文體慣例，`Here's how X compares.` 是路標句。拿掉句首 `Here's` 支。
-- R-021：3 處全誤判，都是 `**Start small.** Head into the app and…` 這類後接具體做法的步驟小標。改為只認標題整句、段尾、或下一句也是短句。
-- 改後觸發篇數（正例 0930／正例 1001／反例）：R-015 2/3/0、R-021 8/0/0。新條件是看過 1001 命中才定的，下一輪仍要換題驗。
-- LinkedIn 標題 `X. Here's the Filter I Actually Use.` 這類句首 `Here's` 已不進機械 pattern；算不算毛病仍待作者看整段。
+**1001／1002 第二輪**（換 8 個沒看過的題目：新聞稿、關於我們、研討會邀請信、X 串文、職缺、podcast 節目筆記、歡迎信、比較頁；題目檔與語料都在 repo 外，`gen-pos.sh --tasks`）。R-015／R-021 的 14 處命中由作者逐處連前後段人判，**判了兩次、結果相反**：
+- 1001 問「規則該不該抓」：R-015 11 處判 4 處是（句首 `Here's why/how` 7 處算串文慣例／路標句），R-021 3 處（`**Start small.** Head into the app and…` 步驟小標）全判誤判；0.2.13 據此拿掉 R-015 句首 `Here's` 支、R-021 排除步驟小標。
+- 1002 逐處問「是不是 AI 腔」：14 處全判是。作者裁定以 1002 為準，0.2.14 撤回 0.2.13 的兩處收窄，pattern 回到 0930 版。
+- 觸發篇數（正例 0930／正例 1001／反例）：R-015 14/11/1、R-021 9/3/0。
+- 已知限制：兩次問法不同；1002 的 14/14 是「命中處讀起來像 AI」，正例全是 Claude 產出，不等於人寫文字上的誤報率。LinkedIn 標題 `X. Here's the Filter I Actually Use.` 這類句首 `Here's` 依 1002 裁定視為該改。
 
 八條**仍為 experimental**。
 
