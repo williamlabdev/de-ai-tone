@@ -15,7 +15,7 @@
 ## 跑
 
 ```bash
-C=/tmp/de-ai-tone-calib          # repo 外任一目錄
+C=/path/outside/repo/calib-NNNN   # repo 外的持久目錄，不要放 /tmp（1004 那輪重開機清空遺失）
 tools/calib/gen-pos.sh $C/pos
 tools/calib/gen-pos.sh $C/pos2 --punchy
 # 換題：tools/calib/gen-pos.sh $C/pos --tasks $C/tasks.txt
