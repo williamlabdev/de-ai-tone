@@ -79,9 +79,9 @@ const PE = {
   r011: /^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$/m,
   // R-014～R-021（0926 新增，英文特有；0930 首輪校準見 tools/README.md；R-015 於 1002 畢業，其餘仍為 experimental）。r017／r021 逐句 .test()，
   // 故刻意不帶 g flag（帶 g 的 regex .test() 會因 lastIndex 殘留而漏判）。
-  r014: /\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b/gi,
+  r014: /\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b/gi,
   r015: /\b(?:here'?s the thing|(?:^|(?<=[.!?]\s))here'?s (?:the|what|why|how)|the (?:reality|truth) is|let'?s be clear|make no mistake|it'?s worth noting|worth noting that|that said|in other words|at its core|at the end of the day|simply put(?=\s*[,:])|put simply|the (?:key insight|bottom line) is|what this means in practice)\b/gi,
-  r016: /,\s+(?:making|allowing|enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b/gi,
+  r016: /,\s+(?:enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b/gi,
   r017: /^(?:Ultimately|Fundamentally|Crucially|Importantly|Notably|Essentially|Arguably|Moreover|Furthermore|Additionally|In conclusion|In summary)\b/i,
   r018: /\b(?:may potentially|might potentially|tends? to generally|generally speaking|it is important to note)\b/gi,
   r019: /\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b/gi,
@@ -120,11 +120,11 @@ R-022 en: 不適用，英文原生寫作沒有翻譯腔這個缺陷類別，英�
 R-013 zh: 無可計數的字面判準，需比對改寫前後兩個版本，並逐句核對插入的細節是否能從這集素材（截圖、錄影、分鏡稿註記）查證、有沒有代筆作者本人經驗，三者都要人工比對兩份稿件與外部素材，不是單一稿件內字數或標點可以抓的型態；沿用R-001、R-003、R-005、R-012既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP，未在tools/review-ui.html實作P／PE或跨行函式，因為review-ui一次只讀一份稿件，沒有原稿比對版本與外部素材可查。
 R-013 en: no countable literal pattern, requires diffing the rewritten draft against its pre-edit version, checking every inserted sentence against this episode's screenshots, recordings and storyboard notes, and confirming no sentence ghost-writes the author's own experience; not implemented in review-ui.html since review-ui only ever loads one draft at a time with no access to the prior version or the episode's source material. 本repo沒有英文口播稿語料可測，此原則的英文版本僅供參考、未經實測校準。
 R-014 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-R-014 en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
+R-014 en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
 R-015 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
 R-015 en: (?i)\b(?:here'?s the thing|(?:^|(?<=[.!?]\s))here'?s (?:the|what|why|how)|the (?:reality|truth) is|let'?s be clear|make no mistake|it'?s worth noting|worth noting that|that said|in other words|at its core|at the end of the day|simply put(?=\s*[,:])|put simply|the (?:key insight|bottom line) is|what this means in practice)\b
 R-016 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-R-016 en: ,\s+(?:making|allowing|enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b，全篇>=2
+R-016 en: ,\s+(?:enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b，全篇>=2
 R-017 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
 R-017 en: (?i)^(?:Ultimately|Fundamentally|Crucially|Importantly|Notably|Essentially|Arguably|Moreover|Furthermore|Additionally|In conclusion|In summary)\b，全篇>=2
 R-018 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
