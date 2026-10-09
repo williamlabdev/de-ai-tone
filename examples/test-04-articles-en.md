@@ -32,7 +32,7 @@ Less is more.
 
 Our robust platform leverages cutting-edge models. Here's the thing: nobody reads logs.
 
-We cache aggressively, making reads fast, allowing deploys anytime.
+We cache aggressively, enabling fast reads, ensuring deploys anytime.
 
 Ultimately, we chose Postgres. Fundamentally, rows beat documents.
 

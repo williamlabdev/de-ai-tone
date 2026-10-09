@@ -13,7 +13,7 @@
 
 用法三行：
 
-1. 稿件檔頭註明 `tone-version`，值抄本 repo 的 `VERSION`（現為 `0.2.16`）。
+1. 稿件檔頭註明 `tone-version`，值抄本 repo 的 `VERSION`（現為 `0.2.17`）。
 2. 起草時載入 `prompts/style-constraints.md`，完稿後對 `rules/` 逐條自查。
 3. 新增禁式時先抄 `rules/_template.md`，一條一檔，編號遞增。
 
