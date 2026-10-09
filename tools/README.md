@@ -67,11 +67,12 @@ R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturi
 - 人寫 20 篇：R-015 觸發 4 篇、R-021 0 篇。R-015 的 4 處作者也判該標（`Here's what you can expect next:`、`So in other words`、`Make no mistake:`），其中 Warby Parker FAQ 的 `simply put all five frames back` 是 `simply` 修飾動詞 `put`、非銜接語，判為字面誤撞，0.2.15 收窄為 `simply put` 後接逗號或冒號。
 - 作者裁定 R-015 的「準」以「命中句刪掉後語意不損」為準，人寫也一樣標（家規品質檢查，不是躲檢測），據此 R-015 脫離 experimental。R-021 兩批正例僅 1 處命中、人寫 0 處，樣本不足，維持 experimental。
 
-**1004 第四輪**（免訂閱可跑的部分先跑；語料在 repo 外 `/tmp/de-ai-tone-calib-en/`，交接見該目錄 `README.md`）。
-題目是全新 8 題（whitepaper、annual-letter、referral-email、winback-email、instagram、tiktok-script、sales-flyer、gift-guide，見 `tasks-1004.txt`），三模型正例待訂閱恢復用 `gen-pos.sh` 補；先跑完的是本模型直寫 8 篇（`pos/*-spark.md`）、williamlab-site 英文現況 20 篇（`neg.list`）、PG 散文 10 篇（`fetch-human.sh` 新抓）、Wayback 2022-11 前人寫行銷稿 10 篇（`wayback-human/`，2021–2022 初快照，`fetch-wayback.py`）：
+**1004 第四輪**（免訂閱可跑的部分先跑；語料原放 `/tmp/de-ai-tone-calib-en/`，重開機清空，連同 `tasks-1004.txt`、`gen-pos-qwen.sh` 與 Wayback 覆核紀錄一起遺失）。
+題目原為全新 8 題（whitepaper、annual-letter、referral-email、winback-email、instagram、tiktok-script、sales-flyer、gift-guide）；先跑完的是本模型直寫 8 篇（`pos/*-spark.md`）、williamlab-site 英文現況 20 篇（`neg.list`）、PG 散文 10 篇（`fetch-human.sh` 新抓）、Wayback 2022-11 前人寫行銷稿 10 篇（`wayback-human/`，2021–2022 初快照，`fetch-wayback.py`）：
 - spark 8 篇 R-014～R-021 全零命中（null result，不當證據；單模型寫不出觸發，落差本身說明要等三模型）。
-- Wayback 10 篇：R-014 觸發 2 篇（Atlassian 2021 `empower`＋`unlocks`、Mailchimp 2022 `empower`＋`ever-evolving`＋`fostering`），作者覆核兩處皆誤判——四詞在行銷文體是正常詞彙，0.2.16 自詞表移出；其餘六條零命中。
-- 另本地 `qwen3.8:27b` 非 Claude 正例 8 篇產生中（`gen-pos-qwen.sh`，補「正例只有 Claude」的缺口；舊模型腔調正是 R-017／R-018／R-019／R-020 這類預防性規則要的）。
+- Wayback 10 篇：R-014 觸發 2 篇（Atlassian 2021 `empower`＋`unlocks`、Mailchimp 2022 `empower`＋`ever-evolving`＋`fostering`），作者覆核兩處皆誤判——四詞在行銷文體是正常詞彙，0.2.16 自詞表移出；其餘六條零命中。覆核紀錄隨 `/tmp` 遺失，移出的依據只剩這 2 篇，待有語料再驗。
+- 另本地 `qwen3.8:27b` 非 Claude 正例 8 篇未完成（`gen-pos-qwen.sh`，補「正例只有 Claude」的缺口；舊模型腔調正是 R-017／R-018／R-019／R-020 這類預防性規則要的）：腳本與產出隨 `/tmp` 遺失，待重跑。
+- 1009 補三模型正例（語料在 repo 外持久目錄 `calib-1004/`，8 文體 prompt 重寫，`gen-pos.sh --tasks`，opus／sonnet／haiku 各 8 篇）：R-014～R-021 **全零命中 0／24**；原文直接 grep R-014 詞表全批僅 1 詞（`leverage`），移出的四詞 0 次。三模型也寫不出觸發，推翻「單模型才零命中」的推論；0930 haiku 8／48 觸發 R-014、這輪 0／8，可能是模型換代，未查證。四詞移出在這批無從驗證（正反都沒證據）。現行 Claude 中性直寫已不太產生這類腔調，後續正例改找非 Claude 或舊模型來源。
 
 其餘七條（R-014、R-016～R-021）**仍為 experimental**。
 
