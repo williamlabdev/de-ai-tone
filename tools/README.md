@@ -73,6 +73,8 @@ R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturi
 - Wayback 10 篇：R-014 觸發 2 篇（Atlassian 2021 `empower`＋`unlocks`、Mailchimp 2022 `empower`＋`ever-evolving`＋`fostering`），作者覆核兩處皆誤判——四詞在行銷文體是正常詞彙，0.2.16 自詞表移出；其餘六條零命中。覆核紀錄隨 `/tmp` 遺失，移出的依據只剩這 2 篇，待有語料再驗。
 - 另本地 `qwen3.8:27b` 非 Claude 正例 8 篇未完成（`gen-pos-qwen.sh`，補「正例只有 Claude」的缺口；舊模型腔調正是 R-017／R-018／R-019／R-020 這類預防性規則要的）：腳本與產出隨 `/tmp` 遺失，待重跑。
 - 1009 補三模型正例（語料在 repo 外持久目錄 `calib-1004/`，8 文體 prompt 重寫，`gen-pos.sh --tasks`，opus／sonnet／haiku 各 8 篇）：R-014～R-021 **全零命中 0／24**；原文直接 grep R-014 詞表全批僅 1 詞（`leverage`），移出的四詞 0 次。三模型也寫不出觸發，推翻「單模型才零命中」的推論；0930 haiku 8／48 觸發 R-014、這輪 0／8，可能是模型換代，未查證。四詞移出在這批無從驗證（正反都沒證據）。現行 Claude 中性直寫已不太產生這類腔調，後續正例改找非 Claude 或舊模型來源。
+- 1009 本地 `qwen3.8:27b` 正例 8 篇（同題同指令，走 ollama）：R-014 觸發 2／8、R-016 1／8，其餘六條零命中。作者逐處獨立判：R-014 命中 5 處僅 1 處 AI 腔（`elevate the daily ritual of cooking into an art form` 那段），`seamlessly`／`robust`／`game-changer`／另一處 `elevate` 判不是；R-016 3 處（`, allowing`／`, making`×2）全判不是。另 `empowering`（0.2.16 已移出）出現在腳本 `Tone:` 標籤行，作者判 AI 腔，單筆不足以回收。
+- 同 9 處另跑模型盲判對照（只問 AI 或 HUMAN，不附規則）：sonnet 9 處全判 AI、haiku 8／9 判 AI，與作者一致 2／9、1／9；qwen 判自己的產出 8／9 為 HUMAN，一致 6／9 但漏掉作者判 AI 的 2 處。三者都不能當人判的替代或預篩。
 
 其餘七條（R-014、R-016～R-021）**仍為 experimental**。
 
