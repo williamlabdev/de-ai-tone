@@ -1,21 +1,21 @@
 ---
 id: R-014
 slug: llm-lexical-fingerprint
-tone-version: 0.2.17
+tone-version: 0.2.18
 languages: [en]
 profiles:
   articles: strict
   narration: strict
 mechanical:
   zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-  en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
+  en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
 ---
 
 # R-014 LLM 詞彙指紋 / LLM lexical fingerprint
 
 ## 現象
 
-英文稿密集出現一組 LLM 生成文字的高頻詞：`delve`、`leverage`、`crucial`、`pivotal`、`myriad`、`plethora`、`tapestry`、`underscore`、`showcase`、`harness`、`realm`、`landscape`、`paradigm`、`holistic`、`testament`、`fast-paced`、`cutting-edge`、`streamline`、`elevate`、`comprehensive`。這些字本身沒有拼字或文法問題，但人類作者很少自然地這樣密集使用，出現即是可疑指紋，不代表單次出現就一定違規。
+英文稿密集出現一組 LLM 生成文字的高頻詞：`delve`、`leverage`、`seamless`、`crucial`、`pivotal`、`myriad`、`plethora`、`tapestry`、`underscore`、`showcase`、`foster`、`harness`、`realm`、`landscape`、`paradigm`、`holistic`、`testament`、`fast-paced`、`cutting-edge`、`streamline`、`elevate`、`comprehensive`。這些字本身沒有拼字或文法問題，但人類作者很少自然地這樣密集使用，出現即是可疑指紋，不代表單次出現就一定違規。
 
 中文對應形態僅供理解，本條 `languages` 不含 zh：中文行銷稿的對應現象大致是「善用」「賦能」「無縫」「顛覆」「賦予」這類翻譯腔詞彙堆疊，但尚未有語料可校準，不在本條 pattern 內。
 
@@ -56,13 +56,14 @@ The team cut the verification steps from three stages down to one, and shipped t
 
 ## 機械檢查可行性
 
-- 可機械化：英文匹配 `(?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b`，全篇（不含標題）出現 >=2 個不同詞才標記（詞形合併：`leverage`／`leveraging` 算同一詞），標在含命中詞的段落。0930 前是單次即標，校準後改；1004 自詞表移出 `empower`／`unlock`／`foster`／`ever-evolving`、1009 移出 `robust`／`seamless`／`game-changer`（見下）。
+- 可機械化：英文匹配 `(?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b`，全篇（不含標題）出現 >=2 個不同詞才標記（詞形合併：`leverage`／`leveraging` 算同一詞），標在含命中詞的段落。0930 前是單次即標，校準後改；1004 自詞表移出 `empower`／`unlock`／`foster`／`ever-evolving`、1009 移出 `robust`／`seamless`／`game-changer`（見下）；1009b 放回 `foster`／`seamless`（見下）。
 - 只能人審：命中的是正當技術名詞（`tooling landscape`、`test harness`）還是 LLM 慣用詞，需人判斷。
 - 語料定義：剝掉 frontmatter、fenced code block、inline code、HTML 註解後的正文；草稿另要求正文 >=200 英文字且漢字數 <= 英文字數 5%。
 - 本 repo 的英文語料（18 篇英文正本正文 18,808 英文字＋16 份英文草稿正文 21,989 英文字）上此 pattern 命中 3 處（正本 1 處 `tooling landscape`、草稿 2 處 `test harness`），全部是正當技術用語，不足以校準門檻，比照 README 慣例先當提示不當結論。
 - 0930 首輪校準（語料不入 repo；方法見 `tools/README.md`）：正例 48 篇（`claude -p` 中性寫稿指令產出，opus／sonnet／haiku 各 16，prompt 不提風格）、反例 19 篇（作者網站已發佈英文文：AI 協作起草、作者裁決定稿，部分發佈前經本 repo 規則掃過）、人類對照 10 篇（Paul Graham 散文）。改規則前觸發篇數 正例 8／48（全是 haiku，opus／sonnet 0）、反例 1／19（`landscape`）、人類 4／10（單篇 `leverage` 19 次）；改為全篇不同詞>=2 後 正例 3／48、反例 0／19、人類 1／10。n 小、正例只有 Claude、部分 pattern 是看過命中後設計（有過擬合風險），仍為 experimental。
 - 1004 第二輪（Wayback 2022-11 前人寫行銷稿 10 篇，見 `tools/README.md`）：觸發 2 篇（Atlassian 2021 `empower`＋`unlocks`、Mailchimp 2022 `empower`＋`ever-evolving`＋`fostering`），作者覆核兩處皆誤判——四詞在行銷文體是正常詞彙（Atlassian 品牌用語、Mailchimp 標語系），LLM 是從這類文案學走的，指紋方向反了。據此自詞表移出 `empower`／`unlock`／`foster`／`ever-evolving`（0.2.16），仍為 experimental（n 小、需三模型正例驗）。
 - 1009 第三輪（語料不入 repo；方法見 `tools/README.md`）：Claude 三模型正例 24 篇 0 觸發；本地 `qwen3.8:27b` 正例 8 篇觸發 2 篇、命中 5 處，作者逐處獨立判只有 1 處是 AI 腔（`elevate the daily ritual of cooking into an art form`），`seamlessly`／`robust`／`game-changer`／另一處 `elevate` 判不是。據此移出 `robust`／`seamless`／`game-changer`（0.2.17）；`elevate` 一是一否，保留。移出依據只有單一模型 8 篇，仍為 experimental。
+- 1009b 第五輪（Wayback 2023-03～2024 gpt 批 10 篇＋2021～2022-10 pre 批 10 篇，同 9 家公司；語料與判讀在 me repo `calib-1009/`，不入版控；驗 0.2.17 兩處移出有無漏抓）：移出詞 52 處打散盲判——作者判完呈現順序效應（J01–J28 僅 2 是、J29–J52 全 24 是，同句 J08 判否／J33 判是，自述疲勞），Claude 代判在對照表打開後才做（非盲）；Muse 盲判（只看句子）41 yes／10 no／1 unsure，前後半無切點。作者授權下以三票多數決代行重判（J09 三方無多數由 Muse 裁定 yes；此輪證據降級，不取代作者人判）：`foster` 系 7／8 yes、`seamless` 系 8／12 yes，0.2.18 放回；`empower` 系 4／7（J08／J33 同句仍 split，未解，列為下輪最高優先重判項）、`robust` 3／8、`game-changer` 1／2、`unlock`／`ever-evolving` 各 n=1、`making` 4／9、`allowing` 4／7，維持移出。pre 批現行命中 5 處：R-017 不同副詞累積（Moreover＋Essentially）與 R-014 三處（`comprehensive` 比較級用法、引言 `crucial`＋`landscape`、功能名詞 `landscape`）判誤報、pattern 不動；monday `elevate` 堆疊判真命中，維持。仍為 experimental。
 
 ## 適用 profile
 

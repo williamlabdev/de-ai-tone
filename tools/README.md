@@ -24,7 +24,7 @@
 - R-010：冒號起清單匹配（中文計數宣告＋`：`，英文 three/several/following＋`:`；是清單還是引述靠人判）。
 - R-011：句尾單字動詞無受詞（中文按句切分匹配 `[核查對驗審校][。！？，；,.!?;]`（0.2.11 補半形句讀），排除查核/檢查/審查/對上/對完/對不上/對回去/核完；英文整句單字 `Verify/Confirm/Check/Done.`；是否真無受詞靠人判）。en 的 frontmatter 是說明＋pattern 混合體，`mechanical_type: prose`，sync-check 只印 SKIP；可執行版是 `PE.r011`。
 - R-012（partial，跨行）：標題回聲，不是單行 regex，實作在 `review-ui.html` 的 `scanParas` 自訂函式（不在 `P`／`PE` 物件裡），frontmatter `mechanical` 也照 R-001/R-003/R-005 的既有作法寫文字說明、非 regex，`sync-check.py` 對此類值只印 `SKIP`。判準：每個小標題（`#`～`####`）的區段（到下一標題或檔尾，略過清單行）取第一段首句、末段末句，各自去標點空白後跟標題比對最長連續共同字元數，達標題字元數 60% 以上命中；標題不足 5 字元跳過。0925 用 learn `topics/*/script.zh.md` 131 支正式稿實測：60% 門檻＋5 字門檻命中 21 處（17 支稿）；另試過標題字元依序出現（可跳字）70% 當替代判準，命中暴增到 45 處且多為語意不相關的誤抓，故捨棄依序比例，只留最長連續共同字元一種判準。是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）靠人判。
-- R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/underscore/showcase/harness/landscape/paradigm/testament/fast-paced/cutting-edge/streamline/elevate` 等 20 組詞幹；1004 自 27 組移出 `empower`／`unlock`／`foster`／`ever-evolving`、1009 再移出 `robust`／`seamless`／`game-changer`，見下；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
+- R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/seamless/underscore/showcase/foster/harness/landscape/paradigm/testament/fast-paced/cutting-edge/streamline/elevate` 等 22 組詞幹；1004 自 27 組移出 `empower`／`unlock`／`foster`／`ever-evolving`、1009 再移出 `robust`／`seamless`／`game-changer`、1009b 放回 `foster`／`seamless`（`empower` 4／7 未達標，見下）；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
 - R-015（en only，1002 畢業）：話術支架匹配（`here's the thing`、句首 `Here's the/what/why/how`、`the reality is/that said/at its core/at the end of the day/simply put` 等；`simply put` 後須接逗號或冒號；刪掉後語意有無損失靠人判）。
 - R-016（en only, experimental）：分詞尾巴匹配（`, enabling/ensuring/providing/leading to` 等，全篇 >=2 才標，標在命中段；單次是正常英文，連用才是把因果塞進分詞；0930 由一段改全篇；1009 移出 `making`／`allowing`，見下）。命中標 `[experimental]`。
 - R-017（en only, experimental，文件級）：句首副詞總結匹配（`Ultimately/Fundamentally/Crucially/Moreover/In conclusion` 等，全篇 >=2 才標，標在第一個正文段；逐句比對，`m` flag 由 `review-ui.html` 加，frontmatter 不寫 flag，沿用 R-011 en 慣例）。命中標 `[experimental]`。
@@ -76,6 +76,11 @@ R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturi
 - 1009 本地 `qwen3.8:27b` 正例 8 篇（同題同指令，走 ollama）：R-014 觸發 2／8、R-016 1／8，其餘六條零命中。作者逐處獨立判：R-014 命中 5 處僅 1 處 AI 腔（`elevate the daily ritual of cooking into an art form` 那段），`seamlessly`／`robust`／`game-changer`／另一處 `elevate` 判不是；R-016 3 處（`, allowing`／`, making`×2）全判不是。另 `empowering`（0.2.16 已移出）出現在腳本 `Tone:` 標籤行，作者判 AI 腔，單筆不足以回收。
 - 1009 作者據上述人判裁定（0.2.17）：R-014 移出 `robust`／`seamless`／`game-changer`（`elevate` 一是一否，保留）；R-016 移出 `making`／`allowing`（移出前三批 Claude 正例 30 處命中、這兩詞佔 11 處）。依據都是單一模型 8 篇、看過命中才改，有過擬合風險，兩條仍為 experimental，下一批非 Claude 語料要驗這兩處移出有沒有漏抓。
 - 同 9 處另跑模型盲判對照（只問 AI 或 HUMAN，不附規則）：sonnet 9 處全判 AI、haiku 8／9 判 AI，與作者一致 2／9、1／9；qwen 判自己的產出 8／9 為 HUMAN，一致 6／9 但漏掉作者判 AI 的 2 處。三者都不能當人判的替代或預篩。
+
+**1009b 第五輪**（Wayback 兩批各 10 篇：2023-03～2024 發佈 gpt 批、2021～2022-10 發佈 pre 批，同 9 家公司；語料與判讀在 me repo `calib-1009/`，不入版控；驗 0.2.17 移出有無漏抓）：
+- 移出詞 52 處（R-014 移出的 `robust`／`seamless`／`game-changer`、1004 四詞，R-016 移出的 `, making`／`, allowing`）打散盲判：作者 J01–J28 僅 2 是、J29–J52 全 24 是（同句 J08 判否／J33 判是），自述疲勞；Claude 代判在對照表打開後才做（非盲，gpt 批 R-014 14／23 是、pre 批 2／13）；Muse 盲判（只看句子）41 yes／10 no／1 unsure，前後半無切點。
+- 作者授權以三票多數決代行重判（J09 三方無多數由 Muse 裁定 yes；同句對 J03／J16、J29／J42／J43、J45／J52 已一致，J08／J33 仍 split；此輪證據降級，不取代作者人判）：三方一致 12／52（全 yes 9、全 no 3：J12、J15、J26）；`foster` 系 7／8、`seamless` 系 8／12 → 0.2.18 放回 R-014；`empower` 系 4／7、`robust` 3／8、`game-changer` 1／2、`unlock`／`ever-evolving` 各 n=1、`making` 4／9、`allowing` 4／7 → 維持移出。`empower`（J08／J33 同句 split 未解）為下輪最高優先重判項。
+- pre 批現行命中 5 處（`calib.out`）：R-017（Moreover＋Essentially，不同副詞累積，照自家判準應放行）與 R-014 三處（`comprehensive` 比較級用法、引言 `crucial`＋`landscape`、功能名詞 `landscape`）判誤報、pattern 不動；monday `elevate` 堆疊判真命中。R-014 仍為 experimental。
 
 其餘七條（R-014、R-016～R-021）**仍為 experimental**。
 
