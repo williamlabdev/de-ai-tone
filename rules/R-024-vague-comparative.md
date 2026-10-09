@@ -1,14 +1,14 @@
 ---
 id: R-024
 slug: vague-comparative
-tone-version: 0.2.11
+tone-version: 0.2.16
 languages: [zh, en]
 profiles:
   articles: strict
   narration: strict
 mechanical:
   zh: 比較[^\s，。]{1,4}
-  en: (?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)\b(?:kind of|sort of|somewhat|a bit|relatively|rather(?!\s+than))\b
+  en: (?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b
 ---
 
 # R-024 旁白避免空泛的「比較 X」 / Vague comparative without a target
@@ -85,8 +85,9 @@ It ends up mixing up what you said earlier.
 
 ## 機械檢查可行性
 
-- 可機械化：中文匹配 `比較[^\s，。]{1,4}`（如「比較長」「比較淺」「比較容易」），標記待審；英文匹配 `(?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)\b(?:kind of|sort of|somewhat|a bit|relatively|rather(?!\s+than))\b`，標記待審（0928 首輪校準前本 repo 沒有英文口播稿語料可測，此 pattern 僅供參考、未經實測校準，比照 R-012／R-013 慣例先當提示不當結論）。
+- 可機械化：中文匹配 `比較[^\s，。]{1,4}`（如「比較長」「比較淺」「比較容易」），標記待審；英文匹配 `(?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b`，標記待審（0928 首輪校準前本 repo 沒有英文口播稿語料可測，此 pattern 僅供參考、未經實測校準，比照 R-012／R-013 慣例先當提示不當結論）。
 - 0928 英文首輪校準（williamlab.dev 站上 18 篇英文正文現抓）：舊 pattern 共命中 44 處，其中 43 處是 `rather than＋明確對象`（本條人判標準本就放行）、3 處 `the/that kind of＋名詞`（表類別）、4 處 `would/'d rather＋動詞`（表寧可）——三類都是「永遠不會是真 hedge」的文法形狀，比照 R-022 排除詞作法機械排除（0.2.11）。排除後 18 篇殘留 0 處；真 hedge（`kind of long`、`somewhat shallow`、`a bit more easily`）對照組照抓。`would/'d rather` 的排除只認緊鄰（`would rather`／`'d rather`），更遠的自行放行靠人判。
+- 1004 第二輪（旁白校準 calib-1003-narration，hum 英文逐字稿）：`in a bit`（時間，如 talking about projects in a bit，J025 作者判誤判）、`a bit further/farther`（方向，如 scroll down a bit further，J023）兩類同屬「永遠不會是真 hedge」的口語形狀，比照 0928 作法機械排除（0.2.16）。`a bit＋比較級`（如 a bit quicker，J022 對象在同段）維持標記，靠人判。
 - 只能人審的部分：同句有無明確比較對象（跟／和／比…），有則放行；沒有則改寫成具體程度或結果，需人判斷。
 
 ## 適用 profile

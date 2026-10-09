@@ -16,13 +16,14 @@ function loadReviewUi() {
   return { scanParas: sb.scanParas, PE: vm.runInContext("PE", sb), splitSentEn: vm.runInContext("splitSentEn", sb) };
 }
 
-// 剝 mdx frontmatter、import/export、JSX 自閉合標籤與 code fence
+// 剝 mdx frontmatter、import/export、JSX 自閉合標籤、code fence 與修稿 log 行（1004 C1：含 .author-log/ 的整行，J070）
 function clean(text) {
   return text
     .replace(/^---\n[\s\S]*?\n---\n/, "")
     .replace(/^(?:import|export) .*$/gm, "")
     .replace(/```[\s\S]*?```/g, "")
-    .replace(/<[A-Z][^>]*\/>/g, "");
+    .replace(/<[A-Z][^>]*\/>/g, "")
+    .replace(/^.*\.author-log\/.*$/gm, "");
 }
 
 // 參數 label=<目錄>（取其中 .md/.mdx）或 label=<清單檔>（一行一個路徑）

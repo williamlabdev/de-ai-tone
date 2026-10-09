@@ -9,7 +9,7 @@
 
 機械 pattern 的唯一真相源是各規則 frontmatter `mechanical`（0920 裁決）。後綴約定：人判說明以後綴形式接在 pattern 之後，起頭為 `，`／`；`＋關鍵字（`計數`／`人判`／`排除`／`全篇`／`一段`／`3+`其一；見 `rules/_template.md`），`patterns.py` 與 sync-check 共用同一套剝離；新增後綴措辭須沿用關鍵字，否則 sync-check 會把後綴當本體比對而報 DRIFT。`mechanical_type` 可顯式覆寫分類（`zh:/en: regex|prose`，如 R-004 判定描述體、R-011 en 說明＋pattern 混合體）；沒寫時沿用啟發式（含 `|`／`\b`／`[`／`(?` 即 regex）。pattern 裡的 `(?i)` 只在開頭放一個（0922 起；舊寫法逐段放，Python `re` 編不過），實作時用 `re.I` 亦可。
 
-機械層計數前先把 `[待補：…]`／`[TODO…]` 佔位符剝掉（0922 裁決，起因是 R-009 把佔位符當成列舉項目誤報）；佔位符本身不歸機械層管，由 `drafts/REVIEW-CHECKLIST.md` 清點。檔頭 YAML frontmatter 整段剝掉不掃（0.2.11；舊版把 `tone-version: 0.1.0` 這類短行當 R-005 誤標，文件級標籤還錨定在檔頭上）。段＝空行分隔，R-001／R-005 看段內行（0.2.11；舊版一行一段，包起來的長段會被拆散誤觸）。清單行（`-`／`*`／數字編號）跳過 R-001／R-005／R-009／R-011（結構行非散文句型，其餘規則照掃）。外部的機械檢查工具是另一個消費者，不搬進本 repo，各自對齊 frontmatter。
+機械層計數前先把 `[待補：…]`／`[TODO…]` 佔位符剝掉（0922 裁決，起因是 R-009 把佔位符當成列舉項目誤報）；佔位符本身不歸機械層管，由 `drafts/REVIEW-CHECKLIST.md` 清點。檔頭 YAML frontmatter 整段剝掉不掃（0.2.11；舊版把 `tone-version: 0.1.0` 這類短行當 R-005 誤標，文件級標籤還錨定在檔頭上）。段＝空行分隔，R-001／R-005 看段內行（0.2.11；舊版一行一段，包起來的長段會被拆散誤觸）。清單行（`-`／`*`／數字編號）跳過 R-001／R-005／R-009／R-011（結構行非散文句型，其餘規則照掃）。含 `.author-log/` 的修稿 log 整行剝掉不掃（1004 C1；起因是 J070：R-009 誤觸混入正文的製作註記）。外部的機械檢查工具是另一個消費者，不搬進本 repo，各自對齊 frontmatter。
 
 可機械化的（計數即標記，中英文分開算；機械寧可多標，人判負責放行；pattern 裡的 `(?i)` 只在開頭放一個（0922 起；舊寫法逐段放，Python `re` 編不過），實作時用 `re.I` 亦可）：
 
@@ -24,7 +24,7 @@
 - R-010：冒號起清單匹配（中文計數宣告＋`：`，英文 three/several/following＋`:`；是清單還是引述靠人判）。
 - R-011：句尾單字動詞無受詞（中文按句切分匹配 `[核查對驗審校][。！？，；,.!?;]`（0.2.11 補半形句讀），排除查核/檢查/審查/對上/對完/對不上/對回去/核完；英文整句單字 `Verify/Confirm/Check/Done.`；是否真無受詞靠人判）。en 的 frontmatter 是說明＋pattern 混合體，`mechanical_type: prose`，sync-check 只印 SKIP；可執行版是 `PE.r011`。
 - R-012（partial，跨行）：標題回聲，不是單行 regex，實作在 `review-ui.html` 的 `scanParas` 自訂函式（不在 `P`／`PE` 物件裡），frontmatter `mechanical` 也照 R-001/R-003/R-005 的既有作法寫文字說明、非 regex，`sync-check.py` 對此類值只印 `SKIP`。判準：每個小標題（`#`～`####`）的區段（到下一標題或檔尾，略過清單行）取第一段首句、末段末句，各自去標點空白後跟標題比對最長連續共同字元數，達標題字元數 60% 以上命中；標題不足 5 字元跳過。0925 用 learn `topics/*/script.zh.md` 131 支正式稿實測：60% 門檻＋5 字門檻命中 21 處（17 支稿）；另試過標題字元依序出現（可跳字）70% 當替代判準，命中暴增到 45 處且多為語意不相關的誤抓，故捨棄依序比例，只留最長連續共同字元一種判準。是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）靠人判。
-- R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/robust/seamless/underscore/showcase/harness/landscape/paradigm/testament/ever-evolving/game-changer` 等 26 組詞幹；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
+- R-014（en only, experimental）：LLM 詞彙指紋匹配（`delve/leverage/robust/seamless/underscore/showcase/harness/landscape/paradigm/testament/fast-paced/cutting-edge/game-changer/streamline` 等 23 組詞幹；1004 自 27 組移出 `empower`／`unlock`／`foster`／`ever-evolving`，見下；全篇不同詞 >=2 才標，同詞幹變化算一詞；是正當技術名詞還是 LLM 慣用詞靠人判）。命中標 `[experimental]`。
 - R-015（en only，1002 畢業）：話術支架匹配（`here's the thing`、句首 `Here's the/what/why/how`、`the reality is/that said/at its core/at the end of the day/simply put` 等；`simply put` 後須接逗號或冒號；刪掉後語意有無損失靠人判）。
 - R-016（en only, experimental）：分詞尾巴匹配（`, making/allowing/enabling/ensuring/leading to` 等，全篇 >=2 才標，標在命中段；單次是正常英文，連用才是把因果塞進分詞；0930 由一段改全篇）。命中標 `[experimental]`。
 - R-017（en only, experimental，文件級）：句首副詞總結匹配（`Ultimately/Fundamentally/Crucially/Moreover/In conclusion` 等，全篇 >=2 才標，標在第一個正文段；逐句比對，`m` flag 由 `review-ui.html` 加，frontmatter 不寫 flag，沿用 R-011 en 慣例）。命中標 `[experimental]`。
@@ -37,7 +37,7 @@
 
 R-022 是**有改前／改後對照組校準**的一條：以 `decision-provenance.zh.mdx` 同一篇的改前／改後兩版當對照組，改前漢字 2,824、命中 18 處（6.37／千漢字），改後漢字 2,769、命中 **0 處**；williamlab-site 18 篇中文正本裡漢字 >=500 的 15 篇，10 篇命中 >=2（1.37～6.37／千漢字），4 篇僅 1 次、1 篇 0 次未達門檻（0.00～1.17／千漢字）。門檻取「次數 >=2」而非密度，因為乾淨的分界在次數上（改後版是唯一 0 次的長文）；漢字 <500 的短文密度雜訊無法與真訊號分開，不列入判準。
 
-- R-024：模糊比較匹配（中文 `比較[^\s，。]{1,4}`，英文 `kind of/sort of/somewhat/a bit/relatively/rather`；0928 站上 18 篇英文現抓首輪校準：`rather than＋對象`／`the kind of＋名詞`／`would rather＋動詞`三類永非真 hedge，已機械排除，殘留 0 處；同句有無跟／和／比等比較對象靠人判）。
+- R-024：模糊比較匹配（中文 `比較[^\s，。]{1,4}`，英文 `kind of/sort of/somewhat/a bit/relatively/rather`；0928 站上 18 篇英文現抓首輪校準：`rather than＋對象`／`the kind of＋名詞`／`would rather＋動詞`三類永非真 hedge，已機械排除，殘留 0 處；1004 加排除 `in a bit`（時間）與 `a bit further/farther`（方向）（旁白校準 J023／J025，0.2.16）；同句有無跟／和／比等比較對象靠人判）。
 
 R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturity: experimental`、未經實測校準**：在本 repo 的 18 篇英文正本（正文 18,808 英文字）與 16 份英文草稿（正文 21,989 英文字）上（語料定義：剝掉 frontmatter、fenced code、inline code 與 HTML 註解後的正文；草稿取正文 >=200 英文字且漢字數 <= 英文字數 5% 者），R-014 共命中 3 處且全部是正當技術用語（正本 1 處 `tooling landscape`、草稿 2 處 `test harness`），R-016 命中 3 處但每篇皆只 1 次、未達一段 >=2 的門檻，其餘六條零命中。比照 R-012 en 與 R-013 en 的既有慣例，**先當提示不當結論**；門檻與例外要等真的踩到才回頭校準，不要拿零命中當「規則有效」的證據。中文對應形態尚未調查。
 
@@ -66,6 +66,12 @@ R-014～R-021 是 0926 新增的英文 AI 腔候選，**`index.json` 標 `maturi
 - 正例 96 篇：R-015 12 處、R-021 1 處，作者逐處獨立判（Claude 不先給判讀），全判 AI 腔。
 - 人寫 20 篇：R-015 觸發 4 篇、R-021 0 篇。R-015 的 4 處作者也判該標（`Here's what you can expect next:`、`So in other words`、`Make no mistake:`），其中 Warby Parker FAQ 的 `simply put all five frames back` 是 `simply` 修飾動詞 `put`、非銜接語，判為字面誤撞，0.2.15 收窄為 `simply put` 後接逗號或冒號。
 - 作者裁定 R-015 的「準」以「命中句刪掉後語意不損」為準，人寫也一樣標（家規品質檢查，不是躲檢測），據此 R-015 脫離 experimental。R-021 兩批正例僅 1 處命中、人寫 0 處，樣本不足，維持 experimental。
+
+**1004 第四輪**（免訂閱可跑的部分先跑；語料在 repo 外 `/tmp/de-ai-tone-calib-en/`，交接見該目錄 `README.md`）。
+題目是全新 8 題（whitepaper、annual-letter、referral-email、winback-email、instagram、tiktok-script、sales-flyer、gift-guide，見 `tasks-1004.txt`），三模型正例待訂閱恢復用 `gen-pos.sh` 補；先跑完的是本模型直寫 8 篇（`pos/*-spark.md`）、williamlab-site 英文現況 20 篇（`neg.list`）、PG 散文 10 篇（`fetch-human.sh` 新抓）、Wayback 2022-11 前人寫行銷稿 10 篇（`wayback-human/`，2021–2022 初快照，`fetch-wayback.py`）：
+- spark 8 篇 R-014～R-021 全零命中（null result，不當證據；單模型寫不出觸發，落差本身說明要等三模型）。
+- Wayback 10 篇：R-014 觸發 2 篇（Atlassian 2021 `empower`＋`unlocks`、Mailchimp 2022 `empower`＋`ever-evolving`＋`fostering`），作者覆核兩處皆誤判——四詞在行銷文體是正常詞彙，0.2.16 自詞表移出；其餘六條零命中。
+- 另本地 `qwen3.8:27b` 非 Claude 正例 8 篇產生中（`gen-pos-qwen.sh`，補「正例只有 Claude」的缺口；舊模型腔調正是 R-017／R-018／R-019／R-020 這類預防性規則要的）。
 
 其餘七條（R-014、R-016～R-021）**仍為 experimental**。
 

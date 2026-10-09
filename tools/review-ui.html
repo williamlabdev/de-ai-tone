@@ -79,7 +79,7 @@ const PE = {
   r011: /^(?:Verify|Verified|Confirm|Confirmed|Check|Checked|Done)\.$/m,
   // R-014～R-021（0926 新增，英文特有；0930 首輪校準見 tools/README.md；R-015 於 1002 畢業，其餘仍為 experimental）。r017／r021 逐句 .test()，
   // 故刻意不帶 g flag（帶 g 的 regex .test() 會因 lastIndex 殘留而漏判）。
-  r014: /\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b/gi,
+  r014: /\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b/gi,
   r015: /\b(?:here'?s the thing|(?:^|(?<=[.!?]\s))here'?s (?:the|what|why|how)|the (?:reality|truth) is|let'?s be clear|make no mistake|it'?s worth noting|worth noting that|that said|in other words|at its core|at the end of the day|simply put(?=\s*[,:])|put simply|the (?:key insight|bottom line) is|what this means in practice)\b/gi,
   r016: /,\s+(?:making|allowing|enabling|ensuring|helping|giving|leaving|creating|providing|leading to)\b/gi,
   r017: /^(?:Ultimately|Fundamentally|Crucially|Importantly|Notably|Essentially|Arguably|Moreover|Furthermore|Additionally|In conclusion|In summary)\b/i,
@@ -87,7 +87,7 @@ const PE = {
   r019: /\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b/gi,
   r020: /:\s*[A-Za-z]+\.\s*$/gm,
   r021: /^(?:Stop|Start)(?:\s+[\w'’-]+){1,3}[.!]?$/i,
-  r024: /(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)\b(?:kind of|sort of|somewhat|a bit|relatively|rather(?!\s+than))\b/i
+  r024: /(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b/i
 };
 /* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
    不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
@@ -120,7 +120,7 @@ R-022 en: 不適用，英文原生寫作沒有翻譯腔這個缺陷類別，英�
 R-013 zh: 無可計數的字面判準，需比對改寫前後兩個版本，並逐句核對插入的細節是否能從這集素材（截圖、錄影、分鏡稿註記）查證、有沒有代筆作者本人經驗，三者都要人工比對兩份稿件與外部素材，不是單一稿件內字數或標點可以抓的型態；沿用R-001、R-003、R-005、R-012既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP，未在tools/review-ui.html實作P／PE或跨行函式，因為review-ui一次只讀一份稿件，沒有原稿比對版本與外部素材可查。
 R-013 en: no countable literal pattern, requires diffing the rewritten draft against its pre-edit version, checking every inserted sentence against this episode's screenshots, recordings and storyboard notes, and confirming no sentence ghost-writes the author's own experience; not implemented in review-ui.html since review-ui only ever loads one draft at a time with no access to the prior version or the episode's source material. 本repo沒有英文口播稿語料可測，此原則的英文版本僅供參考、未經實測校準。
 R-014 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-R-014 en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|unlock(?:s|ed|ing)?|realm|landscape|paradigm|holistic|testament|ever-(?:evolving|changing)|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|empower(?:s|ed|ing)?|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
+R-014 en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|robust|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|game-?changer|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
 R-015 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
 R-015 en: (?i)\b(?:here'?s the thing|(?:^|(?<=[.!?]\s))here'?s (?:the|what|why|how)|the (?:reality|truth) is|let'?s be clear|make no mistake|it'?s worth noting|worth noting that|that said|in other words|at its core|at the end of the day|simply put(?=\s*[,:])|put simply|the (?:key insight|bottom line) is|what this means in practice)\b
 R-016 zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
@@ -138,7 +138,7 @@ R-021 en: (?i)^(?:Stop|Start)(?:\s+[\w'’-]+){1,3}[.!]?$，全篇>=1，含標�
 R-023 zh: 可寫成規則式判準（全形冒號前是一到四個字的短標籤如工作流／Mac／付費版／例，或卡片文字內出現全形分號把兩件事並列成對句），但review-ui.html只讀取貼上的script.zh.md旁白文字，卡片與圖說文字是寫在storyboard檔案的表格欄位裡（textcard/statement語法標記引號內的文字），這個工具從來不載入storyboard檔案，沒有欄位可以套用這條判準去掃；沿用R-001、R-003、R-005、R-012、R-013既有作法，frontmatter直接寫文字說明，sync-check對非regex字串只做SKIP。
 R-023 en: expressible as a rule (a one to four character label before a full width colon, such as workflow, Mac, paid plan, example; or a full width semicolon inside the card pairing two things into a matched couplet), but review-ui.html only ever loads the pasted script.zh.md narration text; card and caption text lives in the storyboard file's table column, quoted inside a textcard markup tag, a file this tool never loads, so there is no field to run this check against. 本repo沒有可掃描的卡片欄位可測，此原則的英文版本僅供參考、未經實測校準。
 R-024 zh: 比較[^\s，。]{1,4}
-R-024 en: (?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)\b(?:kind of|sort of|somewhat|a bit|relatively|rather(?!\s+than))\b
+R-024 en: (?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -151,7 +151,9 @@ function scanParas(text){
   // 短行（tone-version: 0.1.0）誤觸 R-005，文件級標籤還錨定在它上面。
   // 0929：HTML 註解（<!-- -->）一併剝掉——learn 腳本把撰稿規格、錨點、修稿紀錄寫在註解裡，
   // 舊版當旁白掃，R-009／R-014[en] 等大量命中落在備註上。
-  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, "").replace(/<!--[\s\S]*?-->/g, "");
+  // 1004（C1）：含 `.author-log/` 的整行剝掉——修稿 log 行（0911 (…)AI感修稿…備份:.author-log/…）
+  // 遍佈 100+ 支正式稿，舊版當旁白掃（J070 作廢：R-009 誤觸製作註記）。
+  const noFm = text.replace(/^---\n[\s\S]*?\n---\s*\n?/, "").replace(/<!--[\s\S]*?-->/g, "").replace(/^.*\.author-log\/.*$/gm, "");
   const raw=[];
   noFm.split(/\n\s*\n/).forEach(chunk=>{
     const lines=chunk.split(/\n/).map(s=>s.trim()).filter(s=>s.length);
