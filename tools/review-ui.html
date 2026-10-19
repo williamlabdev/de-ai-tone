@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔規則，除 R-015（1002 第三輪畢業）外 <strong>index.json 標 maturity: experimental</strong>（0930 首輪小樣本校準、1001／1002 R-015／R-021 第二輪人判，見 tools/README.md），命中標 [experimental]，先當提示不當結論；其中 R-017、R-016 是全篇門檻（>=2 才標），R-014 是全篇不同詞 >=2，R-021 是全篇 >=1（含標題），R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-025→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔規則，除 R-015（1002 第三輪畢業）外 <strong>index.json 標 maturity: experimental</strong>（0930 首輪小樣本校準、1001／1002 R-015／R-021 第二輪人判，見 tools/README.md），命中標 [experimental]，先當提示不當結論；其中 R-017、R-016 是全篇門檻（>=2 才標），R-014 是全篇不同詞 >=2，R-021 是全篇 >=1（含標題），R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-025（段尾免責補丁）是文件級門檻：取每個正文段（非標題、非清單、>=2 句）的末句，含限定／免責詞組即計一段，全篇命中段 >=35% 且可計段 >=5 才標 R-025[doc]（標在第一個命中段）；末句含漢字走 P.r025、否則走 PE.r025，合併計數；1019 以 learn 三集病例＋八集對照校準，見 rules/R-025-paragraph-final-hedge.md。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
 <h2>1. 載入稿件</h2>
 <div class="row">
 <input type="file" id="file" accept=".md">
@@ -66,7 +66,9 @@ const P = {
 ,
   r011: /(?<![查檢審復稽])核[。！？，；,.!?;]|(?<![調檢審盤抽排])查[。！？，；,.!?;]|(?<![不得絕面相反派應答核比校])對[。！？，；,.!?;]|(?<![評初複送])審[。！？，；,.!?;]|(?<![經實測考體檢查化試])驗[。！？，；,.!?;]|(?<![學母])校[。！？，；,.!?;]|(?:不用|不必|不要|不能|不會|能|會|可以|得|要|再|先|就|才|都|去|來|直接|照樣|順便|自己|這樣|照著)[跑理看做改裝弄試填貼問答寫讀搜找抄拆搬測刪存傳丟印跳開關][。！？，；,.!?;]/g,
   r022: /[,，]而(?!且)(?!是)(?!非)(?!不是)(?!不只)(?!不光)(?!後)(?!已)/g,
-  r024: /比較[^\s，。]{1,4}/g,};
+  r024: /比較[^\s，。]{1,4}/g,
+  // R-025：只對段末句 .match()，不帶 g；門檻在 scanParas 文件級段落計算
+  r025: /(?:不|沒|別|無法)[^，。；]{0,8}(?:保證|代表|等於|證明|證實|確認|判斷|判定|推定|推斷|倒推|推成|結案|宣布|當成|算數|替你)|沒辦法|不能(?:只|光|單靠|直接|拿來|憑|把)|別(?:光|只|直接)|還是要|還是得|還得|還要|還需要|仍要|仍然要|仍需|也要|也得|得先|要看(?!到|看)|不一定|未必|不見得|也可能|可能也|不是所有|也不是|這只是|只是[^，。；]{1,12}，不是/,};
 // ---------- 機械 pattern（英文，對齊 rules/R-*.md frontmatter mechanical.en；JS 不支援 (?i)，改用 i flag，pattern 本體逐字保留） ----------
 const PE = {
   r002: /\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b.{0,60}\bbut\b|\bnot just\b.{0,60}\bbut\b|\b(?:this|that|these|those|it)(?: is|'s| are)?\s+not\b[^.?]{0,50},\s*(?:it|this|that|these|those)(?: is|'s| are)?\b|\bno (?:single |one )?[^,.!?]{0,40},\s*only\b|\b\w+,\s+not\s+\w+[.;]|\bthe \w+ is not the \w+\b/i,
@@ -87,7 +89,9 @@ const PE = {
   r019: /\bin (?:today'?s|the modern|this new) [\w-]+(?: [\w-]+)? (?:world|landscape|environment|era|age)\b/gi,
   r020: /:\s*[A-Za-z]+\.\s*$/gm,
   r021: /^(?:Stop|Start)(?:\s+[\w'’-]+){1,3}[.!]?$/i,
-  r024: /(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b/i
+  r024: /(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b/i,
+  // R-025：只對段末句 .match()，不帶 g；門檻在 scanParas 文件級段落計算
+  r025: /(?:does|do|did)(?:n'?t| not) (?:guarantee|prove|mean|confirm|establish|promise|settle|tell you|let you|make it|automatically)|not (?:a |the )?(?:guarantee|proof)|not (?:automatically|necessarily)|(?:can|could|may|might) still\b|still (?:needs?|have|has) (?:to|checking)|you(?:'ll)? still|by itself|on its own|that alone|alone (?:doesn'?t|does not|isn'?t|is not)|depends on|not (?:every|all)\b|cannot (?:serve|prove|guarantee|confirm)/i
 };
 /* mechanical 對照（逐字複製 rules/R-*.md frontmatter mechanical.zh／.en，唯讀鏡像，供 tools/sync-check.py 比對 drift；
    不是可執行 pattern，改規則先改 rules/ 再手動同步這段＋上面 P／PE）
@@ -139,6 +143,8 @@ R-023 zh: 可寫成規則式判準（全形冒號前是一到四個字的短標�
 R-023 en: expressible as a rule (a one to four character label before a full width colon, such as workflow, Mac, paid plan, example; or a full width semicolon inside the card pairing two things into a matched couplet), but review-ui.html only ever loads the pasted script.zh.md narration text; card and caption text lives in the storyboard file's table column, quoted inside a textcard markup tag, a file this tool never loads, so there is no field to run this check against. 本repo沒有可掃描的卡片欄位可測，此原則的英文版本僅供參考、未經實測校準。
 R-024 zh: 比較[^\s，。]{1,4}
 R-024 en: (?i)(?<!the\s)(?<!that\s)(?<!a\s)(?<!an\s)(?<!would\s)(?<!'d\s)(?<!’d\s)(?<!in\s)\b(?:kind of|sort of|somewhat|a bit(?!\s+(?:fur?ther|farther))|relatively|rather(?!\s+than))\b
+R-025 zh: (?:不|沒|別|無法)[^，。；]{0,8}(?:保證|代表|等於|證明|證實|確認|判斷|判定|推定|推斷|倒推|推成|結案|宣布|當成|算數|替你)|沒辦法|不能(?:只|光|單靠|直接|拿來|憑|把)|別(?:光|只|直接)|還是要|還是得|還得|還要|還需要|仍要|仍然要|仍需|也要|也得|得先|要看(?!到|看)|不一定|未必|不見得|也可能|可能也|不是所有|也不是|這只是|只是[^，。；]{1,12}，不是，全篇段末命中>=35%且段數>=5
+R-025 en: (?i)(?:does|do|did)(?:n'?t| not) (?:guarantee|prove|mean|confirm|establish|promise|settle|tell you|let you|make it|automatically)|not (?:a |the )?(?:guarantee|proof)|not (?:automatically|necessarily)|(?:can|could|may|might) still\b|still (?:needs?|have|has) (?:to|checking)|you(?:'ll)? still|by itself|on its own|that alone|alone (?:doesn'?t|does not|isn'?t|is not)|depends on|not (?:every|all)\b|cannot (?:serve|prove|guarantee|confirm)，全篇段末命中>=35%且段數>=5
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -300,6 +306,26 @@ function scanParas(text){
   // 對齊 frontmatter 的「，全篇>=2」。用 .match() 不用 .test()，帶 g 的 regex 做 .test() 會因 lastIndex 殘留而漏判。
   const docZh = blocks.filter((b,i)=>!isHeadArr[i]).join("\n");
   const r022Doc = docZh.match(P.r022) || [];
+  // R-025[doc]：段尾免責補丁。文件級門檻：每個正文段（非標題、非清單、切句後 >=2 句）取末句，
+  // 含限定／免責詞組即計一段；命中段／可計段 >=35% 且可計段 >=5 才標，標在第一個命中段。
+  // 單段命中是正常交代條件，病在比例（1019 校準：病例 41／42／64%，對照 0～30%，門檻取中點；見 rules/R-025 機械段）。
+  // 末句含漢字走 P.r025、否則走 PE.r025；.match() 不帶 g，無 lastIndex 問題。
+  const splitSentEnArr = s => (s.match(/[^.!?]+[.!?]?/g) || []).filter(x=>x.trim());
+  const r025 = blocks.map((b,i)=>{
+    if(isHeadArr[i]||isListArr[i]) return null;
+    const t = stripped[i];
+    const zh = ZH_LEN(t)>0;
+    const ss = zh ? splitSentZhArr(t) : splitSentEnArr(t);
+    if(ss.length<2) return null;
+    const last = ss[ss.length-1].trim();
+    const m = last.match(zh ? P.r025 : PE.r025);
+    return {hit: !!m, phrase: m ? m[0] : null};
+  });
+  const r025Elig = r025.filter(Boolean).length;
+  const r025HitList = r025.filter(x=>x&&x.hit);
+  const r025Ratio = r025Elig ? r025HitList.length/r025Elig : 0;
+  const r025DocHit = r025Elig>=5 && r025Ratio>=0.35;
+  const r025FirstIdx = r025.findIndex(x=>x&&x.hit);
   // R-002[zh+en-doc]：全篇門檻（中英文合併計數>=2）。0.2.11 前逐段即標，
   // 與 frontmatter「計數>=2」不一致；現改文件級累計，達標才標段＋首段掛總數。
   const P2 = /不是.*而是|不是.*是|不在.*而在|不在.*而是|不只.*而是|與其.*不如|跟.{0,30}是兩種不同/;
@@ -395,6 +421,7 @@ function scanParas(text){
     if(r022Doc.length>=2 && i===docDashIdx) hits.push({id:"R-022[zh-doc]", why:"逗號＋而黏句 "+r022Doc.length+" 處（全篇≥2），人判：是否把兩個完整子句用逗號焊住再用「而」續下去，改斷句或分號；「而且」「而是」「而非」「而不是」「而不只」「而不光」「而後」「而已」已由 pattern 排除，其餘沒排除到的合法連接詞用法放行"});
     const m24 = t.match(P.r024); if(m24) hits.push({id:"R-024", why:"模糊比較："+[...new Set(m24)].join("、")+"，人判：同句有無跟／和／比等比較對象，有則放行，無則改寫成具體程度或結果"});
     const m24en = t.match(PE.r024); if(m24en) hits.push({id:"R-024[en]", why:"vague comparative: "+[...new Set(m24en)].join("、")+"，人判：同句有無比較對象"});
+    if(r025DocHit && i===r025FirstIdx) hits.push({id:"R-025[doc]", why:"段尾免責補丁 "+r025HitList.length+"／"+r025Elig+" 段（"+Math.round(r025Ratio*100)+"%，≥35% 且可計段≥5）："+[...new Set(r025HitList.map(x=>x.phrase))].join("、")+"，人判：末句真有條件要交代且下一段緊接展開的放行；其餘刪末句讓段落停在例子上，或把限定併進前一句，不換另一句限定"});
     if(titleEchoHits[i]) titleEchoHits[i].forEach(h=>{
       hits.push({id:"R-012", why:"標題回聲（"+h.tag+"跟「"+h.headingText+"」重疊"+Math.round(h.ratio*100)+"%），人判：是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）"});
     });
