@@ -1,7 +1,7 @@
 ---
 id: de-ai-writer
 role: writer
-tone-version: 0.2.19
+tone-version: 0.2.20
 ---
 
 # Writer — 生稿，不自審

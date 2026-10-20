@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.19",
+  "tone-version": "0.2.20",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-025", "R-013"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-025", "R-026", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -183,6 +183,13 @@
       "slug": "paragraph-final-hedge",
       "file": "R-025-paragraph-final-hedge.md",
       "title": "段尾免責補丁 / Paragraph-final hedge",
+      "profiles": { "articles": "relaxed", "narration": "strict" }
+    },
+    {
+      "id": "R-026",
+      "slug": "paragraph-final-aphorism",
+      "file": "R-026-paragraph-final-aphorism.md",
+      "title": "段尾金句收束 / Paragraph-final aphorism",
       "profiles": { "articles": "relaxed", "narration": "strict" }
     }
   ]
