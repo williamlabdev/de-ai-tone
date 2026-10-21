@@ -439,7 +439,56 @@
       "block": 1,
       "head": false,
       "hits": [
-        "R-004"
+        "R-004",
+        "R-029[experimental]"
+      ]
+    }
+  ],
+  "examples/test-07-narration-lexical-zh.fixed.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    }
+  ],
+  "examples/test-07-narration-lexical-zh.md": [
+    {
+      "block": 0,
+      "head": true,
+      "hits": [
+        "HEADING"
+      ]
+    },
+    {
+      "block": 1,
+      "head": false,
+      "hits": [
+        "R-028"
+      ]
+    },
+    {
+      "block": 2,
+      "head": false,
+      "hits": [
+        "R-029[experimental]"
+      ]
+    },
+    {
+      "block": 3,
+      "head": false,
+      "hits": [
+        "R-009",
+        "R-029[experimental]",
+        "R-029[低信心][experimental]"
+      ]
+    },
+    {
+      "block": 4,
+      "head": false,
+      "hits": [
+        "R-029[低信心][experimental]"
       ]
     }
   ]
