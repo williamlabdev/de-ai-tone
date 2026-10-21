@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.21",
+  "tone-version": "0.2.22",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-025", "R-026", "R-013"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-025", "R-026", "R-027", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -191,6 +191,14 @@
       "file": "R-026-paragraph-final-aphorism.md",
       "title": "段尾金句收束 / Paragraph-final aphorism",
       "profiles": { "articles": "relaxed", "narration": "strict" }
+    },
+    {
+      "id": "R-027",
+      "slug": "echo-question",
+      "file": "R-027-echo-question.md",
+      "title": "回聲問句自答 / Echo question",
+      "profiles": { "articles": "strict", "narration": "strict" },
+      "maturity": "experimental"
     }
   ]
 }
