@@ -6,20 +6,6 @@
       "hits": [
         "HEADING"
       ]
-    },
-    {
-      "block": 1,
-      "head": false,
-      "hits": [
-        "R-009[低信心]"
-      ]
-    },
-    {
-      "block": 10,
-      "head": false,
-      "hits": [
-        "R-009"
-      ]
     }
   ],
   "drafts/claude-intro-narration.md": [
@@ -29,20 +15,6 @@
       "hits": [
         "HEADING"
       ]
-    },
-    {
-      "block": 2,
-      "head": false,
-      "hits": [
-        "R-009"
-      ]
-    },
-    {
-      "block": 15,
-      "head": false,
-      "hits": [
-        "R-009"
-      ]
     }
   ],
   "drafts/enterprise-ai-intro-article.md": [
@@ -51,20 +23,6 @@
       "head": true,
       "hits": [
         "HEADING"
-      ]
-    },
-    {
-      "block": 1,
-      "head": false,
-      "hits": [
-        "R-009"
-      ]
-    },
-    {
-      "block": 7,
-      "head": false,
-      "hits": [
-        "R-009"
       ]
     }
   ],
@@ -80,8 +38,7 @@
       "block": 3,
       "head": false,
       "hits": [
-        "R-008",
-        "R-009"
+        "R-008"
       ]
     }
   ],
@@ -146,8 +103,7 @@
       "block": 3,
       "head": false,
       "hits": [
-        "R-008",
-        "R-009"
+        "R-008"
       ]
     }
   ],
