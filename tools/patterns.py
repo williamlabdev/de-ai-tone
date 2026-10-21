@@ -15,6 +15,7 @@ rules/*/frontmatter 的 mechanical.zh/en 是唯一真相源。本模組負責：
 - 文件級門檻（全篇不同詞>=2）：R-014（詞幹去 -s/-ed/-ing 等後算同一詞，0930）
 - 文件級門檻（全篇>=1，含標題）：R-021（0930）
 - 段落級門檻（一段>=2）：R-020、R-003
+- 文件級比例門檻（全篇段末命中>=35%且段數>=5）：R-025（只看每個正文段的末句，1019）
 """
 import json
 import re
@@ -34,6 +35,7 @@ DOC_GTE2 = {"R-002", "R-022", "R-017", "R-016"}
 DOC_DISTINCT_GTE2 = {"R-014"}
 DOC_GTE1_WITH_HEADINGS = {"R-021"}
 PARA_GTE2 = {"R-020", "R-003"}
+DOC_RATIO_GTE35_MIN5 = {"R-025"}
 
 
 def normalize(v: str) -> str:
