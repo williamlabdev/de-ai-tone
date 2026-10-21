@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-025→R-026→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009 zh 自 0.2.21 只標同構短語（頓號項或逗號節字數相同、差 ≤1，且為漢字短語；冒號／包括／分成／例如引入的頓號清單與含拉丁字母／數字的項不算），同構判定在 r009ZhIso()，P.r009dun／P.r009comma 只當候選抓取（issue #8，learn 135 支回掃 3177 → 352 處（[低信心] 20，125 支有命中，平均每支 2.6 處；1021 同日舊版 3177 處））。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔規則，除 R-015（1002 第三輪畢業）外 <strong>index.json 標 maturity: experimental</strong>（0930 首輪小樣本校準、1001／1002 R-015／R-021 第二輪人判，見 tools/README.md），命中標 [experimental]，先當提示不當結論；其中 R-017、R-016 是全篇門檻（>=2 才標），R-014 是全篇不同詞 >=2，R-021 是全篇 >=1（含標題），R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-025（段尾免責補丁）是文件級門檻：取每個正文段（非標題、非清單、>=2 句）的末句，含限定／免責詞組即計一段，全篇命中段 >=35% 且可計段 >=5 才標 R-025[doc]（標在第一個命中段）；末句含漢字走 P.r025、否則走 PE.r025，合併計數；1019 以 learn 三集病例＋八集對照校準，見 rules/R-025-paragraph-final-hedge.md。R-026（段尾金句收束）是段落級：每個正文段（非標題、非清單，獨句段也算）取末句，含概括框架／隱喻動詞收束／全稱概括／對比金句／規矩加重／短判斷尾任一家族即標 R-026，單段命中即標、不設比例門檻；只有中文 pattern（P.r026），1020 以 learn S2 單元一三集作者裁決前後版＋135 支對照校準（對照命中 1.1% 段），見 rules/R-026-paragraph-final-aphorism.md。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-025→R-026→R-027→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009 zh 自 0.2.21 只標同構短語（頓號項或逗號節字數相同、差 ≤1，且為漢字短語；冒號／包括／分成／例如引入的頓號清單與含拉丁字母／數字的項不算），同構判定在 r009ZhIso()，P.r009dun／P.r009comma 只當候選抓取（issue #8，learn 135 支回掃 3177 → 352 處（[低信心] 20，125 支有命中，平均每支 2.6 處；1021 同日舊版 3177 處））。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔規則，除 R-015（1002 第三輪畢業）外 <strong>index.json 標 maturity: experimental</strong>（0930 首輪小樣本校準、1001／1002 R-015／R-021 第二輪人判，見 tools/README.md），命中標 [experimental]，先當提示不當結論；其中 R-017、R-016 是全篇門檻（>=2 才標），R-014 是全篇不同詞 >=2，R-021 是全篇 >=1（含標題），R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-025（段尾免責補丁）是文件級門檻：取每個正文段（非標題、非清單、>=2 句）的末句，含限定／免責詞組即計一段，全篇命中段 >=35% 且可計段 >=5 才標 R-025[doc]（標在第一個命中段）；末句含漢字走 P.r025、否則走 PE.r025，合併計數；1019 以 learn 三集病例＋八集對照校準，見 rules/R-025-paragraph-final-hedge.md。R-026（段尾金句收束）是段落級：每個正文段（非標題、非清單，獨句段也算）取末句，含概括框架／隱喻動詞收束／全稱概括／對比金句／規矩加重／短判斷尾任一家族即標 R-026，單段命中即標、不設比例門檻；只有中文 pattern（P.r026），1020 以 learn S2 單元一三集作者裁決前後版＋135 支對照校準（對照命中 1.1% 段），見 rules/R-026-paragraph-final-aphorism.md。R-027（回聲問句自答，issue #9）<strong>experimental</strong>、段落級：段內以 。！？； 切句，取以「？」結尾、不含 R-004 觸發詞、不在「」引號內、不是「你可以問：…？」示範句的問句，跟同段前一句找共有的 >=2 字連續漢字（功能詞先挖掉），且問句後面同段還有句子（問完自答）即標 R-027[experimental]，一段只標一次；實作在 r027EchoQ()，不是單行 regex。1021 校準：病例 learn PR #1 刪句前 131 支 4,710 段命中 31 處／15 支（作者刪掉 30、留 1），對照 1021 HEAD 135 支 4,716 段命中 3 處／3 支（皆真問句、人判放行）；對作者刪掉的 143 句無「嗎」問句召回 25（17%），漏的是段首、段尾無自答與極短問句，見 rules/R-027-echo-question.md。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
 <h2>1. 載入稿件</h2>
 <div class="row">
 <input type="file" id="file" accept=".md">
@@ -149,6 +149,8 @@ R-025 zh: (?:不|沒|別|無法)[^，。；]{0,8}(?:保證|代表|等於|證明|
 R-025 en: (?i)(?:does|do|did)(?:n'?t| not) (?:guarantee|prove|mean|confirm|establish|promise|settle|tell you|let you|make it|automatically)|not (?:a |the )?(?:guarantee|proof)|not (?:automatically|necessarily)|(?:can|could|may|might) still\b|still (?:needs?|have|has) (?:to|checking)|you(?:'ll)? still|by itself|on its own|that alone|alone (?:doesn'?t|does not|isn'?t|is not)|depends on|not (?:every|all)\b|cannot (?:serve|prove|guarantee|confirm)，全篇段末命中>=35%且段數>=5
 R-026 zh: 就是這樣|這就是|說到底|到頭來|說白了|歸根結底|講白了|其實就是|本質上|無非是|說穿了|(?:疊|堆|磨|滾|拼|撐|長|推|拉|扛|兜|織|熬|鋪)(?:出來|起來|著走|著|上去)的?[。！？]?$|往前推|往外長|往下滾|撐著|接得住|(?:怎麼|不管|無論|不論|隨便)[^。，；]{1,10}(?:都|也)[^。，；]{0,12}[。！？]?$|再[^。，；]{1,8}也[^。，；]{0,12}[。！？]?$|每一步都|那不是[^。，]{1,8}，那是|^[^。，]{0,6}不是[^。，]{1,8}，(?:是|而是)[^。，]{1,12}[。！？]?$|^[^。，]{1,6}不是[^。，]{1,6}[。！？]$|也是[^。，]{1,10}的，而[^。]{0,30}就不是|(?:這|這條|這個|這一點|這件事)(?:是|算|就是)(?:硬規矩|鐵律|底線|紅線|死規定)|沒有例外|沒得商量|就是(?:差|好|爛|慢|快|那樣|這樣|這個樣子|這個脾氣)[。！？]?$，一段的末句命中即標
 R-026 en: 不適用，英文段尾 aphorism 的獨句型態已由 R-005 en 與 R-021 覆蓋，掛在段尾的長句型態無英文病例語料，未訂 pattern
+R-027 zh: 段內以。！？；切句，取以？結尾、不含(嗎|呢|不是嗎|還在等)、不在「」內、不含「問…：」的問句 Q，Q 與同段前一句共有長度>=2 的連續漢字（功能詞不算）且 Q 後同段還有句子，一段命中即標一次
+R-027 en: 不適用，英文回聲自問自答沒有病例語料；英文反問收尾由 R-004 en 覆蓋，待有語料再評估
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
@@ -183,6 +185,50 @@ function r009ZhIso(t){
     if(segs.slice(-3).every(s=>/^第[一二三四五六七八九十\d]+/.test(s))) continue; // 例外：數字編號（第一、第二、第三）
     const avg = (lens[0]+lens[1]+lens[2])/3;
     return {id:"R-009"+(avg>12?"[低信心]":""), why:"逗號等長三連（每節 "+lens.join("／")+" 字），人判：問答／因果鏈／流程描述放行，口號才拆"};
+  }
+  return null;
+}
+// R-027 回聲問句自答（experimental，issue #9；0.2.22）：AI 感修稿會在段中插一句「先鋪哪個，先鋪環境音？」這類
+// 無「嗎」的問句，問完自答、答案複述前一句。R-004 只抓含 嗎|呢|不是嗎|還在等 的反問，這型抓不到。
+// 判定：段落以 。！？； 切句；對每個以「？」結尾、不含 R-004 觸發詞的句子 Q，取同段前一句 P（段首問句不算），
+// Q 後面同段還要有句子（問完自答）；Q 與 P 共有長度 ≥2 的連續漢字子串（關鍵詞）即標，純功能詞 bigram 不算關鍵詞。
+// 一段只標一次。真問句（真的在問觀眾）機械分不開，交人判。opts.noFollow=true 時不要求後句（只供校準統計）。
+const R027_STOP = new Set(["這個","那個","我們","你們","他們","可以","就是","不是","什麼","怎麼","這樣","那樣","一個","一下","的話","然後","所以","但是","因為","如果","還是","或者","已經","沒有","知道","覺得","需要","應該","時候","東西","問題","事情","地方",
+  "這裡","那裡","這些","那些","哪個","哪些","哪裡","為什麼","怎麼辦","到底","其實","現在","這種","那種","這件","哪一","一樣","一直","一起","很多","全部","所有","自己","大家","有沒","是不","要不","會不","能不","可不","還有","還要","還會","就會","就能","就可","不會","不能","不要","不用","可能","應該","也是","也會","也不","都是","都會","都不","而且","不過","只是","只有","只要","要是","要不","是什","麼的","的時","的話","你會","你要","你可","你就","你的","我的","他的","它的","來說","說的","講的","做的","用的","出來","起來","下去","上去","進去","回來","它把","你把","我把","他把","也把","再把","先把"]);
+function r027Keyword(q, p){
+  // 回傳 Q 與 P 共有、最長的連續漢字子串（長度 ≥2）；沒有回傳 null。
+  // 先把 Q 裡的功能詞挖掉（「那我們可以做什麼」→「那／做」），剩下的漢字段才拿去跟 P 比，
+  // 所以「我們可以」「們可」這類純功能詞組合不會被當關鍵詞；「這個模型」挖掉「這個」剩「模型」照常比對。
+  let masked = q;
+  for(const w of R027_STOP) masked = masked.split(w).join("｜");
+  const runs = masked.match(/[一-鿿]+/g) || [];
+  let best = null;
+  for(const run of runs){
+    for(let L=run.length; L>=2 && !(best && best.length>=L); L--){
+      for(let i=0;i+L<=run.length;i++){
+        const sub = run.slice(i,L+i);
+        if(p.includes(sub) && (!best || sub.length>best.length)) best = sub;
+      }
+    }
+  }
+  return best;
+}
+function r027EchoQ(t, opts){
+  const noFollow = !!(opts && opts.noFollow);
+  const ss = (t.match(/[^。！？；]+[。！？；]?/g) || []).map(s=>s.trim()).filter(Boolean);
+  const last = noFollow ? ss.length : ss.length-1;
+  let depth = 0; // 「」引號深度：引號內的問句（示範提示詞、模型回話、引述）不是旁白在問，跳過
+  for(let k=1; k<last; k++){
+    const q = ss[k];
+    const prev = ss[k-1];
+    depth += (prev.match(/「/g)||[]).length - (prev.match(/」/g)||[]).length;
+    const openQ = (q.match(/「/g)||[]).length, closeQ = (q.match(/」/g)||[]).length;
+    const quoted = depth>0 || openQ>closeQ; // 承接上句未閉引號，或本句自己開了「沒閉（問號落在引號內）
+    if(!/？$/.test(q) || quoted) continue;
+    if(/問[^，。？]{0,8}[：:]/.test(q)) continue; // 「你可以問：…？」「問回去只要一句：…？」是教觀眾怎麼問的示範句，不是旁白在問
+    if(/嗎|呢|不是嗎|還在等/.test(q)) continue; // 含「嗎」等的反問歸 R-004
+    const kw = r027Keyword(q, ss[k-1]);
+    if(kw) return {q, kw};
   }
   return null;
 }
@@ -377,6 +423,14 @@ function scanParas(text){
     const m = ss[ss.length-1].trim().match(P.r026);
     return m ? m[0] : null;
   });
+  // R-027[experimental]：回聲問句自答（issue #9）。段落級：每個正文段（非標題、非清單）跑 r027EchoQ()，
+  // 一段只標一次；experimental，先當提示不當結論（1021 learn 135 支回掃數字見 rules/R-027 機械段）。
+  const r027 = blocks.map((b,i)=>{
+    if(isHeadArr[i]||isListArr[i]) return null;
+    const t = stripped[i];
+    if(ZH_LEN(t)===0) return null;
+    return r027EchoQ(t);
+  });
   // R-002[zh+en-doc]：全篇門檻（中英文合併計數>=2）。0.2.11 前逐段即標，
   // 與 frontmatter「計數>=2」不一致；現改文件級累計，達標才標段＋首段掛總數。
   const P2 = /不是.*而是|不是.*是|不在.*而在|不在.*而是|不只.*而是|與其.*不如|跟.{0,30}是兩種不同/;
@@ -467,6 +521,7 @@ function scanParas(text){
     const m24en = t.match(PE.r024); if(m24en) hits.push({id:"R-024[en]", why:"vague comparative: "+[...new Set(m24en)].join("、")+"，人判：同句有無比較對象"});
     if(r025DocHit && i===r025FirstIdx) hits.push({id:"R-025[doc]", why:"段尾免責補丁 "+r025HitList.length+"／"+r025Elig+" 段（"+Math.round(r025Ratio*100)+"%，≥35% 且可計段≥5）："+[...new Set(r025HitList.map(x=>x.phrase))].join("、")+"，人判：末句真有條件要交代且下一段緊接展開的放行；其餘刪末句讓段落停在例子上，或把限定併進前一句，不換另一句限定"});
     if(r026[i]) hits.push({id:"R-026", why:"段尾金句收束：「"+r026[i]+"」，人判：字面用法（疊上去＝圖層、往前推一格＝版號、怎麼看都分不出＝具體觀察）放行；概括、比喻、對比式收束砍掉讓段落停在例子或動作上，或改成平的陳述，不新寫另一句金句；「開場那X就是這樣來的」鉤子回收句由作者裁"});
+    if(r027[i]) hits.push({id:"R-027[experimental]", why:"回聲問句自答：「"+(r027[i].q.length>40?r027[i].q.slice(0,40)+"…":r027[i].q)+"」複述前一句的「"+r027[i].kw+"」且後面接著自答，人判：真的在問觀眾就放行；修稿插的回聲問句刪掉，把答案直接接在前一句後面"});
     if(titleEchoHits[i]) titleEchoHits[i].forEach(h=>{
       hits.push({id:"R-012", why:"標題回聲（"+h.tag+"跟「"+h.headingText+"」重疊"+Math.round(h.ratio*100)+"%），人判：是否為必要複誦（釋義句／操作指示／功能性點名／開場承諾收尾呼應）"});
     });
