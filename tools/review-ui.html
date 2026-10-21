@@ -21,7 +21,7 @@ button{padding:6px 14px;font-size:14px;cursor:pointer}
 </head>
 <body>
 <h1>de-ai-tone 審稿台（只標不改＋改寫匯出）</h1>
-<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-025→R-026→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔規則，除 R-015（1002 第三輪畢業）外 <strong>index.json 標 maturity: experimental</strong>（0930 首輪小樣本校準、1001／1002 R-015／R-021 第二輪人判，見 tools/README.md），命中標 [experimental]，先當提示不當結論；其中 R-017、R-016 是全篇門檻（>=2 才標），R-014 是全篇不同詞 >=2，R-021 是全篇 >=1（含標題），R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-025（段尾免責補丁）是文件級門檻：取每個正文段（非標題、非清單、>=2 句）的末句，含限定／免責詞組即計一段，全篇命中段 >=35% 且可計段 >=5 才標 R-025[doc]（標在第一個命中段）；末句含漢字走 P.r025、否則走 PE.r025，合併計數；1019 以 learn 三集病例＋八集對照校準，見 rules/R-025-paragraph-final-hedge.md。R-026（段尾金句收束）是段落級：每個正文段（非標題、非清單，獨句段也算）取末句，含概括框架／隱喻動詞收束／全稱概括／對比金句／規矩加重／短判斷尾任一家族即標 R-026，單段命中即標、不設比例門檻；只有中文 pattern（P.r026），1020 以 learn S2 單元一三集作者裁決前後版＋135 支對照校準（對照命中 1.1% 段），見 rules/R-026-paragraph-final-aphorism.md。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
+<p>判準：手抄自 <code>rules/index.json</code> check_order（R-002→R-001→R-005→R-012→R-009→R-010→R-003→R-004→R-006→R-007→R-008→R-011→R-014→R-015→R-016→R-017→R-018→R-019→R-020→R-021→R-022→R-023→R-024→R-025→R-026→R-013）＋narration 帶做口氣對照；本頁不讀取 index.json 與 rules/，順序與 pattern 皆為靜態內嵌，改規則時需手動同步（`python3 tools/sync-check.py` 驗證，`--fix-mirror` 重寫鏡像註解）。檔頭 YAML frontmatter 剝掉不掃。段＝空行分隔，R-001/R-005 看段內行；清單行（`-`／`*`／數字編號）跳過 R-001/R-005/R-009/R-011。中英文 pattern 皆已實作（英文以 regex i flag 比對 rules/R-*.md frontmatter mechanical.en，命中標 [en]）。機械寧可多標，人判負責放行。R-002 是文件級門檻（中英文合併≥2，標 R-002[doc]）。R-009 中文逗號三連與 R-011 分句尾同時認半形句讀（0.2.11）。R-009 zh 自 0.2.21 只標同構短語（頓號項或逗號節字數相同、差 ≤1，且為漢字短語；冒號／包括／分成／例如引入的頓號清單與含拉丁字母／數字的項不算），同構判定在 r009ZhIso()，P.r009dun／P.r009comma 只當候選抓取（issue #8，learn 135 支回掃 3177 → 352 處（[低信心] 20，125 支有命中，平均每支 2.6 處；1021 同日舊版 3177 處））。R-009[en] 遇冒號引入列舉降為[低信心]。R-012（標題回聲）不是單行 regex，實作在 scanParas 內的跨行比對函式，不在下面的 P／PE 物件裡（中文字元級＋英文 word-level；英文無語料可測，未校準，先當提示）。R-014～R-021 是英文 AI 腔規則，除 R-015（1002 第三輪畢業）外 <strong>index.json 標 maturity: experimental</strong>（0930 首輪小樣本校準、1001／1002 R-015／R-021 第二輪人判，見 tools/README.md），命中標 [experimental]，先當提示不當結論；其中 R-017、R-016 是全篇門檻（>=2 才標），R-014 是全篇不同詞 >=2，R-021 是全篇 >=1（含標題），R-020 是單段門檻。R-022（逗號＋而黏句）是中文翻譯腔規則，全篇累積 >=2 次才標（標在第一個正文段）；William 的中文語料一律用半形逗號 <code>,</code>，pattern 的逗號字元類同時納入 <code>,</code> 與 <code>，</code>。R-023（畫面字）掃的是下方 1b 加掛的 storyboard 全文（中英皆掃；英文 ASCII 冒號／分號無語料可測，未校準），不是旁白。R-024（旁白避免空泛的「比較 X」）掃的是旁白文字，已實作於下面的 P／PE 物件。R-025（段尾免責補丁）是文件級門檻：取每個正文段（非標題、非清單、>=2 句）的末句，含限定／免責詞組即計一段，全篇命中段 >=35% 且可計段 >=5 才標 R-025[doc]（標在第一個命中段）；末句含漢字走 P.r025、否則走 PE.r025，合併計數；1019 以 learn 三集病例＋八集對照校準，見 rules/R-025-paragraph-final-hedge.md。R-026（段尾金句收束）是段落級：每個正文段（非標題、非清單，獨句段也算）取末句，含概括框架／隱喻動詞收束／全稱概括／對比金句／規矩加重／短判斷尾任一家族即標 R-026，單段命中即標、不設比例門檻；只有中文 pattern（P.r026），1020 以 learn S2 單元一三集作者裁決前後版＋135 支對照校準（對照命中 1.1% 段），見 rules/R-026-paragraph-final-aphorism.md。R-013（保留原句、補具體細節）無字面判準，1b 加掛改前原稿後按鈕只列新增行、不下結論。</p>
 <h2>1. 載入稿件</h2>
 <div class="row">
 <input type="file" id="file" accept=".md">
@@ -113,7 +113,7 @@ R-007 zh: (提升|提高|增加|成長|下降|降低|最高|最低).{0,12}倍|�
 R-007 en: (?i)\b(tripled|doubled|quadrupled|tenfold|\d+\s?(?:x\b|×(?!\w))|up to \d+\s?(?:x\b|×(?!\w))|(?:ten|hundred|thousand) times\b)
 R-008 zh: 有限|少量|大量|大幅|顯著|很快|即時|儘早|從速|敬請期待|錯過不再|再等|售完為止|限時|一般
 R-008 en: (?i)\blimited\b|\bsignificant\b|\bdramatic\b|coming soon|stay tuned|act fast|act now|instantly|\bhurry\b|don't miss out|while supplies last|as soon as possible|before it'?s gone|right away
-R-009 zh: (、[^，。！？；、]{1,12}){2,}|([^，。！？；,.!?;]{4,20}[，,]){2}[^，。！？；,.!?;]{4,20}[。！.!?]；人判是否清單/口號/流程鏈
+R-009 zh: (、[^，。！？；、]{1,12}){2,}|([^，。！？；,.!?;]{4,20}[，,]){2}[^，。！？；,.!?;]{4,20}[。！.!?]；計數只算同構短語：頓號項或逗號節字數相同（差 ≤1）且為漢字短語，冒號／包括／分成／例如引入的頓號清單與含拉丁字母／數字的項不算；人判是否口號
 R-009 en: (?:^|[.!?;:]\s+)(?:[^,.!?;]{1,24},\s*){2,}[^,.!?;]{1,24}[.!?]，3+平行短語，人判清單或口號
 R-010 zh: (三[個項條]|幾個|以下|如下|分別).{0,12}：
 R-010 en: (?i)(three|several|following|below|these).{0,20}:
@@ -152,6 +152,40 @@ R-026 en: 不適用，英文段尾 aphorism 的獨句型態已由 R-005 en 與 R
 */
 const ZH_LEN = s => (s.replace(/[^一-鿿]/g,"").length);
 const splitSentZh = s => s.match(/[^。！？]+[。！？]/g) || [s];
+// R-009 zh 同構判定（0.2.21，issue #8）：舊版任何逗號三連都標，learn 135 支回掃 3177 處等於沒訊號。
+// 只算「同構短語」——頓號項或逗號節字數相同（差 ≤1）且為漢字短語；冒號／包括／分成／例如／像／比如 引入的
+// 頓號清單視為後文展開不算；含拉丁字母／數字的項（專有名詞、步驟代號）不算。P.r009dun／P.r009comma 只當候選抓取。
+function r009ZhIso(t){
+  if(!t.match(P.r009dun) && !t.match(P.r009comma)) return null;
+  const HAN = /^[一-鿿]+$/;
+  const eq = lens => Math.max(...lens)-Math.min(...lens) <= 1;
+  // (a) 頓號串：連首項一起抓（P.r009dun 從第一個頓號起算，抓不到首項）
+  const dunRe = /[^，。！？；、：:\n]{1,12}(?:、[^，。！？；、：:\n]{1,12}){2,}/g;
+  let m;
+  while((m = dunRe.exec(t))){
+    const items = m[0].split("、"), rest = items.slice(1);
+    if(!rest.every(x=>HAN.test(x))) continue;
+    const L = rest[0].length;
+    if(L>6 || !eq(rest.map(x=>x.length))) continue;
+    const head = items[0], first = head.slice(-L);
+    if(first.length<L || !HAN.test(first)) continue;
+    const before = t.slice(Math.max(0,m.index-4), m.index) + head.slice(0, head.length-L);
+    if(/(?:[：:]|包括|分成|分別是|例如|像|比如)\s*$/.test(before)) continue;
+    return {id:"R-009", why:"頓號同構三連「"+[first,...rest].join("、")+"」（各 "+L+" 字），人判：清單展開放行，口號才拆"};
+  }
+  // (b) 逗號三連：逐句切（。！？；為句界），取句尾三節，4–20 字且等長才算；match 內須含漢字（0.2.11 防火牆）
+  for(const sent of (t.match(/[^。！？；]+[。！？；]?/g) || [])){
+    if(!/[。！？!?.]\s*$/.test(sent) || !/[一-鿿]/.test(sent)) continue;
+    const segs = sent.replace(/[。！？!?.]\s*$/,"").split(/[，,]/).map(s=>s.trim());
+    if(segs.length<3) continue;
+    const lens = segs.slice(-3).map(s=>s.length);
+    if(lens.some(l=>l<4||l>20) || !eq(lens)) continue;
+    if(segs.slice(-3).every(s=>/^第[一二三四五六七八九十\d]+/.test(s))) continue; // 例外：數字編號（第一、第二、第三）
+    const avg = (lens[0]+lens[1]+lens[2])/3;
+    return {id:"R-009"+(avg>12?"[低信心]":""), why:"逗號等長三連（每節 "+lens.join("／")+" 字），人判：問答／因果鏈／流程描述放行，口號才拆"};
+  }
+  return null;
+}
 const splitSentEn = s => s.match(/[^.!?]+[.!?]/g) || [s];
 
 function scanParas(text){
@@ -398,16 +432,9 @@ function scanParas(text){
     const m8 = t.match(P.r008); if(m8) hits.push({id:"R-008", why:"模糊詞："+[...new Set(m8)].join("、")+"，人判：同句有無跟數字"});
     const m8en = t.match(PE.r008); if(m8en) hits.push({id:"R-008[en]", why:"vague scope: "+[...new Set(m8en)].join("、")+"，人判：同句有無跟數字"});
     // 清單行：R-009/R-011 跳過（結構行非散文句型），其餘規則照掃
-    const m9a = isList?null:t.match(P.r009dun), m9b = isList?null:t.match(P.r009comma);
-    if(m9a) hits.push({id:"R-009", why:"頓號並列"+m9a.length+"處，人判：清單展開放行，否則拆散"});
-    else if(m9b){
-      // 中文逗號三連：match 內須含漢字，否則是純英文逗號鏈，歸 en 分支（0.2.11 半形擴充後的防火牆）
-      if(/[一-鿿]/.test(m9b[0])){
-        const segs = m9b[0].split(/[，,]/);
-        const avg = segs.reduce((a,s)=>a+s.length,0)/segs.length;
-        hits.push({id:"R-009"+(avg>12?"[低信心]":""), why:"逗號三連（平均每節"+avg.toFixed(1)+"字），人判：問答／因果鏈／流程描述放行，口號才拆"});
-      }
-    }
+    // R-009 zh：同構判定見 r009ZhIso()（0.2.21，issue #8）；清單行跳過
+    const r9 = isList?null:r009ZhIso(t);
+    if(r9) hits.push(r9);
     const m9en = isList?null:t.match(PE.r009);
     if(m9en){
       // 冒號引入的技術實體列舉是英文側最主要的誤殺形狀（R-009 機械段 0926 實測 FP 91%），先降信心：
