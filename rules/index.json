@@ -1,7 +1,7 @@
 {
-  "tone-version": "0.2.22",
+  "tone-version": "0.2.23",
   "languages": ["zh", "en"],
-  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-025", "R-026", "R-027", "R-013"],
+  "check_order": ["R-002", "R-001", "R-005", "R-012", "R-009", "R-010", "R-003", "R-004", "R-006", "R-007", "R-008", "R-011", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020", "R-021", "R-022", "R-023", "R-024", "R-025", "R-026", "R-027", "R-028", "R-029", "R-013"],
   "rules": [
     {
       "id": "R-001",
@@ -198,6 +198,21 @@
       "file": "R-027-echo-question.md",
       "title": "回聲問句自答 / Echo question",
       "profiles": { "articles": "strict", "narration": "strict" },
+      "maturity": "experimental"
+    },
+    {
+      "id": "R-028",
+      "slug": "classifier-gu-for-model",
+      "file": "R-028-classifier-gu-for-model.md",
+      "title": "擬物量詞「顆」配模型／引擎／旋鈕 / Round-object classifier for abstract nouns",
+      "profiles": { "articles": "not_applicable", "narration": "strict" }
+    },
+    {
+      "id": "R-029",
+      "slug": "metaphor-verbs-narration",
+      "file": "R-029-metaphor-verbs-narration.md",
+      "title": "旁白隱喻動詞與擬物名詞 / Metaphorical verbs in narration",
+      "profiles": { "articles": "not_applicable", "narration": "strict" },
       "maturity": "experimental"
     }
   ]

@@ -11,6 +11,7 @@
 - `test-02-articles-zh.md` / `.fixed.md`：同上，第二組。
 - `test-03-narration-mixed.md` / `.fixed.md`：narration profile 測試稿，中英混排，虛構。
 - `test-04-articles-en.md` / `.fixed.md`：articles profile 純英文測試稿，虛構，刻意含 R-002 後位否定／R-003／R-004／R-006／R-007／R-008／R-009（含冒號列舉降信心）／R-010／R-011／R-012 en／R-014～R-021／R-024 違規；fixed 版全 PASS。
+- `test-07-narration-lexical-zh.md` / `.fixed.md`：narration profile 中文詞彙測試稿，虛構，刻意含 R-028／R-029（含低信心詞）；末段為白名單（接出來、拆成、被拆到、抽／挑）與真圓形物（一顆螺絲），不得命中；fixed 版 R-028／R-029 零命中。
 - `test-04-storyboard.md`：storyboard 卡片測試稿（走 `scanStoryboard`，由檔名 `-storyboard.md` 識別），中英短標籤冒號／分號並列各一處＋兩處 PASS＋網址例外。
 
 測試稿檔頭 `note` 欄註明是否虛構與刻意埋的違規範圍。

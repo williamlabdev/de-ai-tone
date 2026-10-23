@@ -50,7 +50,7 @@ You ask, it answers.
 ## After（改法）
 
 ```text
-你交代一句，它就自己讀完、改好
+你說一句，它就自己讀完、改好
 ```
 
 ```text

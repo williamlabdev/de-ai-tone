@@ -17,6 +17,7 @@ rules/*/frontmatter 的 mechanical.zh/en 是唯一真相源。本模組負責：
 - 段落級門檻（一段>=2）：R-020、R-003
 - 文件級比例門檻（全篇段末命中>=35%且段數>=5）：R-025（只看每個正文段的末句，1019）
 - 段落級、只看末句（單段命中即標，含獨句段）：R-026（1020；只有中文 pattern）
+- 段落級、詞彙規則（單段命中即標；只有中文）：R-028、R-029（1021；R-029 低信心組與 experimental 標記在 review-ui.html 側 R029_LOW 分流）
 - 段落級、跨句比對（問句對前一句找共有關鍵詞，單段命中即標一次）：R-027（1021，experimental；只有中文，prose，可執行版在 review-ui.html r027EchoQ()）
 """
 import json
