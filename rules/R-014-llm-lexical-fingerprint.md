@@ -1,14 +1,14 @@
 ---
 id: R-014
 slug: llm-lexical-fingerprint
-tone-version: 0.2.18
+tone-version: 0.2.25
 languages: [en]
 profiles:
   articles: strict
   narration: strict
 mechanical:
   zh: 不適用，本條是英文特有現象，中文對應形態尚未調查，待有中文語料再評估
-  en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive)\b，全篇不同詞>=2
+  en: (?i)\b(?:delv(?:e|es|ed|ing)|leverag(?:e|es|ed|ing)|seamless(?:ly)?|crucial|pivotal|myriad|plethora|tapestry|underscor(?:e|es|ed)|showcas(?:e|es|ed)|foster(?:s|ed|ing)?|harness(?:es|ed|ing)?|realm|landscape|paradigm|holistic|testament|fast-paced|cutting-edge|streamlin(?:e|es|ed)|elevat(?:e|es|ed)|comprehensive|meticulous(?:ly)?|intricate(?:ly)?|commendable|nuanced|multifaceted|noteworthy|bolster(?:s|ed|ing)?|interplay|unveil(?:s|ed|ing)?|embark(?:s|ed|ing)?)\b，全篇不同詞>=2
 ---
 
 # R-014 LLM 詞彙指紋 / LLM lexical fingerprint
@@ -16,6 +16,8 @@ mechanical:
 ## 現象
 
 英文稿密集出現一組 LLM 生成文字的高頻詞：`delve`、`leverage`、`seamless`、`crucial`、`pivotal`、`myriad`、`plethora`、`tapestry`、`underscore`、`showcase`、`foster`、`harness`、`realm`、`landscape`、`paradigm`、`holistic`、`testament`、`fast-paced`、`cutting-edge`、`streamline`、`elevate`、`comprehensive`。這些字本身沒有拼字或文法問題，但人類作者很少自然地這樣密集使用，出現即是可疑指紋，不代表單次出現就一定違規。
+
+1027 對公開清單做 diff 補 10 詞（同實驗狀態、門檻不變）：`meticulous`／`meticulously`、`intricate`／`intricately`、`commendable`、`nuanced`、`multifaceted`、`noteworthy`、`bolster`、`interplay`、`unveil`、`embark`。出處：Liang et al. 2024（ICML peer review 高漲幅詞）、Kobak et al. 2024（生物醫學超額詞量表）、chrisgherbert chat-gpt-cliches gist。入選標準＝有測量漲幅證據且行銷散文裡人用得少；`navigate`、`enhance`、`facilitate`、`endeavor`、`complex`、`potential`、`significant` 等雖在清單上，因自然英語常用不收（誤報不可控，同 1009 移出 `robust`／`game-changer` 的理由）；`journey`、`vibrant`、`profound`、`resonates` 等 gist 高頻詞同理由不收，等 en 病例語料踩到再回。
 
 中文對應形態僅供理解，本條 `languages` 不含 zh：中文行銷稿的對應現象大致是「善用」「賦能」「無縫」「顛覆」「賦予」這類翻譯腔詞彙堆疊，但尚未有語料可校準，不在本條 pattern 內。
 
