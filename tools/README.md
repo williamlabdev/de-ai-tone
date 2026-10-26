@@ -1,5 +1,6 @@
 # tools
 
+- `.github/workflows/check.yml`：repo CI，PR 與 push 到 main 都跑 `make check`（sync／snapshot／after 同一入口，規則改動先過機械守門再進人判）。
 - `review-ui.html`：審稿台，純前端、無外部依賴。載入或貼上稿件，按 `rules/index.json` 的 check_order 做機械標記（只標不改），附 narration 帶做口氣對照與改寫匯出。中英文 pattern 都是從各規則 frontmatter `mechanical` 手抄內嵌，本頁不讀取 `rules/`。
 - `patterns.py`：frontmatter 解析共用模組（真相源載入、人判後綴剝離、佔位符剝離、門檻元數據）。`sync-check.py` 與文件共用，`run-scan.js` 另走瀏覽器真實邏輯（見下）。
 - `sync-check.py`：比對 review-ui.html 內嵌的順序與 pattern 是否與 `rules/index.json`、各規則 frontmatter 一致。改規則後跑 `python3 tools/sync-check.py`（或 `make sync`），印 `OK` 才算同步。`--fix-mirror` 按 frontmatter 重寫 html 內的「mechanical 對照」鏡像段（真相源→html 單向；可執行的 P／PE 仍人手同步）。

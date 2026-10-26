@@ -1,7 +1,7 @@
 ---
 id: de-ai-modifier
 role: modifier
-tone-version: 0.2.22
+tone-version: 0.2.24
 ---
 
 # Modifier — 最小重寫
